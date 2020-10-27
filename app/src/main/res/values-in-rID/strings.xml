@@ -9,4 +9,8 @@
     <string name="change">Ganti</string>
     <string name="clear_history" translatable="false">Hapus History</string>
     <string name="title_changed" translatable="false">Judul berhasil dirubah</string>
+    <string name="tariff_check">Cek Ongkir</string>
+    <string name="origin">Asal</string>
+    <string name="destination">Tujuan</string>
+    <string name="weight_gram">Berat (gram)</string>
 </resources>

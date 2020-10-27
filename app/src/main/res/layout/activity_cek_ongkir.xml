@@ -7,6 +7,21 @@
     tools:context=".view.CekOngkirActivity">
 
     <TextView
+        android:id="@+id/cekOngkirTitle"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="@string/tariff_check"
+        android:textColor="@android:color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/labelOrigin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/labelOrigin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,21 +31,9 @@
         android:text="@string/origin"
         android:textSize="@dimen/small_text"
         app:layout_constraintLeft_toLeftOf="@id/cekOngkirEtOrigin"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/cekOngkirTitle" />
 
-    <TextView
-        android:id="@+id/labelDestiniation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:labelFor="@id/cekOngkirEtDestination"
-        android:text="@string/destination"
-        android:textSize="@dimen/small_text"
-        app:layout_constraintLeft_toLeftOf="@id/cekOngkirEtDestination"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/cekOngkirEtOrigin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -45,10 +48,22 @@
         android:paddingBottom="8dp"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/cekOngkirEtDestination"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/labelOrigin" />
 
-    <EditText
+    <TextView
+        android:id="@+id/labelDestination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:labelFor="@id/cekOngkirEtDestination"
+        android:text="@string/destination"
+        android:textSize="@dimen/small_text"
+        app:layout_constraintLeft_toLeftOf="@id/cekOngkirEtDestination"
+        app:layout_constraintTop_toBottomOf="@id/cekOngkirEtOrigin" />
+
+    <AutoCompleteTextView
         android:id="@+id/cekOngkirEtDestination"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -62,8 +77,38 @@
         android:paddingEnd="8dp"
         android:paddingBottom="8dp"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/cekOngkirEtOrigin"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/cekOngkirEtOrigin" />
+        app:layout_constraintTop_toBottomOf="@id/labelDestination" />
+
+    <TextView
+        android:id="@+id/labelWeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:labelFor="@id/cekOngkirEtWeight"
+        android:text="@string/weight_gram"
+        android:textSize="@dimen/small_text"
+        app:layout_constraintLeft_toLeftOf="@id/cekOngkirEtWeight"
+        app:layout_constraintTop_toBottomOf="@id/cekOngkirEtDestination" />
+
+    <EditText
+        android:id="@+id/cekOngkirEtWeight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/edittext_state"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/labelWeight" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
