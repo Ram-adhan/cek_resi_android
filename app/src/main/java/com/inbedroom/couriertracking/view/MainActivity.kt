@@ -166,6 +166,11 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
                 deleteAllHistory()
                 true
             }
+
+            R.id.cekOngkir -> {
+                startActivity(CekOngkirActivity.callIntent(this))
+                true
+            }
             else -> false
         }
     }
