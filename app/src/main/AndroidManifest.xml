@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.inbedroom.couriertracking.CourierTrackingApplication"
+        android:name=".CourierTrackingApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,17 +15,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".view.CekOngkirActivity"></activity>
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-7418623981206452~1566470213"/>
+            android:value="ca-app-pub-7418623981206452~1566470213" />
+
         <activity
-            android:name="com.inbedroom.couriertracking.view.BarcodeScanActivity"
+            android:name=".view.BarcodeScanActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.inbedroom.couriertracking.view.TrackingDetailActivity"
+            android:name=".view.TrackingDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.inbedroom.couriertracking.view.MainActivity"
+            android:name=".view.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
