@@ -39,9 +39,9 @@ class OngkirViewModel @Inject constructor(
     }
 
     fun checkTariff(
-        request: CostRequest,
-        originString: String? = null,
-        destinationString: String? = null
+       originCode: String,
+       destinationCode: String,
+       weight: Int
     ) {
     }
 }

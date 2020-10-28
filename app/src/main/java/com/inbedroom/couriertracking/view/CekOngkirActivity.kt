@@ -35,8 +35,7 @@ class CekOngkirActivity : BaseActivity() {
 
     private lateinit var viewModel: OngkirViewModel
     val couriers = listOf("JNE", "Pos Indonesia", "Tiki")
-    private val cities: MutableList<CityEntity> = ArrayList()
-    private lateinit var adapter: ArrayAdapter<String>
+    private val citiesName: MutableMap<String, String> = mutableMapOf()
 
     private val request = CostRequest()
 
@@ -59,26 +58,6 @@ class CekOngkirActivity : BaseActivity() {
     }
 
     override fun onAction() {
-        cekOngkirEtOrigin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                Log.d("activity", "pos: $position")
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-//                TODO("Not yet implemented")
-            }
-
-        }
-
-        cekOngkirEtDestination.setOnItemClickListener { parent, view, position, id ->
-            request.destination = cities[position].cityId
-        }
-
         cekOngkirButtonCalculate.setOnClickListener {
             var canContinue = true
             val origin = cekOngkirEtOrigin.text.toString()
@@ -92,10 +71,16 @@ class CekOngkirActivity : BaseActivity() {
             if (origin.isEmpty()) {
                 cekOngkirEtOrigin.error = "Empty origin"
                 canContinue = false
+            } else if (!citiesName.containsKey(origin)){
+                cekOngkirEtOrigin.error = "Unknown city, please type as suggested"
+                canContinue = false
             }
 
             if (destination.isEmpty()) {
                 cekOngkirEtDestination.error = "Empty destination"
+                canContinue = false
+            } else if (!citiesName.containsKey(destination)){
+                cekOngkirEtOrigin.error = "Unknown city, please type as suggested"
                 canContinue = false
             }
 
@@ -107,18 +92,23 @@ class CekOngkirActivity : BaseActivity() {
             }
 
             if (canContinue) {
-                viewModel.checkTariff(request, origin, destination)
+                val originString = citiesName[origin] ?: "-1"
+                val destinationString = citiesName[destination] ?: "-1"
+                viewModel.checkTariff(originString, destinationString, weight)
             }
         }
     }
 
     private val cityList = Observer<List<CityEntity>> { data ->
-        val citiesName: MutableList<String> = ArrayList()
         data.forEach {
             val prefix = if (it.type.equals("kabupaten", true)) it.type + " " else ""
-            citiesName.add(prefix + it.cityName)
+            citiesName[prefix + it.cityName] = it.cityId
         }
-        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, citiesName)
+        val adapter: ArrayAdapter<String> = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            citiesName.keys.toTypedArray()
+        )
         cekOngkirEtOrigin.setAdapter(adapter)
         cekOngkirEtDestination.setAdapter(adapter)
     }

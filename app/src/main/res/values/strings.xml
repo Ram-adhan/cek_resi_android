@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Lacak Resi</string>
     <string name="courier_tracker">Courier Tracker</string>
-    <string name="awb_hint" translatable="false">No. Resi</string>
+    <string name="awb_hint">Air Waybill</string>
     <string name="main_title" translatable="false">Cek Resi</string>
     <string name="lacak" translatable="false">Lacak</string>
     <string name="courier_item_icon" translatable="false">courier item icon</string>
@@ -29,10 +29,10 @@
     <string name="empty_awb" translatable="false">Masukkan resi terlebih dahulu</string>
     <string name="no_internet" translatable="false">Tidak ada koneksi internet</string>
     <string name="use_text" translatable="false">Gunakan text</string>
-    <string name="origin">Origin</string>
-    <string name="destination">Destination</string>
+    <string name="origin">Origin City</string>
+    <string name="destination">Destination City</string>
     <string name="tariff_check">Tariff Check</string>
     <string name="weight_gram">Weight (gram)</string>
-    <string name="courier">Kurir</string>
+    <string name="courier">Courier</string>
     <string name="calculate">Hitung</string>
 </resources>

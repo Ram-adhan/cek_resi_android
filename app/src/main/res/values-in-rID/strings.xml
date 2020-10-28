@@ -10,7 +10,10 @@
     <string name="clear_history" translatable="false">Hapus History</string>
     <string name="title_changed" translatable="false">Judul berhasil dirubah</string>
     <string name="tariff_check">Cek Ongkir</string>
-    <string name="origin">Asal</string>
-    <string name="destination">Tujuan</string>
+    <string name="origin">Kota Asal</string>
+    <string name="destination">Kota Tujuan</string>
     <string name="weight_gram">Berat (gram)</string>
+    <string name="calculate">Hitung</string>
+    <string name="courier" translatable="false">Kurir</string>
+    <string name="awb_hint">No. Resi</string>
 </resources>
