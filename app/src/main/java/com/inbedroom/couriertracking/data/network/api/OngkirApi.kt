@@ -11,11 +11,11 @@ interface OngkirApi {
 
     @GET
     @Headers("RajaOngkir: true")
-    fun getCityList(@Url url: String):
+    suspend fun getCityList(@Url url: String):
             Response<RajaOngkirBaseResponse<List<CityEntity>>>
 
     @POST
     @Headers("RajaOngkir: true")
-    fun getCalculation(@Url url: String, @Body body:CostRequest):
+    suspend fun getCalculation(@Url url: String, @Body body:CostRequest):
             Response<RajaOngkirBaseResponse<OngkirResult>>
 }

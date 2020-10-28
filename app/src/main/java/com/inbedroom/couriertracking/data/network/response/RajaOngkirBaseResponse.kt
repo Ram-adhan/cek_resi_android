@@ -2,5 +2,5 @@ package com.inbedroom.couriertracking.data.network.response
 
 data class RajaOngkirBaseResponse<T> (
     val status: RajaOngkirStatus,
-    val result: T
+    val results: T
 )

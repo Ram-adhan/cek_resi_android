@@ -17,9 +17,9 @@ class CekOngkirRepositoryImpl @Inject constructor(
     private val ongkirApi: OngkirApi
 ) : CekOngkirRepository {
 
-    val BaseUrl = ServiceData.BASE_URL
+    val BaseUrl = ServiceData.ONGKIR_URL
 
-    override fun getCityList(): DataResult<RajaOngkirBaseResponse<List<CityEntity>>> {
+    override suspend fun getCityList(): DataResult<RajaOngkirBaseResponse<List<CityEntity>>> {
         val url = StringBuilder().append(BaseUrl).append("/city")
         return try {
             val response = ongkirApi.getCityList(url.toString())
@@ -34,7 +34,7 @@ class CekOngkirRepositoryImpl @Inject constructor(
 
     }
 
-    override fun getTariffList(
+    override suspend fun getTariffList(
         origin: String,
         destination: String,
         weight: Int,
