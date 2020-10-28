@@ -1,5 +1,6 @@
 package com.inbedroom.couriertracking.data.network
 
+import android.util.Log
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.data.entity.OngkirResult
@@ -24,7 +25,8 @@ class CekOngkirRepositoryImpl @Inject constructor(
         return try {
             val response = ongkirApi.getCityList(url.toString())
             if (response.isSuccessful) {
-                handleApiSuccess(response.body()!!)
+                Log.d("result", "body: ${response.body()?.rajaongkir}")
+                handleApiSuccess(response.body()!!.rajaongkir)
             } else {
                 handleApiError(response)
             }
@@ -47,7 +49,7 @@ class CekOngkirRepositoryImpl @Inject constructor(
                 CostRequest(origin, destination, weight, courier)
             )
             if (response.isSuccessful){
-                handleApiSuccess(response.body()!!)
+                handleApiSuccess(response.body()!!.rajaongkir)
             }else{
                 handleApiError(response)
             }
