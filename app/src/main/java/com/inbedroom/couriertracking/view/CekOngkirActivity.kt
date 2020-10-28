@@ -2,23 +2,19 @@ package com.inbedroom.couriertracking.view
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.platform.BaseActivity
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
-import com.inbedroom.couriertracking.data.network.response.RajaOngkirBaseResponse
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
 import com.inbedroom.couriertracking.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_cek_ongkir.*
-import java.lang.NumberFormatException
 import javax.inject.Inject
 
 class CekOngkirActivity : BaseActivity() {
@@ -55,6 +51,21 @@ class CekOngkirActivity : BaseActivity() {
     override fun initView() {
         supportActionBar?.title = getString(R.string.tariff_check)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        couriers.forEach {
+            val chip = Chip(this)
+            val chipDrawable = ChipDrawable.createFromAttributes(
+                this,
+                null,
+                0,
+                R.style.Widget_MaterialComponents_Chip_Choice
+            )
+            chip.setChipDrawable(chipDrawable)
+            chip.text = it
+            chip.isCheckable = true
+
+            chipGroupCourier.addView(chip)
+        }
     }
 
     override fun onAction() {
@@ -71,7 +82,7 @@ class CekOngkirActivity : BaseActivity() {
             if (origin.isEmpty()) {
                 cekOngkirEtOrigin.error = "Empty origin"
                 canContinue = false
-            } else if (!citiesName.containsKey(origin)){
+            } else if (!citiesName.containsKey(origin)) {
                 cekOngkirEtOrigin.error = "Unknown city, please type as suggested"
                 canContinue = false
             }
@@ -79,7 +90,7 @@ class CekOngkirActivity : BaseActivity() {
             if (destination.isEmpty()) {
                 cekOngkirEtDestination.error = "Empty destination"
                 canContinue = false
-            } else if (!citiesName.containsKey(destination)){
+            } else if (!citiesName.containsKey(destination)) {
                 cekOngkirEtOrigin.error = "Unknown city, please type as suggested"
                 canContinue = false
             }
@@ -92,9 +103,12 @@ class CekOngkirActivity : BaseActivity() {
             }
 
             if (canContinue) {
-                val originString = citiesName[origin] ?: "-1"
-                val destinationString = citiesName[destination] ?: "-1"
-                viewModel.checkTariff(originString, destinationString, weight)
+                chipGroupCourier.checkedChipIds.forEach {
+                    val originString = citiesName[origin] ?: "-1"
+                    val destinationString = citiesName[destination] ?: "-1"
+                    viewModel.checkTariff(originString, destinationString, weight)
+                }
+
             }
         }
     }
