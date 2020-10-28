@@ -1,6 +1,7 @@
 package com.inbedroom.couriertracking.data.network
 
 import com.inbedroom.couriertracking.data.entity.CityEntity
+import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.data.network.api.OngkirApi
 import com.inbedroom.couriertracking.data.network.response.DataResult
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 class CekOngkirRepositoryImpl @Inject constructor(
     private val ongkirApi: OngkirApi
-): CekOngkirRepository{
+) : CekOngkirRepository {
 
     val BaseUrl = ServiceData.BASE_URL
 
@@ -22,12 +23,12 @@ class CekOngkirRepositoryImpl @Inject constructor(
         val url = StringBuilder().append(BaseUrl).append("/city")
         return try {
             val response = ongkirApi.getCityList(url.toString())
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 handleApiSuccess(response.body()!!)
-            }else{
+            } else {
                 handleApiError(response)
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             DataResult.Error(e)
         }
 
@@ -37,11 +38,21 @@ class CekOngkirRepositoryImpl @Inject constructor(
         origin: String,
         destination: String,
         weight: Int,
-        Courier: String
+        courier: String
     ): DataResult<RajaOngkirBaseResponse<OngkirResult>> {
         val url = StringBuilder().append(BaseUrl).append("/cost")
         return try {
-            
+            val response = ongkirApi.getCalculation(
+                url.toString(),
+                CostRequest(origin, destination, weight, courier)
+            )
+            if (response.isSuccessful){
+                handleApiSuccess(response.body()!!)
+            }else{
+                handleApiError(response)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(e)
         }
     }
 
