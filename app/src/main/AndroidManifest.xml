@@ -22,7 +22,8 @@
             android:value="ca-app-pub-7418623981206452~1566470213" />
 
         <activity android:name=".view.CekOngkirActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/MaterialTheme"/>
 
         <activity
             android:name=".view.BarcodeScanActivity"
