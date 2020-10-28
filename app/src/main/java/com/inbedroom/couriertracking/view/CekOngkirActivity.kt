@@ -7,6 +7,8 @@ import com.inbedroom.couriertracking.core.platform.BaseActivity
 
 class CekOngkirActivity : BaseActivity() {
 
+    val couriers = listOf("JNE", "Pos Indonesia", "Tiki")
+
     companion object{
         fun callIntent(context: Context): Intent {
             val intent = Intent(context, CekOngkirActivity::class.java)

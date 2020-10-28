@@ -33,4 +33,6 @@
     <string name="destination">Destination</string>
     <string name="tariff_check">Tariff Check</string>
     <string name="weight_gram">Weight (gram)</string>
+    <string name="courier">Kurir</string>
+    <string name="calculate">Hitung</string>
 </resources>

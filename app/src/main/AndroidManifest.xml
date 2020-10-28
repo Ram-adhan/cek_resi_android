@@ -15,11 +15,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.CekOngkirActivity"></activity>
+
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-7418623981206452~1566470213" />
+
+        <activity android:name=".view.CekOngkirActivity"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".view.BarcodeScanActivity"
