@@ -25,7 +25,6 @@ class CekOngkirRepositoryImpl @Inject constructor(
         return try {
             val response = ongkirApi.getCityList(url.toString())
             if (response.isSuccessful) {
-                Log.d("result", "body: ${response.body()?.rajaongkir}")
                 handleApiSuccess(response.body()!!.rajaongkir)
             } else {
                 handleApiError(response)
