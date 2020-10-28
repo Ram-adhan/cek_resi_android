@@ -1,8 +1,10 @@
 package com.inbedroom.couriertracking.data.entity
 
 data class CostRequest (
-    val origin: String,
-    val destination: String,
-    val weight: Int,
-    val courier: String
-)
+    var origin: String,
+    var destination: String,
+    var weight: Int,
+    var courier: String
+){
+    constructor(): this("", "", 0, "")
+}

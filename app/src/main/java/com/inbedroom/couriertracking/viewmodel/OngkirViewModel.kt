@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inbedroom.couriertracking.data.entity.CityEntity
+import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
 import com.inbedroom.couriertracking.data.network.response.BaseResponse
 import com.inbedroom.couriertracking.data.network.response.DataResult
@@ -15,9 +16,9 @@ import javax.inject.Inject
 
 class OngkirViewModel @Inject constructor(
     private val ongkirRepository: CekOngkirRepository
-): ViewModel() {
-    private val _cityList = MutableLiveData<RajaOngkirBaseResponse<List<CityEntity>>>()
-    val cityList: LiveData<RajaOngkirBaseResponse<List<CityEntity>>> = _cityList
+) : ViewModel() {
+    private val _cityList = MutableLiveData<List<CityEntity>>()
+    val cityList: LiveData<List<CityEntity>> = _cityList
 
     private val _failed = MutableLiveData<Boolean>()
     val failed: LiveData<Boolean> = _failed
@@ -26,7 +27,7 @@ class OngkirViewModel @Inject constructor(
         viewModelScope.launch {
             val result = ongkirRepository.getCityList()
 
-            when(result){
+            when (result) {
                 is DataResult.Success -> {
                     _cityList.postValue(result.data)
                 }
@@ -35,5 +36,12 @@ class OngkirViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun checkTariff(
+        request: CostRequest,
+        originString: String? = null,
+        destinationString: String? = null
+    ) {
     }
 }

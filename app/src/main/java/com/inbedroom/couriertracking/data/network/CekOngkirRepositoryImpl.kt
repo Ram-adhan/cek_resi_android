@@ -1,33 +1,39 @@
 package com.inbedroom.couriertracking.data.network
 
-import android.util.Log
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.data.network.api.OngkirApi
 import com.inbedroom.couriertracking.data.network.response.DataResult
-import com.inbedroom.couriertracking.data.network.response.RajaOngkirBaseResponse
 import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.utils.handleApiError
 import com.inbedroom.couriertracking.utils.handleApiSuccess
 import java.lang.Exception
 import java.lang.StringBuilder
+import java.util.ArrayList
 import javax.inject.Inject
 
 class CekOngkirRepositoryImpl @Inject constructor(
     private val ongkirApi: OngkirApi
 ) : CekOngkirRepository {
 
-    val BaseUrl = ServiceData.ONGKIR_URL
+    private val baseUrl = ServiceData.ONGKIR_URL
+    private val cityList: MutableList<CityEntity> = ArrayList()
 
-    override suspend fun getCityList(): DataResult<RajaOngkirBaseResponse<List<CityEntity>>> {
-        val url = StringBuilder().append(BaseUrl).append("/city")
+    override suspend fun getCityList(): DataResult<List<CityEntity>> {
+        val url = StringBuilder().append(baseUrl).append("/city")
         return try {
-            val response = ongkirApi.getCityList(url.toString())
-            if (response.isSuccessful) {
-                handleApiSuccess(response.body()!!.rajaongkir)
-            } else {
-                handleApiError(response)
+            if (cityList.isNullOrEmpty()){
+                val response = ongkirApi.getCityList(url.toString())
+                if (response.isSuccessful) {
+                    cityList.addAll(response.body()!!.rajaongkir.results)
+
+                    handleApiSuccess(response.body()!!.rajaongkir)
+                } else {
+                    handleApiError(response)
+                }
+            }else{
+                handleApiSuccess(cityList)
             }
         } catch (e: Exception) {
             DataResult.Error(e)
@@ -40,8 +46,8 @@ class CekOngkirRepositoryImpl @Inject constructor(
         destination: String,
         weight: Int,
         courier: String
-    ): DataResult<RajaOngkirBaseResponse<OngkirResult>> {
-        val url = StringBuilder().append(BaseUrl).append("/cost")
+    ): DataResult<OngkirResult> {
+        val url = StringBuilder().append(baseUrl).append("/cost")
         return try {
             val response = ongkirApi.getCalculation(
                 url.toString(),

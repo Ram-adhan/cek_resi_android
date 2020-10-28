@@ -15,6 +15,10 @@ fun <T: Any> handleApiSuccess(response: BaseResponse<T>): DataResult.Success<Bas
     return DataResult.Success(response)
 }
 
-fun <T: Any> handleApiSuccess(response: RajaOngkirBaseResponse<T>): DataResult.Success<RajaOngkirBaseResponse<T>>{
+fun <T: Any> handleApiSuccess(response: RajaOngkirBaseResponse<T>): DataResult.Success<T>{
+    return DataResult.Success(response.results)
+}
+
+fun <T: Any> handleApiSuccess(response: T): DataResult.Success<T>{
     return DataResult.Success(response)
 }
