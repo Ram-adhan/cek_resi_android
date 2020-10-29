@@ -3,6 +3,7 @@ package com.inbedroom.couriertracking.core.di
 import android.content.Context
 import com.inbedroom.couriertracking.BuildConfig
 import com.inbedroom.couriertracking.CourierTrackingApplication
+import com.inbedroom.couriertracking.data.PreferencesManager
 import com.inbedroom.couriertracking.utils.ServiceData
 import dagger.Module
 import dagger.Provides
@@ -22,6 +23,10 @@ class ApplicationModule(private val applicationModule: CourierTrackingApplicatio
     @Provides
     @Singleton
     fun provideApplicationContext(): Context = applicationModule
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferencesManager(context: Context) = PreferencesManager(context)
 
     @Provides
     @Singleton

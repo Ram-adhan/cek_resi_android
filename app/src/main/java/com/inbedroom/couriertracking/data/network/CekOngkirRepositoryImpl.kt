@@ -1,5 +1,6 @@
 package com.inbedroom.couriertracking.data.network
 
+import com.inbedroom.couriertracking.data.PreferencesManager
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.data.entity.OngkirResult
@@ -12,7 +13,8 @@ import java.util.*
 import javax.inject.Inject
 
 class CekOngkirRepositoryImpl @Inject constructor(
-    private val ongkirApi: OngkirApi
+    private val ongkirApi: OngkirApi,
+    private val preferencesManager: PreferencesManager
 ) : CekOngkirRepository {
 
     private val baseUrl = ServiceData.ONGKIR_URL
@@ -22,13 +24,19 @@ class CekOngkirRepositoryImpl @Inject constructor(
         val url = StringBuilder().append(baseUrl).append("/city")
         return try {
             if (cityList.isNullOrEmpty()){
-                val response = ongkirApi.getCityList(url.toString())
-                if (response.isSuccessful) {
-                    cityList.addAll(response.body()!!.rajaongkir.results)
-
-                    handleApiSuccess(response.body()!!.rajaongkir)
-                } else {
-                    handleApiError(response)
+                val fromPreferences = preferencesManager.getSavedCityList()
+                if (!fromPreferences.isNullOrEmpty()){
+                    cityList.addAll(fromPreferences)
+                    handleApiSuccess(preferencesManager.getSavedCityList())
+                }else{
+                    val response = ongkirApi.getCityList(url.toString())
+                    if (response.isSuccessful) {
+                        cityList.addAll(response.body()!!.rajaongkir.results)
+                        preferencesManager.saveCityList(cityList)
+                        handleApiSuccess(response.body()!!.rajaongkir)
+                    } else {
+                        handleApiError(response)
+                    }
                 }
             }else{
                 handleApiSuccess(cityList)

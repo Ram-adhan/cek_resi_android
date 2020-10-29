@@ -1,5 +1,6 @@
 package com.inbedroom.couriertracking.core.di.feature
 
+import com.inbedroom.couriertracking.data.PreferencesManager
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
 import com.inbedroom.couriertracking.data.network.CekOngkirRepositoryImpl
 import com.inbedroom.couriertracking.data.network.api.OngkirApi
@@ -17,6 +18,6 @@ class OngkirModule {
 
     @Provides
     @Singleton
-    fun provideOngkirRepository(ongkirApi: OngkirApi): CekOngkirRepository =
-        CekOngkirRepositoryImpl(ongkirApi)
+    fun provideOngkirRepository(ongkirApi: OngkirApi, preferencesManager: PreferencesManager): CekOngkirRepository =
+        CekOngkirRepositoryImpl(ongkirApi, preferencesManager)
 }
