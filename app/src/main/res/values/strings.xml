@@ -35,4 +35,6 @@
     <string name="weight_gram">Weight (gram)</string>
     <string name="courier">Courier</string>
     <string name="calculate">Hitung</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
