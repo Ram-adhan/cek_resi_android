@@ -15,6 +15,7 @@ import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.core.platform.BaseActivity
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
+import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
 import com.inbedroom.couriertracking.viewmodel.ViewModelFactory
@@ -52,6 +53,7 @@ class CekOngkirActivity : BaseActivity() {
         viewModel.isLoadingData.observe(this, loadingData)
         viewModel.cityList.observe(this, cityList)
         viewModel.failed.observe(this, failed)
+        viewModel.ongkirData.observe(this, ongkirData)
     }
 
     override fun initView() {
@@ -133,6 +135,9 @@ class CekOngkirActivity : BaseActivity() {
         )
         cekOngkirEtOrigin.setAdapter(adapter)
         cekOngkirEtDestination.setAdapter(adapter)
+    }
+
+    private val ongkirData = Observer<List<OngkirResult>> {
     }
 
     private val loadingData = Observer<Boolean> {

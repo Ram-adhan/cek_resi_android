@@ -18,5 +18,5 @@ interface OngkirApi {
     @POST
     @Headers("RajaOngkir: true")
     suspend fun getCalculation(@Url url: String, @Body body:CostRequest):
-            Response<RajaOngkirResponse<OngkirResult>>
+            Response<RajaOngkirResponse<List<OngkirResult>>>
 }

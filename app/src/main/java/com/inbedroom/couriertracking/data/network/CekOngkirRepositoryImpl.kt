@@ -1,6 +1,5 @@
 package com.inbedroom.couriertracking.data.network
 
-import android.util.Log
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.data.entity.OngkirResult
@@ -9,9 +8,7 @@ import com.inbedroom.couriertracking.data.network.response.DataResult
 import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.utils.handleApiError
 import com.inbedroom.couriertracking.utils.handleApiSuccess
-import java.lang.Exception
-import java.lang.StringBuilder
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 class CekOngkirRepositoryImpl @Inject constructor(
@@ -47,7 +44,7 @@ class CekOngkirRepositoryImpl @Inject constructor(
         destination: String,
         weight: Int,
         courier: String
-    ): DataResult<OngkirResult> {
+    ): DataResult<List<OngkirResult>> {
         val url = StringBuilder().append(baseUrl).append("/cost")
         return try {
             val response = ongkirApi.getCalculation(
@@ -55,7 +52,6 @@ class CekOngkirRepositoryImpl @Inject constructor(
                 CostRequest(origin, destination, weight, courier)
             )
             if (response.isSuccessful){
-                Log.d("api", "resp: ${response.body()!!.rajaongkir.results}")
                 handleApiSuccess(response.body()!!.rajaongkir)
             }else{
                 handleApiError(response)

@@ -1,16 +1,13 @@
 package com.inbedroom.couriertracking.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inbedroom.couriertracking.data.entity.CityEntity
-import com.inbedroom.couriertracking.data.entity.CostRequest
+import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
-import com.inbedroom.couriertracking.data.network.response.BaseResponse
 import com.inbedroom.couriertracking.data.network.response.DataResult
-import com.inbedroom.couriertracking.data.network.response.RajaOngkirBaseResponse
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -26,6 +23,12 @@ class OngkirViewModel @Inject constructor(
 
     private val _isLoadingData = MutableLiveData<Boolean>()
     val isLoadingData: LiveData<Boolean> = _isLoadingData
+
+    private val _onRequest = MutableLiveData<Boolean>()
+    val onRequest: LiveData<Boolean> = _onRequest
+
+    private val _ongkirData = MutableLiveData<List<OngkirResult>>()
+    val ongkirData: LiveData<List<OngkirResult>> = _ongkirData
 
     init {
         _isLoadingData.postValue(true)
@@ -50,17 +53,22 @@ class OngkirViewModel @Inject constructor(
         weight: Int,
         couriers: List<String>
     ) {
+        _onRequest.postValue(true)
+        val tempData = mutableListOf<OngkirResult>()
         viewModelScope.launch {
             couriers.forEach {
                 val result = ongkirRepository.getTariffList(
                     originCode,
                     destinationCode,
                     weight,
-                    it.toLowerCase()
+                    it.toLowerCase(Locale.ROOT)
                 )
 
                 when (result){
                     is DataResult.Success -> {
+                        tempData.add(result.data!![0])
+                        _onRequest.postValue(false)
+                        _ongkirData.postValue(tempData)
                     }
                 }
             }
