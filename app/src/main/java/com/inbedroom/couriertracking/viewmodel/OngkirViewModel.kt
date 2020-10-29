@@ -12,6 +12,7 @@ import com.inbedroom.couriertracking.data.network.response.BaseResponse
 import com.inbedroom.couriertracking.data.network.response.DataResult
 import com.inbedroom.couriertracking.data.network.response.RajaOngkirBaseResponse
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 class OngkirViewModel @Inject constructor(
@@ -20,10 +21,14 @@ class OngkirViewModel @Inject constructor(
     private val _cityList = MutableLiveData<List<CityEntity>>()
     val cityList: LiveData<List<CityEntity>> = _cityList
 
-    private val _failed = MutableLiveData<Boolean>()
-    val failed: LiveData<Boolean> = _failed
+    private val _failed = MutableLiveData<String>()
+    val failed: LiveData<String> = _failed
+
+    private val _isLoadingData = MutableLiveData<Boolean>()
+    val isLoadingData: LiveData<Boolean> = _isLoadingData
 
     init {
+        _isLoadingData.postValue(true)
         viewModelScope.launch {
             val result = ongkirRepository.getCityList()
 
@@ -32,16 +37,33 @@ class OngkirViewModel @Inject constructor(
                     _cityList.postValue(result.data)
                 }
                 is DataResult.Error -> {
-                    _failed.postValue(true)
+                    _failed.postValue(result.errorMessage)
                 }
             }
+            _isLoadingData.postValue(false)
         }
     }
 
     fun checkTariff(
-       originCode: String,
-       destinationCode: String,
-       weight: Int
+        originCode: String,
+        destinationCode: String,
+        weight: Int,
+        couriers: List<String>
     ) {
+        viewModelScope.launch {
+            couriers.forEach {
+                val result = ongkirRepository.getTariffList(
+                    originCode,
+                    destinationCode,
+                    weight,
+                    it.toLowerCase()
+                )
+
+                when (result){
+                    is DataResult.Success -> {
+                    }
+                }
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.inbedroom.couriertracking.utils
 import android.content.Context
 import android.content.DialogInterface
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
@@ -40,6 +41,11 @@ object Message {
         if (anchorView != null){
             snackBar.anchorView = anchorView
         }
+        snackBar.show()
+    }
+
+    fun toast(context: Context, msg: String) {
+        val snackBar = Toast.makeText(context, msg, Toast.LENGTH_SHORT)
         snackBar.show()
     }
 }

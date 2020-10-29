@@ -2,6 +2,7 @@ package com.inbedroom.couriertracking.view
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -9,9 +10,12 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
+import com.inbedroom.couriertracking.core.extension.invisible
+import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.core.platform.BaseActivity
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
+import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
 import com.inbedroom.couriertracking.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_cek_ongkir.*
@@ -30,10 +34,10 @@ class CekOngkirActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var viewModel: OngkirViewModel
-    val couriers = listOf("JNE", "Pos Indonesia", "Tiki")
+    private val couriers = listOf("JNE", "Pos", "TIKI")
     private val citiesName: MutableMap<String, String> = mutableMapOf()
 
-    private val request = CostRequest()
+    private var requestCount = 0
 
     override fun layoutId(): Int = R.layout.activity_cek_ongkir
 
@@ -45,7 +49,9 @@ class CekOngkirActivity : BaseActivity() {
             viewModelFactory
         ).get(OngkirViewModel::class.java)
 
+        viewModel.isLoadingData.observe(this, loadingData)
         viewModel.cityList.observe(this, cityList)
+        viewModel.failed.observe(this, failed)
     }
 
     override fun initView() {
@@ -69,6 +75,7 @@ class CekOngkirActivity : BaseActivity() {
     }
 
     override fun onAction() {
+
         cekOngkirButtonCalculate.setOnClickListener {
             var canContinue = true
             val origin = cekOngkirEtOrigin.text.toString()
@@ -98,17 +105,18 @@ class CekOngkirActivity : BaseActivity() {
             if (weight == 0) {
                 cekOngkirEtWeight.error = "Empty Weight"
                 canContinue = false
-            } else {
-                request.weight = weight
             }
 
             if (canContinue) {
+                val courierList = mutableListOf<String>()
                 chipGroupCourier.checkedChipIds.forEach {
-                    val originString = citiesName[origin] ?: "-1"
-                    val destinationString = citiesName[destination] ?: "-1"
-                    viewModel.checkTariff(originString, destinationString, weight)
+                    courierList.add(couriers[it - 1])
+                    requestCount++
                 }
 
+                val originString = citiesName[origin] ?: "-1"
+                val destinationString = citiesName[destination] ?: "-1"
+                viewModel.checkTariff(originString, destinationString, weight, courierList)
             }
         }
     }
@@ -125,6 +133,20 @@ class CekOngkirActivity : BaseActivity() {
         )
         cekOngkirEtOrigin.setAdapter(adapter)
         cekOngkirEtDestination.setAdapter(adapter)
+    }
+
+    private val loadingData = Observer<Boolean> {
+        if (it){
+            loadingOrigin.visible()
+            loadingDestination.visible()
+        }else{
+            loadingOrigin.invisible()
+            loadingDestination.invisible()
+        }
+    }
+
+    private val failed = Observer<String> {
+        Message.toast(this, it)
     }
 
     override fun onBackPressed() {
