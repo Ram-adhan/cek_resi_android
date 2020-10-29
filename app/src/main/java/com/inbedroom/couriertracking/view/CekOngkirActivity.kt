@@ -3,6 +3,7 @@ package com.inbedroom.couriertracking.view
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -54,6 +55,7 @@ class CekOngkirActivity : BaseActivity() {
         viewModel.cityList.observe(this, cityList)
         viewModel.failed.observe(this, failed)
         viewModel.ongkirData.observe(this, ongkirData)
+        viewModel.onRequest.observe(this, loadingRequest)
     }
 
     override fun initView() {
@@ -137,14 +139,25 @@ class CekOngkirActivity : BaseActivity() {
         cekOngkirEtDestination.setAdapter(adapter)
     }
 
+    private val loadingRequest = Observer<Boolean> {
+        if (it) {
+            cekOngkirLoading.visible()
+        } else {
+            cekOngkirLoading.invisible()
+            supportFragmentManager.beginTransaction()
+                .add(R.id.cekOngkirRoot, OngkirDetailFragment.forOngkir(), "ongkirList")
+                .commit()
+        }
+    }
+
     private val ongkirData = Observer<List<OngkirResult>> {
     }
 
     private val loadingData = Observer<Boolean> {
-        if (it){
+        if (it) {
             loadingOrigin.visible()
             loadingDestination.visible()
-        }else{
+        } else {
             loadingOrigin.invisible()
             loadingDestination.invisible()
         }
