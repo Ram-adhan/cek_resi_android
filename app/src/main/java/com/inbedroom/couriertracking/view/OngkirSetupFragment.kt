@@ -103,12 +103,19 @@ class OngkirSetupFragment : Fragment() {
                 canContinue = false
             }
 
-            if (canContinue) {
-                val courierList = mutableListOf<String>()
-                chipGroupCourier.checkedChipIds.forEach { id ->
+            val courierList = mutableListOf<String>()
+            val chipIds = chipGroupCourier.checkedChipIds
+            if (chipIds.size > 0){
+                chipIds.forEach { id ->
                     courierList.add(couriers[id - 1])
                     requestCount++
                 }
+            }else{
+                canContinue = false
+                Message.alert(requireContext(), "Please choose available courier", null)
+            }
+
+            if (canContinue) {
 
                 val originString = citiesName[origin] ?: "-1"
                 val destinationString = citiesName[destination] ?: "-1"
