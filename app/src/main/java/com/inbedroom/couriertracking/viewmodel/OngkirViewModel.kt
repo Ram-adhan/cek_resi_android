@@ -15,6 +15,7 @@ import javax.inject.Inject
 class OngkirViewModel @Inject constructor(
     private val ongkirRepository: CekOngkirRepository
 ) : ViewModel() {
+
     private val _cityList = MutableLiveData<List<CityEntity>>()
     val cityList: LiveData<List<CityEntity>> = _cityList
 
@@ -34,6 +35,23 @@ class OngkirViewModel @Inject constructor(
         _isLoadingData.postValue(true)
         viewModelScope.launch {
             val result = ongkirRepository.getCityList()
+
+            when (result) {
+                is DataResult.Success -> {
+                    _cityList.postValue(result.data)
+                }
+                is DataResult.Error -> {
+                    _failed.postValue(result.errorMessage)
+                }
+            }
+            _isLoadingData.postValue(false)
+        }
+    }
+
+    fun getCityList(){
+        _isLoadingData.postValue(true)
+        viewModelScope.launch {
+            val result = ongkirRepository.getCityList(true)
 
             when (result) {
                 is DataResult.Success -> {

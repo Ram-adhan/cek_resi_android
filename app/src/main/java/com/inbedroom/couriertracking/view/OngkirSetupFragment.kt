@@ -2,12 +2,11 @@ package com.inbedroom.couriertracking.view
 
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.chip.Chip
@@ -19,9 +18,7 @@ import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
-import kotlinx.android.synthetic.main.activity_cek_ongkir.*
 import kotlinx.android.synthetic.main.fragment_ongkir_setup.*
-import kotlinx.android.synthetic.main.info_text_view.view.*
 
 class OngkirSetupFragment : Fragment() {
 
@@ -39,6 +36,7 @@ class OngkirSetupFragment : Fragment() {
         viewModel.cityList.observe(this, cityList)
         viewModel.failed.observe(this, failed)
         viewModel.ongkirData.observe(this, ongkirData)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -107,7 +105,7 @@ class OngkirSetupFragment : Fragment() {
 
             if (canContinue) {
                 val courierList = mutableListOf<String>()
-                chipGroupCourier.checkedChipIds.forEach {id ->
+                chipGroupCourier.checkedChipIds.forEach { id ->
                     courierList.add(couriers[id - 1])
                     requestCount++
                 }
@@ -148,5 +146,20 @@ class OngkirSetupFragment : Fragment() {
 
     private val failed = Observer<String> {
         Message.toast(requireContext(), it)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        activity?.menuInflater?.inflate(R.menu.cek_ongkir_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId){
+            R.id.refreshList -> {
+                viewModel.getCityList()
+                true
+            }
+            else -> false
+        }
     }
 }
