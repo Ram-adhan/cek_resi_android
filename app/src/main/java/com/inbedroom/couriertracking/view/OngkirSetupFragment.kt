@@ -53,12 +53,11 @@ class OngkirSetupFragment : Fragment() {
                 requireContext(),
                 null,
                 0,
-                R.style.Widget_MaterialComponents_Chip_Choice
+                R.style.CustomChipStyle
             )
             chip.setChipDrawable(chipDrawable)
             chip.text = it
             chip.isCheckable = true
-
             chipGroupCourier.addView(chip)
         }
 

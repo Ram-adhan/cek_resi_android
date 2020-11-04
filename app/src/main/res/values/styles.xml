@@ -36,4 +36,8 @@
         <item name="background">@drawable/rounded_button</item>
     </style>
 
+    <style name="CustomChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_color_state</item>
+    </style>
+
 </resources>
