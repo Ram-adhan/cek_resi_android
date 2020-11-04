@@ -1,6 +1,5 @@
 package com.inbedroom.couriertracking.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -87,7 +86,6 @@ class OngkirViewModel @Inject constructor(
                     is DataResult.Success -> {
                         tempData.add(result.data!![0])
                         if (_onRequest.value != false){
-                            Log.d("viewmodel", "onRequest")
                             _onRequest.postValue(false)
                         }
                         _ongkirData.postValue(tempData)
