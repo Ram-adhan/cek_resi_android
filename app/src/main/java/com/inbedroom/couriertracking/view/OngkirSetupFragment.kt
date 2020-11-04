@@ -157,6 +157,9 @@ class OngkirSetupFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId){
             R.id.refreshList -> {
+                cekOngkirEtDestination.error = null
+                cekOngkirEtOrigin.error = null
+                cekOngkirEtWeight.error = null
                 viewModel.getCityList()
                 true
             }
