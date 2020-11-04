@@ -7,21 +7,6 @@
     tools:context=".view.OngkirSetupFragment">
 
     <TextView
-        android:id="@+id/cekOngkirTitle"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:text="@string/tariff_check"
-        android:textColor="@android:color/black"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/labelOrigin"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/labelOrigin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +15,7 @@
         android:text="@string/origin"
         android:textSize="@dimen/small_text"
         app:layout_constraintLeft_toLeftOf="@id/cekOngkirEtOrigin"
-        app:layout_constraintTop_toBottomOf="@id/cekOngkirTitle" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <AutoCompleteTextView
         android:id="@+id/cekOngkirEtOrigin"
