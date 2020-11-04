@@ -48,7 +48,7 @@ class OngkirViewModel @Inject constructor(
         }
     }
 
-    fun getCityList(){
+    fun getCityList() {
         _isLoadingData.postValue(true)
         viewModelScope.launch {
             val result = ongkirRepository.getCityList(true)
@@ -82,7 +82,7 @@ class OngkirViewModel @Inject constructor(
                     it.toLowerCase(Locale.ROOT)
                 )
 
-                when (result){
+                when (result) {
                     is DataResult.Success -> {
                         tempData.add(result.data!![0])
                         _onRequest.postValue(false)

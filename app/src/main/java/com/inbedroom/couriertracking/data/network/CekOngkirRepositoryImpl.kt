@@ -23,33 +23,17 @@ class CekOngkirRepositoryImpl @Inject constructor(
     override suspend fun getCityList(forceUpdate: Boolean): DataResult<List<CityEntity>> {
         val url = StringBuilder().append(baseUrl).append("/city")
         return try {
-            if (forceUpdate){
+            if (forceUpdate) {
                 getFromNetwork(url.toString())
-//                val response = ongkirApi.getCityList(url.toString())
-//                if (response.isSuccessful) {
-//                    cityList.addAll(response.body()!!.rajaongkir.results)
-//                    preferencesManager.saveCityList(cityList)
-//                    handleApiSuccess(response.body()!!.rajaongkir)
-//                } else {
-//                    handleApiError(response)
-//                }
-            }else if (cityList.isNullOrEmpty()){
+            } else if (cityList.isNullOrEmpty()) {
                 val fromPreferences = preferencesManager.getSavedCityList()
-                if (!fromPreferences.isNullOrEmpty()){
+                if (!fromPreferences.isNullOrEmpty()) {
                     cityList.addAll(fromPreferences)
                     handleApiSuccess(preferencesManager.getSavedCityList())
-                }else{
+                } else {
                     getFromNetwork(url.toString())
-//                    val response = ongkirApi.getCityList(url.toString())
-//                    if (response.isSuccessful) {
-//                        cityList.addAll(response.body()!!.rajaongkir.results)
-//                        preferencesManager.saveCityList(cityList)
-//                        handleApiSuccess(response.body()!!.rajaongkir)
-//                    } else {
-//                        handleApiError(response)
-//                    }
                 }
-            }else{
+            } else {
                 handleApiSuccess(cityList)
             }
         } catch (e: Exception) {
@@ -57,7 +41,7 @@ class CekOngkirRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun getFromNetwork(url: String): DataResult<List<CityEntity>>{
+    private suspend fun getFromNetwork(url: String): DataResult<List<CityEntity>> {
         val response = ongkirApi.getCityList(url)
         return if (response.isSuccessful) {
             cityList.addAll(response.body()!!.rajaongkir.results)
@@ -80,9 +64,9 @@ class CekOngkirRepositoryImpl @Inject constructor(
                 url.toString(),
                 CostRequest(origin, destination, weight, courier)
             )
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 handleApiSuccess(response.body()!!.rajaongkir)
-            }else{
+            } else {
                 handleApiError(response)
             }
         } catch (e: Exception) {
