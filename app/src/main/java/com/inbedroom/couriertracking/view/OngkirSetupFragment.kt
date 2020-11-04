@@ -83,23 +83,23 @@ class OngkirSetupFragment : Fragment() {
             }
 
             if (origin.isEmpty()) {
-                cekOngkirEtOrigin.error = "Empty origin"
+                cekOngkirEtOrigin.error = getString(R.string.empty_origin)
                 canContinue = false
             } else if (!citiesName.containsKey(origin)) {
-                cekOngkirEtOrigin.error = "Unknown city, please type as suggested"
+                cekOngkirEtOrigin.error = getString(R.string.unknown_city)
                 canContinue = false
             }
 
             if (destination.isEmpty()) {
-                cekOngkirEtDestination.error = "Empty destination"
+                cekOngkirEtDestination.error = getString(R.string.empty_destination)
                 canContinue = false
             } else if (!citiesName.containsKey(destination)) {
-                cekOngkirEtOrigin.error = "Unknown city, please type as suggested"
+                cekOngkirEtOrigin.error = getString(R.string.unknown_city)
                 canContinue = false
             }
 
             if (weight == 0) {
-                cekOngkirEtWeight.error = "Empty Weight"
+                cekOngkirEtWeight.error = getString(R.string.empty_weight)
                 canContinue = false
             }
 
