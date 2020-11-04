@@ -42,6 +42,6 @@
     <string name="empty_weight">Empty Weight</string>
     <string name="choose_courier">"Please choose available courier"</string>
     <string name="price" translatable="false">Rp. %d</string>
-    <string name="etd">%s days</string>
+    <string name="etd">%s Days</string>
     <string name="service_detail" translatable="false">%s (%s)</string>
 </resources>

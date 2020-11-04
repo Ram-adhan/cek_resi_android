@@ -13,9 +13,10 @@ class OngkirDetailAdapter(private val data: MutableList<Ongkir>) :
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItem(item: Ongkir){
-            itemView.serviceDetail.text = itemView.context.getString(R.string.service_detail, item.service, item.etd)
+            val etd = itemView.context.getString(R.string.etd, item.etd)
+            itemView.serviceDetail.text = itemView.context.getString(R.string.service_detail, item.service, etd)
             itemView.serviceCourier.text = item.courier
-            itemView.serviceCost.text = item.cost
+            itemView.serviceCost.text = itemView.context.getString(R.string.price, item.cost)
         }
     }
 

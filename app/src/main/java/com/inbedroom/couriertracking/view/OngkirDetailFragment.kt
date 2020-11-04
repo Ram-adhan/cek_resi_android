@@ -14,6 +14,8 @@ import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.view.adapter.OngkirDetailAdapter
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
 import kotlinx.android.synthetic.main.fragment_ongkir_detail.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class OngkirDetailFragment : Fragment() {
 
@@ -27,6 +29,7 @@ class OngkirDetailFragment : Fragment() {
     private lateinit var ongkirDetailAdapter: OngkirDetailAdapter
     private var listOngkir = mutableListOf<Ongkir>()
 
+    @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -52,6 +55,7 @@ class OngkirDetailFragment : Fragment() {
             .addItemDecoration(DividerItemDecoration(requireContext(), llManager.orientation))
     }
 
+    @ExperimentalStdlibApi
     private val onLoad = Observer<OngkirResult> { result ->
 
         val courier = result.name
@@ -60,9 +64,15 @@ class OngkirDetailFragment : Fragment() {
             val data = Ongkir()
             data.courier = courier
             data.service = costs.service
-            with(costs.cost[0]){
-                data.cost = getString(R.string.price, value)
-                data.etd = getString(R.string.etd, etd)
+            with(costs.cost[0]) {
+                data.cost = value
+                data.etd = if (etd.contains("hari", true)) {
+                    etd.replace(
+                        "hari",
+                        "",
+                        true
+                    )
+                } else etd
             }
             listOngkir.add(data)
         }
