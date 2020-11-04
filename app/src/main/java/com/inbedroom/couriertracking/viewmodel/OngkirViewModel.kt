@@ -1,5 +1,6 @@
 package com.inbedroom.couriertracking.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,8 +29,11 @@ class OngkirViewModel @Inject constructor(
     private val _onRequest = MutableLiveData<Boolean>()
     val onRequest: LiveData<Boolean> = _onRequest
 
-    private val _ongkirData = MutableLiveData<List<OngkirResult>>()
-    val ongkirData: LiveData<List<OngkirResult>> = _ongkirData
+    private val _ongkirListData = MutableLiveData<List<OngkirResult>>()
+    val ongkirListData: LiveData<List<OngkirResult>> = _ongkirListData
+
+    private val _ongkirData = MutableLiveData<OngkirResult>()
+    val ongkirData: LiveData<OngkirResult> = _ongkirData
 
     init {
         _isLoadingData.postValue(true)
@@ -88,7 +92,8 @@ class OngkirViewModel @Inject constructor(
                         if (_onRequest.value != false){
                             _onRequest.postValue(false)
                         }
-                        _ongkirData.postValue(tempData)
+                        _ongkirListData.postValue(tempData)
+                        _ongkirData.postValue(result.data[0])
                     }
                 }
             }

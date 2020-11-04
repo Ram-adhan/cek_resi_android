@@ -32,7 +32,6 @@ class OngkirSetupFragment : Fragment() {
         viewModel.isLoadingData.observe(this, loadingData)
         viewModel.cityList.observe(this, cityList)
         viewModel.failed.observe(this, failed)
-        viewModel.ongkirData.observe(this, ongkirData)
         setHasOptionsMenu(true)
     }
 
@@ -129,9 +128,6 @@ class OngkirSetupFragment : Fragment() {
         )
         cekOngkirEtOrigin.setAdapter(adapter)
         cekOngkirEtDestination.setAdapter(adapter)
-    }
-
-    private val ongkirData = Observer<List<OngkirResult>> {
     }
 
     private val loadingData = Observer<Boolean> {
