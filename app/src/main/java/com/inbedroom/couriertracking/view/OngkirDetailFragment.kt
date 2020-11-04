@@ -34,7 +34,7 @@ class OngkirDetailFragment : Fragment() {
     }
 
     private val onLoad = Observer<List<OngkirResult>>{
-        defaultText.text = it.toString()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

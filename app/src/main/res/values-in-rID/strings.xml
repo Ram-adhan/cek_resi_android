@@ -26,4 +26,5 @@
     <string name="use_text">Gunakan text</string>
     <string name="empty_awb">Masukkan resi terlebih dahulu</string>
     <string name="empty_weight">Berat perlu diisi</string>
+    <string name="choose_courier">Kurir belum dipilih</string>
 </resources>
