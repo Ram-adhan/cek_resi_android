@@ -44,4 +44,5 @@
     <string name="price" translatable="false">Rp. %d</string>
     <string name="etd">%s Days</string>
     <string name="service_detail" translatable="false">%s (%s)</string>
+    <string name="ongkir_title" translatable="false">%s > %s</string>
 </resources>

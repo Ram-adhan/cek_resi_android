@@ -3,6 +3,8 @@ package com.inbedroom.couriertracking.view
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -27,13 +29,14 @@ class OngkirDetailFragment : Fragment() {
     }
 
     private lateinit var ongkirDetailAdapter: OngkirDetailAdapter
+    private lateinit var viewModel: OngkirViewModel
     private var listOngkir = mutableListOf<Ongkir>()
 
     @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        val viewModel = ViewModelProvider(requireActivity()).get(OngkirViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(OngkirViewModel::class.java)
         viewModel.ongkirData.observe(this, onLoad)
     }
 
@@ -46,6 +49,9 @@ class OngkirDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        detailOngkirTitle.text = getString(R.string.ongkir_title, viewModel.from, viewModel.to)
+
         val llManager = LinearLayoutManager(requireContext())
         ongkirDetailAdapter = OngkirDetailAdapter(ArrayList())
         detailOngkirRecycler.apply {

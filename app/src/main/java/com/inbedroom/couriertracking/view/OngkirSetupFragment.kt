@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,6 +18,7 @@ import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
+import kotlinx.android.synthetic.main.fragment_ongkir_detail.*
 import kotlinx.android.synthetic.main.fragment_ongkir_setup.*
 
 class OngkirSetupFragment : Fragment() {
@@ -44,6 +46,7 @@ class OngkirSetupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val colorState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             context?.getColorStateList(R.color.chip_text_state)
         } else {
@@ -109,6 +112,8 @@ class OngkirSetupFragment : Fragment() {
                 chipIds.forEach { id ->
                     courierList.add(couriers[id - 1])
                 }
+                viewModel.from = origin
+                viewModel.to = destination
                 val originString = citiesName[origin] ?: "-1"
                 val destinationString = citiesName[destination] ?: "-1"
                 viewModel.checkTariff(originString, destinationString, weight, courierList)

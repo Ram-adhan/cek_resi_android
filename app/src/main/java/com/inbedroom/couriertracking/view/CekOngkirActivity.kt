@@ -52,7 +52,7 @@ class CekOngkirActivity : BaseActivity() {
     }
 
     override fun initView() {
-        supportActionBar?.title = getString(R.string.tariff_check)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         supportFragmentManager.beginTransaction()

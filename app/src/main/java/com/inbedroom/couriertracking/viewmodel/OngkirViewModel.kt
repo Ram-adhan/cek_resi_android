@@ -35,6 +35,9 @@ class OngkirViewModel @Inject constructor(
     private val _ongkirData = MutableLiveData<OngkirResult>()
     val ongkirData: LiveData<OngkirResult> = _ongkirData
 
+    var from = ""
+    var to = ""
+
     init {
         _isLoadingData.postValue(true)
         viewModelScope.launch {
