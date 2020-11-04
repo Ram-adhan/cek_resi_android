@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -24,8 +23,6 @@ class OngkirSetupFragment : Fragment() {
 
     private val couriers = listOf("JNE", "Pos", "TIKI")
     private val citiesName: MutableMap<String, String> = mutableMapOf()
-
-    private var requestCount = 0
 
     private lateinit var viewModel: OngkirViewModel
 
@@ -102,20 +99,17 @@ class OngkirSetupFragment : Fragment() {
                 cekOngkirEtWeight.error = getString(R.string.empty_weight)
                 canContinue = false
             }
-
-            val courierList = mutableListOf<String>()
             val chipIds = chipGroupCourier.checkedChipIds
-            if (chipIds.size > 0){
-                chipIds.forEach { id ->
-                    courierList.add(couriers[id - 1])
-                    requestCount++
-                }
-            }else{
+            if (chipIds.size == 0){
                 canContinue = false
-                Message.alert(requireContext(), "Please choose available courier", null)
+                Message.alert(requireContext(), getString(R.string.choose_courier), null)
             }
 
             if (canContinue) {
+                val courierList = mutableListOf<String>()
+                chipIds.forEach { id ->
+                    courierList.add(couriers[id - 1])
+                }
                 val originString = citiesName[origin] ?: "-1"
                 val destinationString = citiesName[destination] ?: "-1"
                 viewModel.checkTariff(originString, destinationString, weight, courierList)
