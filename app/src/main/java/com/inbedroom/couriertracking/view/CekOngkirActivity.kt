@@ -71,20 +71,13 @@ class CekOngkirActivity : BaseActivity() {
             val fragmentTransaction = supportFragmentManager.beginTransaction()
             val prev = supportFragmentManager.findFragmentByTag("ongkirList")
             if (prev != null) {
+                supportFragmentManager.popBackStack()
                 fragmentTransaction.remove(prev)
             }
             fragmentTransaction
                 .addToBackStack("ongkirList")
                 .add(R.id.cekOngkirMainFragmentRoot, OngkirDetailFragment.forOngkir(), "ongkirList")
                 .commit()
-        }
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        val mainFragment = supportFragmentManager.findFragmentByTag("ongkirList")
-        if (mainFragment != null && mainFragment.isVisible) {
-            supportFragmentManager.popBackStack()
         }
     }
 

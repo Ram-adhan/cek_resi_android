@@ -116,7 +116,6 @@ class OngkirSetupFragment : Fragment() {
             }
 
             if (canContinue) {
-
                 val originString = citiesName[origin] ?: "-1"
                 val destinationString = citiesName[destination] ?: "-1"
                 viewModel.checkTariff(originString, destinationString, weight, courierList)
