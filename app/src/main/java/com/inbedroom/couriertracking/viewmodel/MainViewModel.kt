@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inbedroom.couriertracking.data.PreferencesManager
+import com.inbedroom.couriertracking.data.entity.Courier
 import com.inbedroom.couriertracking.data.entity.HistoryEntity
 import com.inbedroom.couriertracking.data.room.HistoryRepository
 import kotlinx.coroutines.launch
@@ -12,12 +13,20 @@ import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
     private val repository: HistoryRepository,
-    private val local: PreferencesManager
+    local: PreferencesManager
 ) : ViewModel() {
 
     val historiesData: LiveData<List<HistoryEntity>> = repository.getHistories()
     private val _isChanged = MutableLiveData<Boolean>()
     val isChanged: LiveData<Boolean> = _isChanged
+
+    private val _courierList = MutableLiveData<List<Courier>>()
+    val courierList: LiveData<List<Courier>> = _courierList
+
+    init {
+        val list = local.readCourierAsset()
+        _courierList.postValue(list)
+    }
 
     fun deleteHistory(awb: String) {
         viewModelScope.launch {

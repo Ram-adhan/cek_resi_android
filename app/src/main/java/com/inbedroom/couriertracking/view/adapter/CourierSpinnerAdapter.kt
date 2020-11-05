@@ -9,7 +9,10 @@ import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.data.entity.Courier
 import kotlinx.android.synthetic.main.item_courier.view.*
 
-class CourierSpinnerAdapter(context: Context, dataSource: List<Courier>) :
+class CourierSpinnerAdapter(
+    context: Context,
+    private val dataSource: MutableList<Courier>
+) :
     ArrayAdapter<Courier>(context, 0, dataSource) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -18,6 +21,12 @@ class CourierSpinnerAdapter(context: Context, dataSource: List<Courier>) :
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         return this.createView(position, convertView, parent)
+    }
+
+    fun addData(newData: List<Courier>) {
+        dataSource.clear()
+        dataSource.addAll(newData)
+        notifyDataSetChanged()
     }
 
     @Suppress("DEPRECATION")

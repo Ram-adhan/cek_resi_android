@@ -32,7 +32,7 @@ class PreferencesManager @Inject constructor(
         return mutableListOf()
     }
 
-    private fun readCourierAsset(): List<Courier> {
+    fun readCourierAsset(): List<Courier> {
         val fileName = "courier_list.json"
 
         val bufferReader = context.assets.open(fileName).bufferedReader()
