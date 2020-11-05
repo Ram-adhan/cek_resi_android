@@ -10,11 +10,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.data.entity.Ongkir
 import com.inbedroom.couriertracking.data.entity.OngkirResult
+import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.view.adapter.OngkirDetailAdapter
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_ongkir_detail.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -31,6 +37,7 @@ class OngkirDetailFragment : Fragment() {
     private lateinit var ongkirDetailAdapter: OngkirDetailAdapter
     private lateinit var viewModel: OngkirViewModel
     private var listOngkir = mutableListOf<Ongkir>()
+    private lateinit var adView: AdView
 
     @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +45,7 @@ class OngkirDetailFragment : Fragment() {
         setHasOptionsMenu(true)
         viewModel = ViewModelProvider(requireActivity()).get(OngkirViewModel::class.java)
         viewModel.ongkirData.observe(this, onLoad)
+        MobileAds.initialize(requireContext()) {}
     }
 
     override fun onCreateView(
@@ -59,6 +67,8 @@ class OngkirDetailFragment : Fragment() {
             adapter = ongkirDetailAdapter
         }
             .addItemDecoration(DividerItemDecoration(requireContext(), llManager.orientation))
+
+        initAds()
     }
 
     @ExperimentalStdlibApi
@@ -88,5 +98,14 @@ class OngkirDetailFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun initAds(){
+        adView = AdView(requireContext())
+        adView.adSize = AdSize.SMART_BANNER
+        adView.adUnitId = ServiceData.BANNER_AD_ID
+        cekOngkirAdsRoot.addView(adView)
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
     }
 }
