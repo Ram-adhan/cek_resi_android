@@ -2,19 +2,15 @@ package com.inbedroom.couriertracking.view
 
 import android.app.Activity
 import android.content.Intent
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
-import com.google.gson.Gson
-import com.inbedroom.couriertracking.BuildConfig
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.extension.hideKeyboard
@@ -23,7 +19,6 @@ import com.inbedroom.couriertracking.customview.DialogEditTitle
 import com.inbedroom.couriertracking.data.entity.Courier
 import com.inbedroom.couriertracking.data.entity.HistoryEntity
 import com.inbedroom.couriertracking.utils.Message
-import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.view.adapter.CourierSpinnerAdapter
 import com.inbedroom.couriertracking.view.adapter.HistoryAdapter
 import com.inbedroom.couriertracking.viewmodel.MainViewModel
@@ -42,10 +37,8 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: MainViewModel
     private lateinit var courierAdapter: CourierSpinnerAdapter
-    private lateinit var courierList: List<Courier>
     private lateinit var historyAdapter: HistoryAdapter
     private lateinit var spinner: Spinner
-    private lateinit var adView: AdView
 
     private var courierData: Courier? = null
 
@@ -60,13 +53,11 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
 
         viewModel.historiesData.observe(this, historyObserver)
         viewModel.isChanged.observe(this, onTitleChange)
-
-
+        viewModel.courierList.observe(this, populateCourier)
     }
 
     override fun initView() {
-        courierList = readFromAsset()
-        courierAdapter = CourierSpinnerAdapter(this, courierList)
+        courierAdapter = CourierSpinnerAdapter(this, mutableListOf())
         mainCourierList.adapter = courierAdapter
         spinner = findViewById(R.id.mainCourierList)
         spinner.onItemSelectedListener = this
@@ -115,7 +106,11 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
             override fun onDeleteMenuClick(position: Int) {
                 val item = historyAdapter.getData(position)
                 viewModel.deleteHistory(item.awb)
-                Message.notify(mainCoordinatorLayout, "${item.title ?: item.awb} Deleted", mainAdsRoot)
+                Message.notify(
+                    mainCoordinatorLayout,
+                    "${item.title ?: item.awb} Deleted",
+                    mainAdsRoot
+                )
             }
 
             override fun onEditMenuClick(position: Int) {
@@ -145,15 +140,6 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         }
     }
 
-    private fun initAds(){
-        adView = AdView(this)
-        adView.adSize = AdSize.SMART_BANNER
-        adView.adUnitId = ServiceData.BANNER_AD_ID
-        mainAdsRoot.addView(adView)
-        val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
@@ -178,19 +164,8 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         viewModel.clearHistory()
     }
 
-    private fun readFromAsset(): List<Courier> {
-        val fileName = "courier_list.json"
-
-        val bufferReader = application.assets.open(fileName).bufferedReader()
-
-        val jsonString = bufferReader.use {
-            it.readText()
-        }
-        val gson = Gson()
-
-        return gson.fromJson(jsonString, Array<Courier>::class.java).toList().filter {
-            it.available
-        }
+    private val populateCourier = Observer<List<Courier>> {
+        courierAdapter.addData(it)
     }
 
     private val historyObserver = Observer<List<HistoryEntity>> {
