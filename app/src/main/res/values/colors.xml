@@ -9,4 +9,6 @@
     <color name="emerald">#2ecc71</color>
     <color name="red">#c62828</color>
     <color name="defaultTextColor">#000000</color>
+    <color name="lightGray">#D3D3D3</color>
+    <color name="white">#FFFFFF</color>
 </resources>

@@ -7,6 +7,25 @@
     <string name="cancel_button">Batal</string>
     <string name="cancel">Batal</string>
     <string name="change">Ganti</string>
-    <string name="clear_history" translatable="false">Hapus History</string>
-    <string name="title_changed" translatable="false">Judul berhasil dirubah</string>
+    <string name="clear_history">Hapus History</string>
+    <string name="title_changed">Judul berhasil dirubah</string>
+    <string name="tariff_check">Cek Ongkir</string>
+    <string name="origin">Kota Asal</string>
+    <string name="destination">Kota Tujuan</string>
+    <string name="weight_gram">Berat (gram)</string>
+    <string name="calculate">Hitung</string>
+    <string name="courier">Kurir</string>
+    <string name="awb_hint">No. Resi</string>
+    <string name="refresh_city_list">Perbarui daftar kota</string>
+    <string name="empty_destination">Kota tujuan perlu diisi</string>
+    <string name="empty_origin">Asal kota perlu diisi</string>
+    <string name="unknown_city">Kota tidak diketahui, pilih dari yang telah disarankan</string>
+    <string name="lacak">Lacak</string>
+    <string name="generic_error">Terjadi kesalahan</string>
+    <string name="input_title">Judul perlu diisi</string>
+    <string name="use_text">Gunakan text</string>
+    <string name="empty_awb">Masukkan resi terlebih dahulu</string>
+    <string name="empty_weight">Berat perlu diisi</string>
+    <string name="choose_courier">Kurir belum dipilih</string>
+    <string name="etd">%s Hari</string>
 </resources>

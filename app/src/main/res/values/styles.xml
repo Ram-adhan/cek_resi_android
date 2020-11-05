@@ -8,6 +8,18 @@
         <item name="android:textSize">@dimen/normal_text</item>
     </style>
 
+    <style name="MaterialTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/normal_text</item>
+    </style>
+
+    <style name="MaterialButton" parent="MaterialTheme">
+        <item name="backgroundTint">@color/nephritis</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
     <style name="Margin.Default.StartEnd" parent="AppTheme">
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
@@ -22,6 +34,11 @@
     <style name="Button.Enable" parent="AppTheme">
         <item name="android:enabled">false</item>
         <item name="background">@drawable/rounded_button</item>
+    </style>
+
+    <style name="CustomChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_color_state</item>
+        <item name="android:textColor">@color/chip_text_state</item>
     </style>
 
 </resources>

@@ -61,7 +61,7 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         viewModel.historiesData.observe(this, historyObserver)
         viewModel.isChanged.observe(this, onTitleChange)
 
-        MobileAds.initialize(this) {}
+
     }
 
     override fun initView() {
@@ -80,7 +80,6 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         }
             .addItemDecoration(DividerItemDecoration(this, llManager.orientation))
 
-        initAds()
     }
 
     override fun onAction() {
@@ -164,6 +163,11 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         return when (item.itemId) {
             R.id.deleteAllHistory -> {
                 deleteAllHistory()
+                true
+            }
+
+            R.id.cekOngkir -> {
+                startActivity(CekOngkirActivity.callIntent(this))
                 true
             }
             else -> false
