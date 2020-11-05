@@ -46,5 +46,47 @@
     "codename": "ninja",
     "img_url": "ninja_xpress",
     "available": true
+  },
+  {
+    "name": "Lion Parcel",
+    "codename": "lion",
+    "img_url": "lion",
+    "available": true
+  },
+  {
+    "name": "PCP Express",
+    "codename": "pcp",
+    "img_url": "pcp",
+    "available": true
+  },
+  {
+    "name": "JET Express",
+    "codename": "jet",
+    "img_url": "jet",
+    "available": true
+  },
+  {
+    "name": "REX Express",
+    "codename": "rex",
+    "img_url": "rex",
+    "available": true
+  },
+  {
+    "name": "First Logistics",
+    "codename": "first",
+    "img_url": "first_logistics",
+    "available": true
+  },
+  {
+    "name": "ID Express",
+    "codename": "ide",
+    "img_url": "id_express",
+    "available": true
+  },
+  {
+    "name": "Shopee Xpress",
+    "codename": "spx",
+    "img_url": "shopee_xpress",
+    "available": true
   }
 ]
