@@ -28,4 +28,5 @@
     <string name="empty_weight">Berat perlu diisi</string>
     <string name="choose_courier">Kurir belum dipilih</string>
     <string name="etd">%s Hari</string>
+    <string name="cek_ongkir_disclaimer">*Hanya untuk ongkir sampai kota/kabupaten, ongkir sampai kecamatan mungkin berbeda</string>
 </resources>

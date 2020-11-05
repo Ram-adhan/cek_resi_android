@@ -2,6 +2,7 @@ package com.inbedroom.couriertracking.view
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -109,8 +110,9 @@ class OngkirSetupFragment : Fragment() {
 
             if (canContinue) {
                 val courierList = mutableListOf<String>()
-                chipIds.forEach { id ->
-                    courierList.add(couriers[id - 1])
+                chipIds.forEach { chipId ->
+                    val id = chipId - chipIds[0]
+                    courierList.add(couriers[id])
                 }
                 viewModel.from = origin
                 viewModel.to = destination

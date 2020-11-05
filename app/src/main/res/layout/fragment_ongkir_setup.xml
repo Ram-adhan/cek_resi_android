@@ -136,6 +136,17 @@
         app:layout_constraintTop_toBottomOf="@id/labelCourierList"
         app:selectionRequired="true" />
 
+    <TextView
+        android:id="@+id/cekOngkirDisclaimer"
+        android:text="@string/cek_ongkir_disclaimer"
+        android:textSize="@dimen/small_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@id/cekOngkirButtonCalculate"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cekOngkirButtonCalculate"
         style="@style/MaterialButton"
