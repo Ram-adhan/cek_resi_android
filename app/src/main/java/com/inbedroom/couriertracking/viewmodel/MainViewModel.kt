@@ -4,13 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.inbedroom.couriertracking.data.PreferencesManager
 import com.inbedroom.couriertracking.data.entity.HistoryEntity
 import com.inbedroom.couriertracking.data.room.HistoryRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    private val repository: HistoryRepository
+    private val repository: HistoryRepository,
+    private val local: PreferencesManager
 ) : ViewModel() {
 
     val historiesData: LiveData<List<HistoryEntity>> = repository.getHistories()

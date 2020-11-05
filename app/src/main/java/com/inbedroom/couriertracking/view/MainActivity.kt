@@ -45,7 +45,6 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     private lateinit var courierList: List<Courier>
     private lateinit var historyAdapter: HistoryAdapter
     private lateinit var spinner: Spinner
-    private lateinit var adView: AdView
 
     private var courierData: Courier? = null
 
@@ -60,7 +59,6 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
 
         viewModel.historiesData.observe(this, historyObserver)
         viewModel.isChanged.observe(this, onTitleChange)
-
 
     }
 
@@ -143,15 +141,6 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
             val result = data?.getStringExtra(RESULT_LABEL)
             mainAWBInput.setText(result ?: "")
         }
-    }
-
-    private fun initAds(){
-        adView = AdView(this)
-        adView.adSize = AdSize.SMART_BANNER
-        adView.adUnitId = ServiceData.BANNER_AD_ID
-        mainAdsRoot.addView(adView)
-        val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
