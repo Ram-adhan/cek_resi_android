@@ -8,13 +8,14 @@ import android.widget.*
 import com.bumptech.glide.Glide
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.data.entity.Courier
+import com.inbedroom.couriertracking.data.entity.SpinnerCourier
 import kotlinx.android.synthetic.main.item_courier.view.*
 
 class CourierSpinnerAdapter(
     context: Context,
-    private val dataSource: MutableList<Courier>
+    private val dataSource: MutableList<SpinnerCourier>
 ) :
-    ArrayAdapter<Courier>(context, 0, dataSource) {
+    ArrayAdapter<SpinnerCourier>(context, 0, dataSource) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         return this.createView(position, convertView, parent)
@@ -24,7 +25,7 @@ class CourierSpinnerAdapter(
         return this.createView(position, convertView, parent)
     }
 
-    fun addData(newData: List<Courier>) {
+    fun addData(newData: List<SpinnerCourier>) {
         dataSource.clear()
         dataSource.addAll(newData)
         notifyDataSetChanged()

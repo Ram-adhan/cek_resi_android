@@ -11,7 +11,7 @@ import com.inbedroom.couriertracking.data.entity.HistoryEntity
 @Database(
     entities = [
         HistoryEntity::class],
-    version = 2
+    version = 1
 )
 abstract class HistoryDatabase : RoomDatabase() {
     abstract fun historyDao(): HistoryDao

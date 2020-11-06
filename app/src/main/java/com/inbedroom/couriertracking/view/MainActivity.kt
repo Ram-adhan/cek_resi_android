@@ -18,6 +18,7 @@ import com.inbedroom.couriertracking.core.platform.BaseActivity
 import com.inbedroom.couriertracking.customview.DialogEditTitle
 import com.inbedroom.couriertracking.data.entity.Courier
 import com.inbedroom.couriertracking.data.entity.HistoryEntity
+import com.inbedroom.couriertracking.data.entity.SpinnerCourier
 import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.view.adapter.CourierSpinnerAdapter
 import com.inbedroom.couriertracking.view.adapter.HistoryAdapter
@@ -165,10 +166,15 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     }
 
     private val populateCourier = Observer<List<Courier>> {
-        it.forEach {value ->
-            value.imgId = getImgId(value.imgUrl)
+        val couriers: MutableList<SpinnerCourier> = mutableListOf()
+        it.forEach { value ->
+            couriers.add(
+                SpinnerCourier(
+                    value.name, value.imgUrl, value.code, value.available, getImgId(value.imgUrl)
+                )
+            )
         }
-        courierAdapter.addData(it)
+        courierAdapter.addData(couriers)
     }
 
     private val historyObserver = Observer<List<HistoryEntity>> {
@@ -181,7 +187,7 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         }
     }
 
-    private fun getImgId(string: String): Int{
+    private fun getImgId(string: String): Int {
         return this.resources.getIdentifier(string, "drawable", this.packageName)
     }
 

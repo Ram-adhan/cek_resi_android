@@ -14,7 +14,5 @@ data class Courier(
     @SerializedName("codename")
     val code: String,
 
-    val available: Boolean,
-
-    var imgId: Int? = null
+    val available: Boolean
 ): Parcelable
