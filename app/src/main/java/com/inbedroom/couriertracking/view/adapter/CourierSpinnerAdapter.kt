@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.bumptech.glide.Glide
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.data.entity.Courier
 import kotlinx.android.synthetic.main.item_courier.view.*
@@ -29,20 +30,15 @@ class CourierSpinnerAdapter(
         notifyDataSetChanged()
     }
 
-    @Suppress("DEPRECATION")
     private fun createView(position: Int, recycledView: View?, parent: ViewGroup): View {
         val courier = getItem(position)
 
         val view = recycledView ?: LayoutInflater.from(context)
             .inflate(R.layout.item_courier, parent, false)
 
-        val imgId =
-            context.resources.getIdentifier(courier?.imgUrl, "drawable", context.packageName)
-
-
         if (courier != null) {
             view.courierItemName.text = courier.name
-            view.courierItemIcon.setImageResource(imgId)
+            Glide.with(parent.context).load(courier.imgId).into(view.courierItemIcon)
         }
 
         return view

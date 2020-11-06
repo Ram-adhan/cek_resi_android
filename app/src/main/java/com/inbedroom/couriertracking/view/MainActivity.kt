@@ -165,6 +165,9 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     }
 
     private val populateCourier = Observer<List<Courier>> {
+        it.forEach {value ->
+            value.imgId = getImgId(value.imgUrl)
+        }
         courierAdapter.addData(it)
     }
 
@@ -178,8 +181,12 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
         }
     }
 
+    private fun getImgId(string: String): Int{
+        return this.resources.getIdentifier(string, "drawable", this.packageName)
+    }
+
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        courierData = parent?.getItemAtPosition(position) as Courier
+//        courierData = parent?.getItemAtPosition(position) as Courier
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
