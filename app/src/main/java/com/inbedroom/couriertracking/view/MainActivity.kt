@@ -58,6 +58,8 @@ class MainActivity : BaseActivity(), AdapterView.OnItemSelectedListener {
     }
 
     override fun initView() {
+        supportActionBar?.elevation = 0F
+
         courierAdapter = CourierSpinnerAdapter(this, mutableListOf())
         mainCourierList.adapter = courierAdapter
         spinner = findViewById(R.id.mainCourierList)

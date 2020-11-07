@@ -2,7 +2,7 @@
     <string name="app_name">Lacak Resi</string>
     <string name="courier_tracker">Courier Tracker</string>
     <string name="awb_hint">Air Waybill</string>
-    <string name="main_title" translatable="false">Cek Resi</string>
+    <string name="main_title">Waybill Track</string>
     <string name="lacak">Track</string>
     <string name="courier_item_icon" translatable="false">courier item icon</string>
     <string name="courier_name" translatable="false">Nama Kurir</string>
