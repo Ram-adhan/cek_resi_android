@@ -5,7 +5,6 @@
     android:id="@+id/mainCoordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightGray"
     android:orientation="vertical"
     tools:context=".view.MainActivity">
 
@@ -19,6 +18,7 @@
         app:tabIndicatorGravity="bottom"
         app:tabIndicatorHeight="4dp"
         app:tabMode="fixed"
+        android:elevation="8dp"
         app:tabSelectedTextColor="@color/white" />
 
     <androidx.viewpager2.widget.ViewPager2
