@@ -24,7 +24,7 @@ class ViewModelFactory @Inject constructor(
             ) as T
 
             modelClass.isAssignableFrom(MainViewModel::class.java) -> MainViewModel(
-                historyRepository, preferencesManager
+                historyRepository, ongkirRepository, preferencesManager
             ) as T
 
             modelClass.isAssignableFrom(OngkirViewModel::class.java) -> OngkirViewModel(

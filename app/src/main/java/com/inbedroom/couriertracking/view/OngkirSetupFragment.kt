@@ -18,6 +18,7 @@ import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.utils.Message
+import com.inbedroom.couriertracking.viewmodel.MainViewModel
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
 import kotlinx.android.synthetic.main.fragment_ongkir_detail.*
 import kotlinx.android.synthetic.main.fragment_ongkir_setup.*
@@ -27,14 +28,14 @@ class OngkirSetupFragment : Fragment() {
     private val couriers = listOf("JNE", "Pos", "TIKI")
     private val citiesName: MutableMap<String, String> = mutableMapOf()
 
-    private lateinit var viewModel: OngkirViewModel
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(OngkirViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         viewModel.isLoadingData.observe(this, loadingData)
         viewModel.cityList.observe(this, cityList)
-        viewModel.failed.observe(this, failed)
+        viewModel.failedLoadData.observe(this, failed)
         setHasOptionsMenu(true)
     }
 
@@ -118,7 +119,6 @@ class OngkirSetupFragment : Fragment() {
                 viewModel.to = destination
                 val originString = citiesName[origin] ?: "-1"
                 val destinationString = citiesName[destination] ?: "-1"
-                viewModel.checkTariff(originString, destinationString, weight, courierList)
             }
         }
     }

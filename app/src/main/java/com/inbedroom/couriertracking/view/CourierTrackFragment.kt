@@ -39,8 +39,6 @@ class CourierTrackFragment : Fragment() {
         viewModel.isChanged.observe(this, onTitleChange)
         viewModel.courierList.observe(this, populateCourier)
 
-        onAction()
-
         setHasOptionsMenu(true)
     }
 
@@ -64,6 +62,8 @@ class CourierTrackFragment : Fragment() {
             adapter = historyAdapter
         }
             .addItemDecoration(DividerItemDecoration(requireContext(), llManager.orientation))
+
+        onAction()
     }
 
     private fun onAction(){

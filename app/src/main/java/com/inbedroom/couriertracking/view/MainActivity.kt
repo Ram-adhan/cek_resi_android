@@ -1,33 +1,17 @@
 package com.inbedroom.couriertracking.view
 
-import android.app.Activity
-import android.content.Intent
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.Spinner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.tabs.TabLayoutMediator
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
-import com.inbedroom.couriertracking.core.extension.hideKeyboard
 import com.inbedroom.couriertracking.core.platform.BaseActivity
-import com.inbedroom.couriertracking.customview.DialogEditTitle
-import com.inbedroom.couriertracking.data.entity.Courier
-import com.inbedroom.couriertracking.data.entity.HistoryEntity
-import com.inbedroom.couriertracking.data.entity.SpinnerCourier
-import com.inbedroom.couriertracking.utils.Message
-import com.inbedroom.couriertracking.view.adapter.CourierSpinnerAdapter
-import com.inbedroom.couriertracking.view.adapter.HistoryAdapter
+import com.inbedroom.couriertracking.view.adapter.MainPagerAdapter
 import com.inbedroom.couriertracking.viewmodel.MainViewModel
 import com.inbedroom.couriertracking.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(){
+class MainActivity : BaseActivity() {
 
     companion object {
         const val REQUEST_CODE = 101
@@ -37,6 +21,9 @@ class MainActivity : BaseActivity(){
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: MainViewModel
+    private lateinit var pagerAdapter: MainPagerAdapter
+
+    private val pageList: MutableMap<Int, String> = mutableMapOf()
 
     override fun layoutId(): Int = R.layout.activity_main
 
@@ -46,10 +33,26 @@ class MainActivity : BaseActivity(){
             this,
             viewModelFactory
         ).get(MainViewModel::class.java)
+
+        pageList.clear()
+        pageList.putAll(
+            mutableMapOf(
+                Pair(0, getString(R.string.main_title)),
+                Pair(1, getString(R.string.tariff_check))
+            )
+        )
     }
 
     override fun initView() {
         supportActionBar?.elevation = 0F
+
+        pagerAdapter = MainPagerAdapter(supportFragmentManager, lifecycle, pageList)
+        mainViewPager.adapter = pagerAdapter
+        mainViewPager.requestDisallowInterceptTouchEvent(true)
+
+        TabLayoutMediator(mainTabLayout, mainViewPager) { tab, position ->
+            tab.text = pageList[position]
+        }.attach()
     }
 
     override fun onAction() {}
