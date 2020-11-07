@@ -46,4 +46,5 @@
     <string name="service_detail" translatable="false">%s (%s)</string>
     <string name="ongkir_title" translatable="false">%s > %s</string>
     <string name="cek_ongkir_disclaimer">*Price is only up to city/district, price to sub-districts may different</string>
+    <string name="check">Check</string>
 </resources>
