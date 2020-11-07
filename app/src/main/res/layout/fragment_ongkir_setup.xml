@@ -139,7 +139,7 @@
     <TextView
         android:id="@+id/cekOngkirDisclaimer"
         android:text="@string/cek_ongkir_disclaimer"
-        android:textSize="@dimen/small_text"
+        android:textSize="@dimen/micro_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
