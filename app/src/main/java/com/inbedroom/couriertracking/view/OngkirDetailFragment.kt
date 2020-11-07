@@ -22,8 +22,15 @@ import kotlinx.android.synthetic.main.fragment_ongkir_detail.*
 class OngkirDetailFragment : Fragment() {
 
     companion object {
-        fun forOngkir(): OngkirDetailFragment {
+        const val WEIGHT = "weight"
+        fun newInstance(origin: String, destination: String, weight: Int): OngkirDetailFragment {
+            val args = Bundle()
+            args.putString(CekOngkirActivity.ORIGIN_STRING, origin)
+            args.putString(CekOngkirActivity.DESTINATION_STRING, destination)
+            args.putInt(WEIGHT, weight)
+
             val fragment = OngkirDetailFragment()
+            fragment.arguments = args
             return fragment
         }
     }
@@ -51,6 +58,13 @@ class OngkirDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val origin = arguments?.getString(CekOngkirActivity.ORIGIN_STRING, "")
+        val destination = arguments?.getString(CekOngkirActivity.DESTINATION_STRING, "")
+        val weight = arguments?.getInt(WEIGHT, 0)
+
+        detailTextOngkirCity.text = getString(R.string.ongkir_title, origin, destination)
+        detailTextWeight.text = getString(R.string.weight_text, weight)
 
         val llManager = LinearLayoutManager(requireContext())
         ongkirDetailAdapter = OngkirDetailAdapter(ArrayList())

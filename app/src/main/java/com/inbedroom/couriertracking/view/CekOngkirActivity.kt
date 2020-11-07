@@ -45,6 +45,7 @@ class CekOngkirActivity : BaseActivity() {
     private lateinit var viewModel: OngkirViewModel
     private lateinit var origin: String
     private lateinit var destination: String
+    private var weight: Int = 0
 
     override fun layoutId(): Int = R.layout.activity_cek_ongkir
 
@@ -53,6 +54,7 @@ class CekOngkirActivity : BaseActivity() {
         destination = intent.getStringExtra(DESTINATION_STRING).toString()
         val request = intent.getParcelableExtra(REQUEST) ?: CostRequest()
         val courierList = intent.getStringArrayListExtra(COURIER_LIST)
+        weight = request.weight
 
         (application as CourierTrackingApplication).appComponent.inject(this)
 
@@ -62,14 +64,19 @@ class CekOngkirActivity : BaseActivity() {
         ).get(OngkirViewModel::class.java)
 
         if (courierList != null) {
-            viewModel.checkTariff(request.origin, request.destination, request.weight, courierList.toList())
+            viewModel.checkTariff(
+                request.origin,
+                request.destination,
+                request.weight,
+                courierList.toList()
+            )
         }
 
         viewModel.onRequest.observe(this, loadingRequest)
     }
 
     override fun initView() {
-        supportActionBar?.title = getString(R.string.ongkir_title, origin, destination)
+        supportActionBar?.title = getString(R.string.tariff_check)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -87,7 +94,11 @@ class CekOngkirActivity : BaseActivity() {
                 fragmentTransaction.remove(prev)
             }
             fragmentTransaction
-                .add(R.id.cekOngkirMainFragmentRoot, OngkirDetailFragment.forOngkir(), "ongkirList")
+                .add(
+                    R.id.cekOngkirMainFragmentRoot,
+                    OngkirDetailFragment.newInstance(origin, destination, weight),
+                    "ongkirList"
+                )
                 .commit()
         }
     }
