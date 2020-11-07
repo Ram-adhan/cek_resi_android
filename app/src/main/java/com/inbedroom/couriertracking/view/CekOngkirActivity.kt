@@ -4,12 +4,17 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.core.platform.BaseActivity
 import com.inbedroom.couriertracking.data.entity.CostRequest
+import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
 import com.inbedroom.couriertracking.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_cek_ongkir.*
@@ -45,6 +50,8 @@ class CekOngkirActivity : BaseActivity() {
     private lateinit var viewModel: OngkirViewModel
     private lateinit var origin: String
     private lateinit var destination: String
+    private var weight: Int = 0
+    private lateinit var interstitialAd: InterstitialAd
 
     override fun layoutId(): Int = R.layout.activity_cek_ongkir
 
@@ -53,6 +60,7 @@ class CekOngkirActivity : BaseActivity() {
         destination = intent.getStringExtra(DESTINATION_STRING).toString()
         val request = intent.getParcelableExtra(REQUEST) ?: CostRequest()
         val courierList = intent.getStringArrayListExtra(COURIER_LIST)
+        weight = request.weight
 
         (application as CourierTrackingApplication).appComponent.inject(this)
 
@@ -62,14 +70,30 @@ class CekOngkirActivity : BaseActivity() {
         ).get(OngkirViewModel::class.java)
 
         if (courierList != null) {
-            viewModel.checkTariff(request.origin, request.destination, request.weight, courierList.toList())
+            viewModel.checkTariff(
+                request.origin,
+                request.destination,
+                request.weight,
+                courierList.toList()
+            )
         }
 
         viewModel.onRequest.observe(this, loadingRequest)
+
+        MobileAds.initialize(this)
+        interstitialAd = InterstitialAd(this)
+        interstitialAd.adUnitId = ServiceData.INTERSTITIAL_AD_ID
+        interstitialAd.loadAd(AdRequest.Builder().build())
+        interstitialAd.adListener = object : AdListener() {
+            override fun onAdClosed() {
+                super.onAdClosed()
+                finish()
+            }
+        }
     }
 
     override fun initView() {
-        supportActionBar?.title = getString(R.string.ongkir_title, origin, destination)
+        supportActionBar?.title = getString(R.string.tariff_check)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -87,13 +111,26 @@ class CekOngkirActivity : BaseActivity() {
                 fragmentTransaction.remove(prev)
             }
             fragmentTransaction
-                .add(R.id.cekOngkirMainFragmentRoot, OngkirDetailFragment.forOngkir(), "ongkirList")
+                .add(
+                    R.id.cekOngkirMainFragmentRoot,
+                    OngkirDetailFragment.newInstance(origin, destination, weight),
+                    "ongkirList"
+                )
                 .commit()
         }
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        onBackPressed()
         return super.onSupportNavigateUp()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (interstitialAd.isLoaded) {
+            interstitialAd.show()
+        } else {
+            finish()
+        }
     }
 }

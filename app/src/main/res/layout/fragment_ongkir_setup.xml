@@ -139,7 +139,7 @@
     <TextView
         android:id="@+id/cekOngkirDisclaimer"
         android:text="@string/cek_ongkir_disclaimer"
-        android:textSize="@dimen/small_text"
+        android:textSize="@dimen/micro_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
@@ -157,7 +157,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/rounded_button"
-        android:text="@string/calculate"
+        android:text="@string/check"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
