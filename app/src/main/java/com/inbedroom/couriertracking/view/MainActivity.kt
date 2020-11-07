@@ -1,10 +1,15 @@
 package com.inbedroom.couriertracking.view
 
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.platform.BaseActivity
+import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.view.adapter.MainPagerAdapter
 import com.inbedroom.couriertracking.viewmodel.MainViewModel
 import com.inbedroom.couriertracking.viewmodel.ViewModelFactory
@@ -22,6 +27,7 @@ class MainActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: MainViewModel
     private lateinit var pagerAdapter: MainPagerAdapter
+    private lateinit var interstitialAd: InterstitialAd
 
     private val pageList: MutableMap<Int, String> = mutableMapOf()
 
@@ -41,6 +47,17 @@ class MainActivity : BaseActivity() {
                 Pair(1, getString(R.string.tariff_check))
             )
         )
+
+        MobileAds.initialize(this)
+        interstitialAd = InterstitialAd(this)
+        interstitialAd.adUnitId = ServiceData.INTERSTITIAL_AD_ID
+        interstitialAd.loadAd(AdRequest.Builder().build())
+        interstitialAd.adListener = object : AdListener() {
+            override fun onAdClosed() {
+                super.onAdClosed()
+                finish()
+            }
+        }
     }
 
     override fun initView() {
@@ -56,4 +73,13 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onAction() {}
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (interstitialAd.isLoaded) {
+            interstitialAd.show()
+        } else {
+            finish()
+        }
+    }
 }
