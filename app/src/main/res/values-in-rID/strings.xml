@@ -33,4 +33,5 @@
     <string name="check">Cek</string>
     <string name="ongkir_title">%s ke %s</string>
     <string name="weight_text">Berat: %d gram</string>
+    <string name="no_internet">Tidak ada koneksi internet</string>
 </resources>

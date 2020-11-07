@@ -1,9 +1,11 @@
 package com.inbedroom.couriertracking.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.data.PreferencesManager
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.Courier
@@ -36,6 +38,9 @@ class MainViewModel @Inject constructor(
     private val _failedLoadData = MutableLiveData<String>()
     val failedLoadData: LiveData<String> = _failedLoadData
 
+    private val _noNetwork = MutableLiveData<Boolean>()
+    val noNetwork: LiveData<Boolean> = _noNetwork
+
     init {
 
         val list = local.readCourierAsset()
@@ -56,21 +61,27 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getCityList() {
-        _isLoadingData.postValue(true)
-        viewModelScope.launch {
-            val result = ongkirRepository.getCityList(true)
+    fun getCityList(context: Context) {
+        if (context.connectNetwork()){
+            _isLoadingData.postValue(true)
+            _noNetwork.postValue(false)
+            viewModelScope.launch {
+                val result = ongkirRepository.getCityList(true)
 
-            when (result) {
-                is DataResult.Success -> {
-                    _cityList.postValue(result.data)
+                when (result) {
+                    is DataResult.Success -> {
+                        _cityList.postValue(result.data)
+                    }
+                    is DataResult.Error -> {
+                        _failedLoadData.postValue(result.errorMessage)
+                    }
                 }
-                is DataResult.Error -> {
-                    _failedLoadData.postValue(result.errorMessage)
-                }
+                _isLoadingData.postValue(false)
             }
-            _isLoadingData.postValue(false)
+        }else{
+            _noNetwork.postValue(true)
         }
+
     }
 
     fun deleteHistory(awb: String) {

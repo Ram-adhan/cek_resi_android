@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.inbedroom.couriertracking.R
+import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.core.extension.hideKeyboard
 import com.inbedroom.couriertracking.customview.DialogEditTitle
 import com.inbedroom.couriertracking.data.entity.Courier
@@ -72,15 +73,20 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
         mainButtonSearch.setOnClickListener {
             val awb = mainAWBInput.text.toString()
             if (awb.isNotEmpty()) {
-                courierData?.let { it1 ->
-                    startActivity(
-                        TrackingDetailActivity.callIntent(
-                            requireContext(),
-                            awb,
-                            it1
+                if (requireContext().connectNetwork()){
+                    courierData?.let { it1 ->
+                        startActivity(
+                            TrackingDetailActivity.callIntent(
+                                requireContext(),
+                                awb,
+                                it1
+                            )
                         )
-                    )
+                    }
+                }else{
+                    Message.alert(requireContext(), getString(R.string.no_internet), null)
                 }
+
             } else {
                 mainAWBInput.error = getString(R.string.empty_awb)
                 mainAWBInput.requestFocus()

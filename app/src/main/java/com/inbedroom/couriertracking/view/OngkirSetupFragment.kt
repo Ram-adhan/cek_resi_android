@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.inbedroom.couriertracking.R
+import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.data.entity.CityEntity
@@ -32,6 +33,7 @@ class OngkirSetupFragment : Fragment() {
         viewModel.isLoadingData.observe(this, loadingData)
         viewModel.cityList.observe(this, cityList)
         viewModel.failedLoadData.observe(this, failed)
+        viewModel.noNetwork.observe(this, noNetwork)
         setHasOptionsMenu(true)
     }
 
@@ -106,23 +108,27 @@ class OngkirSetupFragment : Fragment() {
             }
 
             if (canContinue) {
-                val courierList = mutableListOf<String>()
-                chipIds.forEach { chipId ->
-                    val id = chipId - chipIds[0]
-                    courierList.add(couriers[id])
-                }
-                val request = CostRequest(
-                    citiesName[origin] ?: "-1",
-                    citiesName[destination] ?: "-1",
-                    weight
-                )
-
-                startActivity(
-                    CekOngkirActivity.callIntent(
-                        requireContext(), origin, destination, request,
-                        courierList as ArrayList<String>
+                if (requireContext().connectNetwork()) {
+                    val courierList = mutableListOf<String>()
+                    chipIds.forEach { chipId ->
+                        val id = chipId - chipIds[0]
+                        courierList.add(couriers[id])
+                    }
+                    val request = CostRequest(
+                        citiesName[origin] ?: "-1",
+                        citiesName[destination] ?: "-1",
+                        weight
                     )
-                )
+
+                    startActivity(
+                        CekOngkirActivity.callIntent(
+                            requireContext(), origin, destination, request,
+                            courierList as ArrayList<String>
+                        )
+                    )
+                } else {
+                    Message.alert(requireContext(), getString(R.string.no_internet), null)
+                }
             }
         }
     }
@@ -155,6 +161,12 @@ class OngkirSetupFragment : Fragment() {
         Message.toast(requireContext(), it)
     }
 
+    private val noNetwork = Observer<Boolean> {
+        if (it){
+            Message.alert(requireContext(), getString(R.string.no_internet), null)
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         activity?.menuInflater?.inflate(R.menu.cek_ongkir_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -166,7 +178,7 @@ class OngkirSetupFragment : Fragment() {
                 cekOngkirEtDestination.error = null
                 cekOngkirEtOrigin.error = null
                 cekOngkirEtWeight.error = null
-                viewModel.getCityList()
+                viewModel.getCityList(requireContext())
                 true
             }
             else -> false
