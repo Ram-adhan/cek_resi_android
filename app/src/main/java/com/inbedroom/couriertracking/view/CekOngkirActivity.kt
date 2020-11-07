@@ -4,12 +4,17 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.core.platform.BaseActivity
 import com.inbedroom.couriertracking.data.entity.CostRequest
+import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
 import com.inbedroom.couriertracking.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_cek_ongkir.*
@@ -46,6 +51,7 @@ class CekOngkirActivity : BaseActivity() {
     private lateinit var origin: String
     private lateinit var destination: String
     private var weight: Int = 0
+    private lateinit var interstitialAd: InterstitialAd
 
     override fun layoutId(): Int = R.layout.activity_cek_ongkir
 
@@ -73,6 +79,17 @@ class CekOngkirActivity : BaseActivity() {
         }
 
         viewModel.onRequest.observe(this, loadingRequest)
+
+        MobileAds.initialize(this)
+        interstitialAd = InterstitialAd(this)
+        interstitialAd.adUnitId = ServiceData.INTERSTITIAL_AD_ID
+        interstitialAd.loadAd(AdRequest.Builder().build())
+        interstitialAd.adListener = object : AdListener() {
+            override fun onAdClosed() {
+                super.onAdClosed()
+                finish()
+            }
+        }
     }
 
     override fun initView() {
@@ -104,7 +121,16 @@ class CekOngkirActivity : BaseActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        finish()
+        onBackPressed()
         return super.onSupportNavigateUp()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (interstitialAd.isLoaded) {
+            interstitialAd.show()
+        } else {
+            finish()
+        }
     }
 }
