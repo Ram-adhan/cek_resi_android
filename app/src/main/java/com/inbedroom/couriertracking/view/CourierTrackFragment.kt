@@ -102,7 +102,7 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 val item = historyAdapter.getData(position)
                 viewModel.deleteHistory(item.awb)
                 Message.notify(
-                    mainCoordinatorLayout,
+                    requireActivity().mainCoordinatorLayout,
                     "${item.title ?: item.awb} Deleted"
                 )
             }
