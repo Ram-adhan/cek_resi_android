@@ -36,9 +36,6 @@ class MainViewModel @Inject constructor(
     private val _failedLoadData = MutableLiveData<String>()
     val failedLoadData: LiveData<String> = _failedLoadData
 
-    var from = ""
-    var to = ""
-
     init {
 
         val list = local.readCourierAsset()

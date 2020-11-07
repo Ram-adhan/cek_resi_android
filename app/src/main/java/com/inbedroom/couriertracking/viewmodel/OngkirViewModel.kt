@@ -1,11 +1,9 @@
 package com.inbedroom.couriertracking.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
 import com.inbedroom.couriertracking.data.network.response.DataResult
@@ -25,9 +23,6 @@ class OngkirViewModel @Inject constructor(
 
     private val _ongkirData = MutableLiveData<OngkirResult>()
     val ongkirData: LiveData<OngkirResult> = _ongkirData
-
-    var from = ""
-    var to = ""
 
     fun checkTariff(
         originCode: String,

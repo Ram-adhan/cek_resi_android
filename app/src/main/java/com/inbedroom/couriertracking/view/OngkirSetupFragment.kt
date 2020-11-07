@@ -2,10 +2,8 @@ package com.inbedroom.couriertracking.view
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,11 +14,9 @@ import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.data.entity.CityEntity
-import com.inbedroom.couriertracking.data.entity.OngkirResult
+import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.viewmodel.MainViewModel
-import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
-import kotlinx.android.synthetic.main.fragment_ongkir_detail.*
 import kotlinx.android.synthetic.main.fragment_ongkir_setup.*
 
 class OngkirSetupFragment : Fragment() {
@@ -104,7 +100,7 @@ class OngkirSetupFragment : Fragment() {
                 canContinue = false
             }
             val chipIds = chipGroupCourier.checkedChipIds
-            if (chipIds.size == 0){
+            if (chipIds.size == 0) {
                 canContinue = false
                 Message.alert(requireContext(), getString(R.string.choose_courier), null)
             }
@@ -115,10 +111,18 @@ class OngkirSetupFragment : Fragment() {
                     val id = chipId - chipIds[0]
                     courierList.add(couriers[id])
                 }
-                viewModel.from = origin
-                viewModel.to = destination
-                val originString = citiesName[origin] ?: "-1"
-                val destinationString = citiesName[destination] ?: "-1"
+                val request = CostRequest(
+                    citiesName[origin] ?: "-1",
+                    citiesName[destination] ?: "-1",
+                    weight
+                )
+
+                startActivity(
+                    CekOngkirActivity.callIntent(
+                        requireContext(), origin, destination, request,
+                        courierList as ArrayList<String>
+                    )
+                )
             }
         }
     }
@@ -157,7 +161,7 @@ class OngkirSetupFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId){
+        return when (item.itemId) {
             R.id.refreshList -> {
                 cekOngkirEtDestination.error = null
                 cekOngkirEtOrigin.error = null
