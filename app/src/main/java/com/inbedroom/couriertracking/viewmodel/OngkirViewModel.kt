@@ -1,11 +1,9 @@
 package com.inbedroom.couriertracking.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
 import com.inbedroom.couriertracking.data.network.response.DataResult
@@ -17,15 +15,6 @@ class OngkirViewModel @Inject constructor(
     private val ongkirRepository: CekOngkirRepository
 ) : ViewModel() {
 
-    private val _cityList = MutableLiveData<List<CityEntity>>()
-    val cityList: LiveData<List<CityEntity>> = _cityList
-
-    private val _failed = MutableLiveData<String>()
-    val failed: LiveData<String> = _failed
-
-    private val _isLoadingData = MutableLiveData<Boolean>()
-    val isLoadingData: LiveData<Boolean> = _isLoadingData
-
     private val _onRequest = MutableLiveData<Boolean>()
     val onRequest: LiveData<Boolean> = _onRequest
 
@@ -34,43 +23,6 @@ class OngkirViewModel @Inject constructor(
 
     private val _ongkirData = MutableLiveData<OngkirResult>()
     val ongkirData: LiveData<OngkirResult> = _ongkirData
-
-    var from = ""
-    var to = ""
-
-    init {
-        _isLoadingData.postValue(true)
-        viewModelScope.launch {
-            val result = ongkirRepository.getCityList()
-
-            when (result) {
-                is DataResult.Success -> {
-                    _cityList.postValue(result.data)
-                }
-                is DataResult.Error -> {
-                    _failed.postValue(result.errorMessage)
-                }
-            }
-            _isLoadingData.postValue(false)
-        }
-    }
-
-    fun getCityList() {
-        _isLoadingData.postValue(true)
-        viewModelScope.launch {
-            val result = ongkirRepository.getCityList(true)
-
-            when (result) {
-                is DataResult.Success -> {
-                    _cityList.postValue(result.data)
-                }
-                is DataResult.Error -> {
-                    _failed.postValue(result.errorMessage)
-                }
-            }
-            _isLoadingData.postValue(false)
-        }
-    }
 
     fun checkTariff(
         originCode: String,

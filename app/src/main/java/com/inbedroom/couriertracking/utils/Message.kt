@@ -36,7 +36,7 @@ object Message {
         dialog.show(fragmentTransaction, "dialog")
     }
 
-    fun notify(view: View, msg: String, anchorView: View?) {
+    fun notify(view: View, msg: String, anchorView: View? = null) {
         val snackBar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG)
         if (anchorView != null){
             snackBar.anchorView = anchorView

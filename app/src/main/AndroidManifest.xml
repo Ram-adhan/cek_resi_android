@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.inbedroom.couriertracking">
 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -8,23 +9,21 @@
 
     <application
         android:name=".CourierTrackingApplication"
-        android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/MaterialTheme"
+        tools:ignore="AllowBackup">
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-7418623981206452~1566470213" />
 
-        <activity android:name=".view.CekOngkirActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MaterialTheme"/>
-
+        <activity
+            android:name=".view.CekOngkirActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.BarcodeScanActivity"
             android:screenOrientation="portrait" />
@@ -33,7 +32,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

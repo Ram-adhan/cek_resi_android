@@ -1,10 +1,7 @@
 package com.inbedroom.couriertracking.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,10 +17,7 @@ import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.view.adapter.OngkirDetailAdapter
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_ongkir_detail.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 class OngkirDetailFragment : Fragment() {
 
@@ -57,8 +51,6 @@ class OngkirDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        detailOngkirTitle.text = getString(R.string.ongkir_title, viewModel.from, viewModel.to)
 
         val llManager = LinearLayoutManager(requireContext())
         ongkirDetailAdapter = OngkirDetailAdapter(ArrayList())
