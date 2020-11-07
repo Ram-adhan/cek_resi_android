@@ -150,7 +150,7 @@ class CourierTrackFragment : Fragment() {
 
     private val onTitleChange = Observer<Boolean> {
         if (it) {
-            Message.notify(mainCoordinatorLayout, getString(R.string.title_changed))
+            Message.notify(requireActivity().mainCoordinatorLayout, getString(R.string.title_changed))
         }
     }
 
@@ -167,11 +167,6 @@ class CourierTrackFragment : Fragment() {
         return when (item.itemId) {
             R.id.deleteAllHistory -> {
                 deleteAllHistory()
-                true
-            }
-
-            R.id.cekOngkir -> {
-                startActivity(CekOngkirActivity.callIntent(requireContext()))
                 true
             }
             else -> false
