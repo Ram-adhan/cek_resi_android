@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.AdapterView
 import androidx.fragment.app.Fragment
-import android.widget.Spinner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -23,14 +23,14 @@ import com.inbedroom.couriertracking.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_courier_track.*
 
-class CourierTrackFragment : Fragment() {
+class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var courierAdapter: CourierSpinnerAdapter
     private lateinit var historyAdapter: HistoryAdapter
-    private lateinit var spinner: Spinner
 
     private var courierData: Courier? = null
+    private var courierList = mutableListOf<Courier>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +67,8 @@ class CourierTrackFragment : Fragment() {
     }
 
     private fun onAction(){
+        mainCourierList.onItemSelectedListener = this
+
         mainButtonSearch.setOnClickListener {
             val awb = mainAWBInput.text.toString()
             if (awb.isNotEmpty()) {
@@ -125,6 +127,8 @@ class CourierTrackFragment : Fragment() {
     }
 
     private val populateCourier = Observer<List<Courier>> {
+        courierList.clear()
+        courierList.addAll(it)
         val couriers: MutableList<SpinnerCourier> = mutableListOf()
         it.forEach { value ->
             couriers.add(
@@ -175,6 +179,13 @@ class CourierTrackFragment : Fragment() {
 
     private fun deleteAllHistory() {
         viewModel.clearHistory()
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        courierData = courierList[position]
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
     }
 
 }
