@@ -62,7 +62,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun getCityList(context: Context) {
-        if (context.connectNetwork()){
+        if (context.connectNetwork()) {
             _isLoadingData.postValue(true)
             _noNetwork.postValue(false)
             viewModelScope.launch {
@@ -78,7 +78,7 @@ class MainViewModel @Inject constructor(
                 }
                 _isLoadingData.postValue(false)
             }
-        }else{
+        } else {
             _noNetwork.postValue(true)
         }
 
@@ -104,7 +104,6 @@ class MainViewModel @Inject constructor(
                 historyRepository.changeTitle(awb, title)
                 _isChanged.postValue(true)
             }
-
         }
     }
 }
