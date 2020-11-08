@@ -115,9 +115,11 @@ class OngkirSetupFragment : Fragment() {
                         courierList.add(couriers[id])
                     }
                     val request = CostRequest(
-                        citiesName[origin] ?: "-1",
-                        citiesName[destination] ?: "-1",
-                        weight
+                        origin = citiesName[origin] ?: "-1",
+                        originType = "",
+                        destination = citiesName[destination] ?: "-1",
+                        destinationType = "",
+                        weight = weight
                     )
 
                     startActivity(

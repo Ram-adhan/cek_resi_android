@@ -4,6 +4,7 @@ import com.inbedroom.couriertracking.data.PreferencesManager
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.data.entity.OngkirResult
+import com.inbedroom.couriertracking.data.entity.SubDistrict
 import com.inbedroom.couriertracking.data.network.api.OngkirApi
 import com.inbedroom.couriertracking.data.network.response.DataResult
 import com.inbedroom.couriertracking.utils.ServiceData
@@ -72,6 +73,11 @@ class CekOngkirRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             DataResult.Error(e)
         }
+    }
+
+    override suspend fun getSubdistrict(forceUpdate: Boolean): DataResult<List<SubDistrict>> {
+        val url = java.lang.StringBuilder().append(baseUrl).append("/subdistrict")
+        return DataResult.Empty
     }
 
 }
