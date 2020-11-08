@@ -1,6 +1,7 @@
 package com.inbedroom.couriertracking.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -45,19 +46,31 @@ class MainViewModel @Inject constructor(
 
         val list = local.readCourierAsset()
         _courierList.postValue(list)
+        val tempCityList: MutableList<CityEntity> = mutableListOf()
 
         viewModelScope.launch {
-            val result = ongkirRepository.getCityList()
+            val cityResult = ongkirRepository.getCityList()
 
-            when (result) {
+            when (cityResult) {
                 is DataResult.Success -> {
-                    _cityList.postValue(result.data)
+                    _cityList.postValue(cityResult.data)
+                    tempCityList.clear()
+                    tempCityList.addAll(cityResult.data!!.asIterable())
                 }
                 is DataResult.Error -> {
-                    _failedLoadData.postValue(result.errorMessage)
+                    _failedLoadData.postValue(cityResult.errorMessage)
                 }
             }
             _isLoadingData.postValue(false)
+
+            if (!tempCityList.isNullOrEmpty()){
+//                tempCityList.forEachIndexed { index, cityEntity ->
+//                    Log.d("viewModel", "city ke: $index")
+//                    val subDistrictResult = ongkirRepository.getSubdistrict(cityEntity.cityId)
+//                }
+            }else{
+                _failedLoadData.postValue("Cannot load sub-districts")
+            }
         }
     }
 

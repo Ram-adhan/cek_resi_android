@@ -1,6 +1,7 @@
 package com.inbedroom.couriertracking.data
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.Courier
@@ -20,6 +21,8 @@ class PreferencesManager @Inject constructor(
 
     fun saveCityList(list: List<CityEntity>) {
         val string = Gson().toJson(list)
+        editor.remove(CITY_LIST)
+        editor.apply()
         editor.putString(CITY_LIST, string)
         editor.apply()
     }

@@ -29,6 +29,7 @@ class CekOngkirRepositoryImpl @Inject constructor(
             } else if (cityList.isNullOrEmpty()) {
                 val fromPreferences = preferencesManager.getSavedCityList()
                 if (!fromPreferences.isNullOrEmpty()) {
+                    cityList.clear()
                     cityList.addAll(fromPreferences)
                     handleApiSuccess(preferencesManager.getSavedCityList())
                 } else {
@@ -45,6 +46,7 @@ class CekOngkirRepositoryImpl @Inject constructor(
     private suspend fun getFromNetwork(url: String): DataResult<List<CityEntity>> {
         val response = ongkirApi.getCityList(url)
         return if (response.isSuccessful) {
+            cityList.clear()
             cityList.addAll(response.body()!!.rajaongkir.results)
             preferencesManager.saveCityList(cityList)
             handleApiSuccess(response.body()!!.rajaongkir)
