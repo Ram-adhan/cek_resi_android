@@ -42,7 +42,6 @@ class OngkirViewModel @Inject constructor(
                         _onRequest.postValue(false)
                     }
                     _ongkirListData.postValue(result.data)
-//                    _ongkirData.postValue(result.data)
                 }
             }
         }
