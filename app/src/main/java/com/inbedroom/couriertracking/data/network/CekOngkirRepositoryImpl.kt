@@ -54,16 +54,13 @@ class CekOngkirRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTariffList(
-        origin: String,
-        destination: String,
-        weight: Int,
-        courier: String
+        request: CostRequest
     ): DataResult<List<OngkirResult>> {
         val url = StringBuilder().append(baseUrl).append("/cost")
         return try {
             val response = ongkirApi.getCalculation(
                 url.toString(),
-                CostRequest(origin, destination, weight, courier)
+                request
             )
             if (response.isSuccessful) {
                 handleApiSuccess(response.body()!!.rajaongkir)
@@ -75,9 +72,21 @@ class CekOngkirRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSubdistrict(forceUpdate: Boolean): DataResult<List<SubDistrict>> {
+    override suspend fun getSubdistrict(
+        cityId: String,
+        forceUpdate: Boolean
+    ): DataResult<List<SubDistrict>> {
         val url = java.lang.StringBuilder().append(baseUrl).append("/subdistrict")
-        return DataResult.Empty
+        return try {
+            val response = ongkirApi.getSubDistrictList(url.toString(), cityId)
+            if (response.isSuccessful){
+                handleApiSuccess(response.body()!!.rajaongkir)
+            }else{
+                handleApiError(response)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(Exception("Internal Error"))
+        }
     }
 
 }

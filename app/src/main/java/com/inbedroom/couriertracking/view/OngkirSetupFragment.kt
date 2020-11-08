@@ -2,6 +2,7 @@ package com.inbedroom.couriertracking.view
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.content.res.AppCompatResources
@@ -14,16 +15,19 @@ import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
+import com.inbedroom.couriertracking.data.entity.Address
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.fragment_ongkir_setup.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class OngkirSetupFragment : Fragment() {
 
-    private val couriers = listOf("JNE", "Pos", "TIKI")
-    private val citiesName: MutableMap<String, String> = mutableMapOf()
+    private val couriers = listOf("JNE", "Pos", "TIKI", "Wahana", "SiCepat", "JNT", "Ninja", "JET")
+    private val citiesName: MutableMap<String, Address> = mutableMapOf()
 
     private lateinit var viewModel: MainViewModel
 
@@ -109,23 +113,26 @@ class OngkirSetupFragment : Fragment() {
 
             if (canContinue) {
                 if (requireContext().connectNetwork()) {
-                    val courierList = mutableListOf<String>()
-                    chipIds.forEach { chipId ->
+                    var courierToCheck = ""
+                    chipIds.forEachIndexed { i, chipId ->
+                        if (i != 0) {
+                            courierToCheck += ":"
+                        }
                         val id = chipId - chipIds[0]
-                        courierList.add(couriers[id])
+                        courierToCheck += couriers[id].toLowerCase(Locale.ROOT)
                     }
                     val request = CostRequest(
-                        origin = citiesName[origin] ?: "-1",
-                        originType = "",
-                        destination = citiesName[destination] ?: "-1",
-                        destinationType = "",
-                        weight = weight
+                        origin = citiesName[origin]?.addressId ?: "-1",
+                        originType = citiesName[origin]?.type ?: "-1",
+                        destination = citiesName[destination]?.addressId ?: "-1",
+                        destinationType = citiesName[destination]?.type ?: "-1",
+                        weight = weight,
+                        courier = courierToCheck
                     )
 
                     startActivity(
                         CekOngkirActivity.callIntent(
-                            requireContext(), origin, destination, request,
-                            courierList as ArrayList<String>
+                            requireContext(), origin, destination, request
                         )
                     )
                 } else {
@@ -137,8 +144,15 @@ class OngkirSetupFragment : Fragment() {
 
     private val cityList = Observer<List<CityEntity>> { data ->
         data.forEach {
-            val prefix = if (it.type.equals("kabupaten", true)) it.type + " " else ""
-            citiesName[prefix + it.cityName] = it.cityId
+            val prefix = if (it.type.equals("kabupaten", true)) "Kab. " else ""
+            val address = Address(
+                it.cityName,
+                it.cityId,
+                if (it.type.equals("Kota", true) ||
+                    it.type.equals("Kabupaten", true)
+                ) "city" else "subdistrict"
+            )
+            citiesName[prefix + it.cityName] = address
         }
         val adapter: ArrayAdapter<String> = ArrayAdapter(
             requireContext(),
@@ -164,7 +178,7 @@ class OngkirSetupFragment : Fragment() {
     }
 
     private val noNetwork = Observer<Boolean> {
-        if (it){
+        if (it) {
             Message.alert(requireContext(), getString(R.string.no_internet), null)
         }
     }

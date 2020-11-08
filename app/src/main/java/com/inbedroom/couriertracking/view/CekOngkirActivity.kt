@@ -26,20 +26,17 @@ class CekOngkirActivity : BaseActivity() {
         const val ORIGIN_STRING = "origin"
         const val DESTINATION_STRING = "destination"
         const val REQUEST = "request"
-        const val COURIER_LIST = "couriers"
 
         fun callIntent(
             context: Context,
             origin: String,
             destination: String,
-            request: CostRequest,
-            courierList: ArrayList<String>
+            request: CostRequest
         ): Intent {
             val intent = Intent(context, CekOngkirActivity::class.java)
             intent.putExtra(ORIGIN_STRING, origin)
             intent.putExtra(DESTINATION_STRING, destination)
             intent.putExtra(REQUEST, request)
-            intent.putStringArrayListExtra(COURIER_LIST, courierList)
             return intent
         }
     }
@@ -59,7 +56,6 @@ class CekOngkirActivity : BaseActivity() {
         origin = intent.getStringExtra(ORIGIN_STRING).toString()
         destination = intent.getStringExtra(DESTINATION_STRING).toString()
         val request = intent.getParcelableExtra(REQUEST) ?: CostRequest()
-        val courierList = intent.getStringArrayListExtra(COURIER_LIST)
         weight = request.weight
 
         (application as CourierTrackingApplication).appComponent.inject(this)
@@ -69,14 +65,7 @@ class CekOngkirActivity : BaseActivity() {
             viewModelFactory
         ).get(OngkirViewModel::class.java)
 
-        if (courierList != null) {
-            viewModel.checkTariff(
-                request.origin,
-                request.destination,
-                request.weight,
-                courierList.toList()
-            )
-        }
+        viewModel.checkTariff(request)
 
         viewModel.onRequest.observe(this, loadingRequest)
 

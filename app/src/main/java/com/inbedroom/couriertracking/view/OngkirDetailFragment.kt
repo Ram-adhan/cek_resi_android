@@ -45,7 +45,7 @@ class OngkirDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         viewModel = ViewModelProvider(requireActivity()).get(OngkirViewModel::class.java)
-        viewModel.ongkirData.observe(this, onLoad)
+        viewModel.ongkirListData.observe(this, onLoad)
         MobileAds.initialize(requireContext()) {}
     }
 
@@ -78,26 +78,29 @@ class OngkirDetailFragment : Fragment() {
     }
 
     @ExperimentalStdlibApi
-    private val onLoad = Observer<OngkirResult> { result ->
+    private val onLoad = Observer<List<OngkirResult>> { result ->
 
-        val courier = result.name
+        result.forEach {courData ->
+            val courier = courData.name
 
-        result.costs.forEach { costs ->
-            val data = Ongkir()
-            data.courier = courier
-            data.service = costs.service
-            with(costs.cost[0]) {
-                data.cost = value
-                data.etd = if (etd.contains("hari", true)) {
-                    etd.replace(
-                        "hari",
-                        "",
-                        true
-                    )
-                } else etd
+            courData.costs.forEach { costs ->
+                val data = Ongkir()
+                data.courier = courier
+                data.service = costs.service
+                with(costs.cost[0]) {
+                    data.cost = value
+                    data.etd = if (etd.contains("hari", true)) {
+                        etd.replace(
+                            "hari",
+                            "",
+                            true
+                        )
+                    } else etd
+                }
+                listOngkir.add(data)
             }
-            listOngkir.add(data)
         }
+
         ongkirDetailAdapter.replaceData(listOngkir)
     }
 
