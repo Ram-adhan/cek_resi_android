@@ -21,7 +21,7 @@ class PreferencesManager @Inject constructor(
     fun saveCityList(list: List<CityEntity>) {
         val string = Gson().toJson(list)
         editor.putString(CITY_LIST, string)
-        editor.commit()
+        editor.apply()
     }
 
     fun getSavedCityList(): List<CityEntity>{
