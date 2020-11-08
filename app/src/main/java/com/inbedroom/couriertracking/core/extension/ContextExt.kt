@@ -22,6 +22,7 @@ fun Context.hideKeyboard(view: View) {
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
+@Suppress("DEPRECATION")
 fun Context.connectNetwork(): Boolean {
     if (this.applicationContext == null) return false
     val connectivityManager = this.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

@@ -2,7 +2,6 @@ package com.inbedroom.couriertracking.view
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.content.res.AppCompatResources
@@ -22,7 +21,6 @@ import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.fragment_ongkir_setup.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class OngkirSetupFragment : Fragment() {
 
@@ -122,9 +120,9 @@ class OngkirSetupFragment : Fragment() {
                         courierToCheck += couriers[id].toLowerCase(Locale.ROOT)
                     }
                     val request = CostRequest(
-                        origin = citiesName[origin]?.addressId ?: "-1",
+                        origin = citiesName[origin]?.id ?: "-1",
                         originType = citiesName[origin]?.type ?: "-1",
-                        destination = citiesName[destination]?.addressId ?: "-1",
+                        destination = citiesName[destination]?.id ?: "-1",
                         destinationType = citiesName[destination]?.type ?: "-1",
                         weight = weight,
                         courier = courierToCheck

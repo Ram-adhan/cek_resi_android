@@ -54,7 +54,6 @@ class MainViewModel @Inject constructor(
             when (cityResult) {
                 is DataResult.Success -> {
                     _cityList.postValue(cityResult.data)
-                    tempCityList.clear()
                     tempCityList.addAll(cityResult.data!!.asIterable())
                 }
                 is DataResult.Error -> {
@@ -64,10 +63,9 @@ class MainViewModel @Inject constructor(
             _isLoadingData.postValue(false)
 
             if (!tempCityList.isNullOrEmpty()){
-//                tempCityList.forEachIndexed { index, cityEntity ->
-//                    Log.d("viewModel", "city ke: $index")
-//                    val subDistrictResult = ongkirRepository.getSubdistrict(cityEntity.cityId)
-//                }
+                tempCityList.forEachIndexed { index, cityEntity ->
+                    val subDistrictResult = ongkirRepository.getSubdistrict(cityEntity.cityId)
+                }
             }else{
                 _failedLoadData.postValue("Cannot load sub-districts")
             }
