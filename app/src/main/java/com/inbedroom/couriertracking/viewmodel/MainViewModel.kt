@@ -1,7 +1,6 @@
 package com.inbedroom.couriertracking.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +12,7 @@ import com.inbedroom.couriertracking.data.entity.Courier
 import com.inbedroom.couriertracking.data.entity.HistoryEntity
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
 import com.inbedroom.couriertracking.data.network.response.DataResult
+import com.inbedroom.couriertracking.data.room.AddressRepository
 import com.inbedroom.couriertracking.data.room.HistoryRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +20,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val historyRepository: HistoryRepository,
     private val ongkirRepository: CekOngkirRepository,
+    private val addressRepository: AddressRepository,
     local: PreferencesManager
 ) : ViewModel() {
 
@@ -62,11 +63,12 @@ class MainViewModel @Inject constructor(
             }
             _isLoadingData.postValue(false)
 
-            if (!tempCityList.isNullOrEmpty()){
-                tempCityList.forEachIndexed { index, cityEntity ->
+            if (!tempCityList.isNullOrEmpty()) {
+                tempCityList.forEach { cityEntity ->
                     val subDistrictResult = ongkirRepository.getSubdistrict(cityEntity.cityId)
+
                 }
-            }else{
+            } else {
                 _failedLoadData.postValue("Cannot load sub-districts")
             }
         }
