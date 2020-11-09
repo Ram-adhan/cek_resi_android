@@ -15,7 +15,6 @@ class ViewModelFactory @Inject constructor(
     private val remoteRepository: TrackingRemoteRepository,
     private val historyRepository: HistoryRepository,
     private val ongkirRepository: CekOngkirRepository,
-    private val addressRepository: AddressRepository,
     private val preferencesManager: PreferencesManager
 ) : ViewModelProvider.Factory {
 
@@ -26,7 +25,7 @@ class ViewModelFactory @Inject constructor(
             ) as T
 
             modelClass.isAssignableFrom(MainViewModel::class.java) -> MainViewModel(
-                historyRepository, ongkirRepository, addressRepository, preferencesManager
+                historyRepository, ongkirRepository, preferencesManager
             ) as T
 
             modelClass.isAssignableFrom(OngkirViewModel::class.java) -> OngkirViewModel(

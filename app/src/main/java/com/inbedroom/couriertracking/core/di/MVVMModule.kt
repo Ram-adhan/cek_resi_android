@@ -20,7 +20,6 @@ class MVVMModule {
         trackingRemoteRepository: TrackingRemoteRepository,
         historyRepository: HistoryRepository,
         ongkirRepository: CekOngkirRepository,
-        addressRepository: AddressRepository,
         preferencesManager: PreferencesManager
-    ): ViewModelProvider.Factory = ViewModelFactory(trackingRemoteRepository, historyRepository, ongkirRepository, addressRepository, preferencesManager)
+    ): ViewModelProvider.Factory = ViewModelFactory(trackingRemoteRepository, historyRepository, ongkirRepository, preferencesManager)
 }

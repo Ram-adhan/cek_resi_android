@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.data.PreferencesManager
+import com.inbedroom.couriertracking.data.entity.AddressEntity
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.Courier
 import com.inbedroom.couriertracking.data.entity.HistoryEntity
@@ -20,7 +21,6 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val historyRepository: HistoryRepository,
     private val ongkirRepository: CekOngkirRepository,
-    private val addressRepository: AddressRepository,
     local: PreferencesManager
 ) : ViewModel() {
 
@@ -33,6 +33,9 @@ class MainViewModel @Inject constructor(
 
     private val _isLoadingData = MutableLiveData<Boolean>()
     val isLoadingData: LiveData<Boolean> = _isLoadingData
+
+    private val _isLoadingSubdistricts = MutableLiveData<Boolean>()
+    val isLoadingSubDistrict: LiveData<Boolean> = _isLoadingSubdistricts
 
     private val _cityList = MutableLiveData<List<CityEntity>>()
     val cityList: LiveData<List<CityEntity>> = _cityList
@@ -47,54 +50,49 @@ class MainViewModel @Inject constructor(
 
         val list = local.readCourierAsset()
         _courierList.postValue(list)
-        val tempCityList: MutableList<CityEntity> = mutableListOf()
 
-        viewModelScope.launch {
-            val cityResult = ongkirRepository.getCityList()
-
-            when (cityResult) {
-                is DataResult.Success -> {
-                    _cityList.postValue(cityResult.data)
-                    tempCityList.addAll(cityResult.data!!.asIterable())
-                }
-                is DataResult.Error -> {
-                    _failedLoadData.postValue(cityResult.errorMessage)
-                }
-            }
-            _isLoadingData.postValue(false)
-
-            if (!tempCityList.isNullOrEmpty()) {
-                tempCityList.forEach { cityEntity ->
-                    val subDistrictResult = ongkirRepository.getSubdistrict(cityEntity.cityId)
-
-                }
-            } else {
-                _failedLoadData.postValue("Cannot load sub-districts")
-            }
-        }
+        getCities(false)
     }
 
     fun getCityList(context: Context) {
         if (context.connectNetwork()) {
             _isLoadingData.postValue(true)
             _noNetwork.postValue(false)
-            viewModelScope.launch {
-                val result = ongkirRepository.getCityList(true)
-
-                when (result) {
-                    is DataResult.Success -> {
-                        _cityList.postValue(result.data)
-                    }
-                    is DataResult.Error -> {
-                        _failedLoadData.postValue(result.errorMessage)
-                    }
-                }
-                _isLoadingData.postValue(false)
-            }
+            getCities()
         } else {
             _noNetwork.postValue(true)
         }
+    }
 
+    private fun getCities(forceUpdate: Boolean = true) {
+        val tempCityList = mutableListOf<CityEntity>()
+
+        viewModelScope.launch {
+            val result = ongkirRepository.getCityList(forceUpdate)
+
+            when (result) {
+                is DataResult.Success -> {
+                    _cityList.postValue(result.data)
+                    tempCityList.addAll(result.data!!.asIterable())
+                }
+                is DataResult.Error -> {
+                    _failedLoadData.postValue(result.errorMessage)
+                }
+            }
+            _isLoadingData.postValue(false)
+
+            if (!tempCityList.isNullOrEmpty()) {
+                _isLoadingSubdistricts.postValue(true)
+
+                tempCityList.forEach { cityEntity ->
+
+                    val subDistrictResult = ongkirRepository.getSubdistrict(cityEntity.cityId)
+
+                }
+            } else {
+                _failedLoadData.postValue("Failed load sub-districts")
+            }
+        }
     }
 
     fun deleteHistory(awb: String) {

@@ -4,6 +4,7 @@ import com.inbedroom.couriertracking.data.PreferencesManager
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
 import com.inbedroom.couriertracking.data.network.CekOngkirRepositoryImpl
 import com.inbedroom.couriertracking.data.network.api.OngkirApi
+import com.inbedroom.couriertracking.data.room.AddressRepository
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -18,6 +19,6 @@ class OngkirModule {
 
     @Provides
     @Singleton
-    fun provideOngkirRepository(ongkirApi: OngkirApi, preferencesManager: PreferencesManager): CekOngkirRepository =
-        CekOngkirRepositoryImpl(ongkirApi, preferencesManager)
+    fun provideOngkirRepository(ongkirApi: OngkirApi, addressRepository: AddressRepository, preferencesManager: PreferencesManager): CekOngkirRepository =
+        CekOngkirRepositoryImpl(ongkirApi, addressRepository, preferencesManager)
 }

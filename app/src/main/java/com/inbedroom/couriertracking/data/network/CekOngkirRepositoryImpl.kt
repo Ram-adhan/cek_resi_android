@@ -7,6 +7,7 @@ import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.data.entity.SubDistrict
 import com.inbedroom.couriertracking.data.network.api.OngkirApi
 import com.inbedroom.couriertracking.data.network.response.DataResult
+import com.inbedroom.couriertracking.data.room.AddressRepository
 import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.utils.handleApiError
 import com.inbedroom.couriertracking.utils.handleApiSuccess
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 class CekOngkirRepositoryImpl @Inject constructor(
     private val ongkirApi: OngkirApi,
+    private val addressRepository: AddressRepository,
     private val preferencesManager: PreferencesManager
 ) : CekOngkirRepository {
 
