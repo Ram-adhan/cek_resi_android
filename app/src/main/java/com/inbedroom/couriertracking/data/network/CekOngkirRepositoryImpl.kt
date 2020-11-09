@@ -1,10 +1,7 @@
 package com.inbedroom.couriertracking.data.network
 
 import com.inbedroom.couriertracking.data.PreferencesManager
-import com.inbedroom.couriertracking.data.entity.CityEntity
-import com.inbedroom.couriertracking.data.entity.CostRequest
-import com.inbedroom.couriertracking.data.entity.OngkirResult
-import com.inbedroom.couriertracking.data.entity.SubDistrict
+import com.inbedroom.couriertracking.data.entity.*
 import com.inbedroom.couriertracking.data.network.api.OngkirApi
 import com.inbedroom.couriertracking.data.network.response.DataResult
 import com.inbedroom.couriertracking.data.room.AddressRepository
@@ -50,6 +47,19 @@ class CekOngkirRepositoryImpl @Inject constructor(
         return if (response.isSuccessful) {
             cityList.clear()
             cityList.addAll(response.body()!!.rajaongkir.results)
+            addressRepository.removeAllData()
+            cityList.forEach {
+                addressRepository.addData(
+                    AddressEntity(
+                        name = it.cityName,
+                        addressId = it.cityId,
+                        cityId = it.cityId,
+                        type = it.type,
+                        isCity = true,
+                        postalCode = it.postalCode
+                    )
+                )
+            }
             preferencesManager.saveCityList(cityList)
             handleApiSuccess(response.body()!!.rajaongkir)
         } else {
@@ -83,14 +93,18 @@ class CekOngkirRepositoryImpl @Inject constructor(
         val url = java.lang.StringBuilder().append(baseUrl).append("/subdistrict")
         return try {
             val response = ongkirApi.getSubDistrictList(url.toString(), cityId)
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 handleApiSuccess(response.body()!!.rajaongkir)
-            }else{
+            } else {
                 handleApiError(response)
             }
         } catch (e: Exception) {
             DataResult.Error(Exception("Internal Error"))
         }
+    }
+
+    override suspend fun getAddressList(): DataResult<List<AddressEntity>> {
+        return handleApiSuccess(addressRepository.getAllData())
     }
 
 }

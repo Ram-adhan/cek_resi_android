@@ -7,10 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.data.PreferencesManager
-import com.inbedroom.couriertracking.data.entity.AddressEntity
-import com.inbedroom.couriertracking.data.entity.CityEntity
-import com.inbedroom.couriertracking.data.entity.Courier
-import com.inbedroom.couriertracking.data.entity.HistoryEntity
+import com.inbedroom.couriertracking.data.entity.*
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
 import com.inbedroom.couriertracking.data.network.response.DataResult
 import com.inbedroom.couriertracking.data.room.AddressRepository
@@ -24,6 +21,12 @@ class MainViewModel @Inject constructor(
     local: PreferencesManager
 ) : ViewModel() {
 
+    companion object{
+        const val LOADING = 0
+        const val FINISHED = 1
+        const val ERROR = 2
+    }
+
     val historiesData: LiveData<List<HistoryEntity>> = historyRepository.getHistories()
     private val _isChanged = MutableLiveData<Boolean>()
     val isChanged: LiveData<Boolean> = _isChanged
@@ -34,17 +37,23 @@ class MainViewModel @Inject constructor(
     private val _isLoadingData = MutableLiveData<Boolean>()
     val isLoadingData: LiveData<Boolean> = _isLoadingData
 
-    private val _isLoadingSubdistricts = MutableLiveData<Boolean>()
-    val isLoadingSubDistrict: LiveData<Boolean> = _isLoadingSubdistricts
+    private val _isLoadingSubdistricts = MutableLiveData<Int>()
+    val isLoadingSubDistrict: LiveData<Int> = _isLoadingSubdistricts
 
     private val _cityList = MutableLiveData<List<CityEntity>>()
     val cityList: LiveData<List<CityEntity>> = _cityList
+
+    private val _addressList = MutableLiveData<List<Address>>()
+    val addressList: LiveData<List<Address>> = _addressList
 
     private val _failedLoadData = MutableLiveData<String>()
     val failedLoadData: LiveData<String> = _failedLoadData
 
     private val _noNetwork = MutableLiveData<Boolean>()
     val noNetwork: LiveData<Boolean> = _noNetwork
+
+    private val tempCityList = mutableListOf<CityEntity>()
+    private val tempSubDistrictList = mutableListOf<SubDistrict>()
 
     init {
 
@@ -65,8 +74,6 @@ class MainViewModel @Inject constructor(
     }
 
     private fun getCities(forceUpdate: Boolean = true) {
-        val tempCityList = mutableListOf<CityEntity>()
-
         viewModelScope.launch {
             val result = ongkirRepository.getCityList(forceUpdate)
 
@@ -74,24 +81,41 @@ class MainViewModel @Inject constructor(
                 is DataResult.Success -> {
                     _cityList.postValue(result.data)
                     tempCityList.addAll(result.data!!.asIterable())
+//                    getSubDistricts(forceUpdate)
                 }
                 is DataResult.Error -> {
                     _failedLoadData.postValue(result.errorMessage)
                 }
             }
             _isLoadingData.postValue(false)
+        }
+    }
 
-            if (!tempCityList.isNullOrEmpty()) {
-                _isLoadingSubdistricts.postValue(true)
-
-                tempCityList.forEach { cityEntity ->
-
-                    val subDistrictResult = ongkirRepository.getSubdistrict(cityEntity.cityId)
+    private fun getSubDistricts(forceUpdate: Boolean){
+        viewModelScope.launch {
+            if (tempCityList.isNullOrEmpty()){
+                _isLoadingSubdistricts.postValue(ERROR)
+            }else{
+                _isLoadingSubdistricts.postValue(LOADING)
+                tempCityList.forEachIndexed { index, value ->
+                    if (index == 0){
+                        tempSubDistrictList.clear()
+                    }
+                    val result = ongkirRepository.getSubdistrict(value.cityId, forceUpdate)
+                    when(result){
+                        is DataResult.Success -> {
+                            tempSubDistrictList.addAll(result.data!!)
+                        }
+                        is DataResult.Error -> {
+                            if (_isLoadingSubdistricts.value != ERROR) {
+                                _isLoadingSubdistricts.postValue(ERROR)
+                            }
+                        }
+                    }
 
                 }
-            } else {
-                _failedLoadData.postValue("Failed load sub-districts")
             }
+
         }
     }
 

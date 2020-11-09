@@ -31,14 +31,12 @@ class OngkirViewModel @Inject constructor(
         _onRequest.postValue(true)
         val tempData = mutableListOf<OngkirResult>()
         viewModelScope.launch {
-            val result = ongkirRepository.getTariffList(
-                request
-            )
+            val result = ongkirRepository.getTariffList(request)
 
             when (result) {
                 is DataResult.Success -> {
                     tempData.add(result.data!![0])
-                    if (_onRequest.value != false){
+                    if (_onRequest.value != false) {
                         _onRequest.postValue(false)
                     }
                     _ongkirListData.postValue(result.data)
