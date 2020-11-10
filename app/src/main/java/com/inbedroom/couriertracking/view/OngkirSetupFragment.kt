@@ -15,6 +15,7 @@ import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.data.entity.Address
+import com.inbedroom.couriertracking.data.entity.AddressEntity
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.utils.Message
@@ -140,17 +141,10 @@ class OngkirSetupFragment : Fragment() {
         }
     }
 
-    private val cityList = Observer<List<CityEntity>> { data ->
+    private val cityList = Observer<List<AddressEntity>> { data ->
         data.forEach {
             val prefix = if (it.type.equals("kabupaten", true)) "Kab. " else ""
-            val address = Address(
-                it.cityName,
-                it.cityId,
-                if (it.type.equals("Kota", true) ||
-                    it.type.equals("Kabupaten", true)
-                ) "city" else "subdistrict"
-            )
-            citiesName[prefix + it.cityName] = address
+            citiesName[prefix + it.name] = Address(it.name, it.addressId, if (it.isCity) "city" else "subdistrict")
         }
         val adapter: ArrayAdapter<String> = ArrayAdapter(
             requireContext(),

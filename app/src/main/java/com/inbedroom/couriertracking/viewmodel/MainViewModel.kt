@@ -40,8 +40,8 @@ class MainViewModel @Inject constructor(
     private val _isLoadingSubdistricts = MutableLiveData<Int>()
     val isLoadingSubDistrict: LiveData<Int> = _isLoadingSubdistricts
 
-    private val _cityList = MutableLiveData<List<CityEntity>>()
-    val cityList: LiveData<List<CityEntity>> = _cityList
+    private val _cityList = MutableLiveData<List<AddressEntity>>()
+    val cityList: LiveData<List<AddressEntity>> = _cityList
 
     private val _addressList = MutableLiveData<List<Address>>()
     val addressList: LiveData<List<Address>> = _addressList
@@ -80,7 +80,6 @@ class MainViewModel @Inject constructor(
             when (result) {
                 is DataResult.Success -> {
                     _cityList.postValue(result.data)
-                    tempCityList.addAll(result.data!!.asIterable())
 //                    getSubDistricts(forceUpdate)
                 }
                 is DataResult.Error -> {

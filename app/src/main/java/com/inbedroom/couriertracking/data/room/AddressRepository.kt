@@ -8,6 +8,7 @@ interface AddressRepository {
     suspend fun addAllData(list: List<AddressEntity>)
     suspend fun removeAllData()
     suspend fun getAllData(): List<AddressEntity>
+    suspend fun removeAllCity()
     fun saveCityList(list: List<CityEntity>)
-    fun getCityList(): List<CityEntity>
+    suspend fun getCityList(): List<AddressEntity>
 }

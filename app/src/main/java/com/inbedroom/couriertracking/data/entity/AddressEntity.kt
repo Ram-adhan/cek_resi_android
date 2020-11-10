@@ -18,4 +18,8 @@ data class AddressEntity(
     companion object{
         const val tableName = "address"
     }
+
+    fun toAddress(): Address {
+        return Address(name, addressId, type)
+    }
 }

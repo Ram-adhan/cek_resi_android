@@ -27,12 +27,16 @@ class AddressRepositoryImpl @Inject constructor(
         return addressDao.getAddresses()
     }
 
+    override suspend fun removeAllCity() {
+        addressDao.removeAllCity()
+    }
+
     override fun saveCityList(list: List<CityEntity>) {
         preferencesManager.saveCityList(list)
     }
 
-    override fun getCityList(): List<CityEntity> {
-        return preferencesManager.getSavedCityList()
+    override suspend fun getCityList(): List<AddressEntity> {
+        return addressDao.getAllCity()
     }
 
 }

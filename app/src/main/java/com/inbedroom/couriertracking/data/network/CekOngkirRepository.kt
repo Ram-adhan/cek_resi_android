@@ -5,7 +5,7 @@ import com.inbedroom.couriertracking.data.network.response.DataResult
 
 interface CekOngkirRepository {
     suspend fun getCityList(forceUpdate: Boolean = false):
-            DataResult<List<CityEntity>>
+            DataResult<List<AddressEntity>>
 
     suspend fun getTariffList(request: CostRequest):
             DataResult<List<OngkirResult>>

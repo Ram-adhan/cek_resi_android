@@ -17,4 +17,13 @@ data class SubDistrict (
 
     @SerializedName("subdistrict_name")
     val name: String
-)
+){
+    fun toAddressEntity() =
+        AddressEntity(
+            name = name,
+            type = type,
+            isCity = false,
+            addressId = id,
+            cityId = cityId
+        )
+}

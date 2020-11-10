@@ -18,19 +18,19 @@ class CekOngkirRepositoryImpl @Inject constructor(
 ) : CekOngkirRepository {
 
     private val baseUrl = ServiceData.ONGKIR_URL
-    private val cityList: MutableList<CityEntity> = ArrayList()
+    private val cityList: MutableList<AddressEntity> = ArrayList()
 
-    override suspend fun getCityList(forceUpdate: Boolean): DataResult<List<CityEntity>> {
+    override suspend fun getCityList(forceUpdate: Boolean): DataResult<List<AddressEntity>> {
         val url = StringBuilder().append(baseUrl).append("/city")
         return try {
             if (forceUpdate) {
                 getFromNetwork(url.toString())
             } else if (cityList.isNullOrEmpty()) {
-                val fromPreferences = preferencesManager.getSavedCityList()
-                if (!fromPreferences.isNullOrEmpty()) {
+                val fromDB = addressRepository.getCityList()
+                if (!fromDB.isNullOrEmpty()) {
                     cityList.clear()
-                    cityList.addAll(fromPreferences)
-                    handleApiSuccess(preferencesManager.getSavedCityList())
+                    cityList.addAll(fromDB)
+                    handleApiSuccess(cityList)
                 } else {
                     getFromNetwork(url.toString())
                 }
@@ -42,26 +42,39 @@ class CekOngkirRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun getFromNetwork(url: String): DataResult<List<CityEntity>> {
+    private suspend fun getFromNetwork(url: String): DataResult<List<AddressEntity>> {
         val response = ongkirApi.getCityList(url)
         return if (response.isSuccessful) {
-            cityList.clear()
-            cityList.addAll(response.body()!!.rajaongkir.results)
-            addressRepository.removeAllData()
-            cityList.forEach {
-                addressRepository.addData(
-                    AddressEntity(
-                        name = it.cityName,
-                        addressId = it.cityId,
-                        cityId = it.cityId,
-                        type = it.type,
-                        isCity = true,
-                        postalCode = it.postalCode
-                    )
-                )
+            val tempData = response.body()?.rajaongkir?.results
+            if (tempData != null){
+                cityList.clear()
+                addressRepository.removeAllCity()
+                tempData.forEach {
+                    cityList.add(it.toAddressEntity())
+                    addressRepository.addData(it.toAddressEntity())
+                }
+                handleApiSuccess(cityList)
+            }else{
+                DataResult.Empty
             }
-            preferencesManager.saveCityList(cityList)
-            handleApiSuccess(response.body()!!.rajaongkir)
+
+//            cityList.clear()
+//            cityList.addAll(response.body()!!.rajaongkir.results)
+//            addressRepository.removeAllData()
+//            cityList.forEach {
+//                addressRepository.addData(
+//                    AddressEntity(
+//                        name = it.cityName,
+//                        addressId = it.cityId,
+//                        cityId = it.cityId,
+//                        type = it.type,
+//                        isCity = true,
+//                        postalCode = it.postalCode
+//                    )
+//                )
+//            }
+//            preferencesManager.saveCityList(cityList)
+//            handleApiSuccess(response.body()!!.rajaongkir)
         } else {
             handleApiError(response)
         }
