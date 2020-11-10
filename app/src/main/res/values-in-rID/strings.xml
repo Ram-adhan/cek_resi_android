@@ -34,4 +34,6 @@
     <string name="ongkir_title">%s ke %s</string>
     <string name="weight_text">Berat: %d gram</string>
     <string name="no_internet">Tidak ada koneksi internet</string>
+    <string name="city_district">Kota/Kabupaten</string>
+    <string name="subdistrict">Kecamatan</string>
 </resources>

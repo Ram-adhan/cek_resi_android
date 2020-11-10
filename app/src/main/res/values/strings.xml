@@ -48,4 +48,6 @@
     <string name="check">Check</string>
     <string name="weight_text">Weight: %d gram</string>
     <string name="no_internet">No network connectivity</string>
+    <string name="city_district">City</string>
+    <string name="subdistrict">SubDistrict</string>
 </resources>

@@ -109,6 +109,7 @@ class MainViewModel @Inject constructor(
                 when(result){
                     is DataResult.Success -> {
                         _subdistrictList.postValue(result.data)
+                        _isLoadingSubdistricts.postValue(FINISHED)
                     }
                     is DataResult.Error -> {
                         if (_isLoadingSubdistricts.value != ERROR) {
