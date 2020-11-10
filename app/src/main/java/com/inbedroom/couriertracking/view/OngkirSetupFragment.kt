@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.chip.Chip
@@ -30,11 +31,11 @@ class OngkirSetupFragment : Fragment() {
     private val subDistrictOrigin: MutableMap<String, Address> = mutableMapOf()
     private val subDistrictDestination: MutableMap<String, Address> = mutableMapOf()
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+//        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         viewModel.isLoadingData.observe(this, loadingData)
         viewModel.cityList.observe(this, cityList)
         viewModel.failedLoadData.observe(this, failed)
@@ -292,7 +293,11 @@ class OngkirSetupFragment : Fragment() {
                 cekOngkirEtDestination.error = null
                 cekOngkirEtOrigin.error = null
                 cekOngkirEtWeight.error = null
-                viewModel.getCityList(requireContext())
+                if (requireContext().connectNetwork()){
+                    viewModel.getCityList()
+                }else{
+                    Message.alert(requireContext(), getString(R.string.no_internet), null)
+                }
                 true
             }
             else -> false

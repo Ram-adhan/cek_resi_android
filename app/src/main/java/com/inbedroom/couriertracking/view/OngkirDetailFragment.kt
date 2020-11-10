@@ -67,7 +67,7 @@ class OngkirDetailFragment : Fragment() {
         detailTextWeight.text = getString(R.string.weight_text, weight)
 
         val llManager = LinearLayoutManager(requireContext())
-        ongkirDetailAdapter = OngkirDetailAdapter(ArrayList())
+        ongkirDetailAdapter = OngkirDetailAdapter()
         detailOngkirRecycler.apply {
             layoutManager = llManager
             adapter = ongkirDetailAdapter
@@ -101,7 +101,7 @@ class OngkirDetailFragment : Fragment() {
             }
         }
 
-        ongkirDetailAdapter.replaceData(listOngkir)
+        ongkirDetailAdapter.setData(listOngkir)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

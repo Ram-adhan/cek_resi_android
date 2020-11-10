@@ -1,22 +1,20 @@
 package com.inbedroom.couriertracking.viewmodel
 
-import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.data.PreferencesManager
-import com.inbedroom.couriertracking.data.entity.*
+import com.inbedroom.couriertracking.data.entity.AddressEntity
+import com.inbedroom.couriertracking.data.entity.Courier
+import com.inbedroom.couriertracking.data.entity.HistoryEntity
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
 import com.inbedroom.couriertracking.data.network.response.DataResult
-import com.inbedroom.couriertracking.data.room.AddressRepository
 import com.inbedroom.couriertracking.data.room.HistoryRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(
+class MainViewModel (
     private val historyRepository: HistoryRepository,
     private val ongkirRepository: CekOngkirRepository,
     local: PreferencesManager
@@ -30,7 +28,9 @@ class MainViewModel @Inject constructor(
         const val ERROR = 4
     }
 
-    val historiesData: LiveData<List<HistoryEntity>> = historyRepository.getHistories()
+
+    var historiesData: LiveData<List<HistoryEntity>> = historyRepository.getHistories()
+
     private val _isChanged = MutableLiveData<Boolean>()
     val isChanged: LiveData<Boolean> = _isChanged
 
@@ -68,14 +68,10 @@ class MainViewModel @Inject constructor(
         getCities(false)
     }
 
-    fun getCityList(context: Context) {
-        if (context.connectNetwork()) {
-            _isLoadingData.postValue(true)
-            _noNetwork.postValue(false)
-            getCities()
-        } else {
-            _noNetwork.postValue(true)
-        }
+    fun getCityList() {
+        _isLoadingData.postValue(true)
+        _noNetwork.postValue(false)
+        getCities()
     }
 
     private fun getCities(forceUpdate: Boolean = true) {
