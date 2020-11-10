@@ -8,7 +8,7 @@ import javax.inject.Inject
 class AddressRepositoryImpl @Inject constructor(
     private val addressDao: AddressDao,
     private val preferencesManager: PreferencesManager
-): AddressRepository {
+) : AddressRepository {
     override suspend fun addData(data: AddressEntity) {
         addressDao.insert(data)
     }

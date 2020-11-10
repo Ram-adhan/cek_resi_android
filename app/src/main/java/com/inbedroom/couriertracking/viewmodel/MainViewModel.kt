@@ -22,7 +22,7 @@ class MainViewModel @Inject constructor(
     local: PreferencesManager
 ) : ViewModel() {
 
-    companion object{
+    companion object {
         const val LOADING_ORIGIN = 0
         const val LOADING_DESTINATION = 1
         const val FINISHED = 2
@@ -51,9 +51,6 @@ class MainViewModel @Inject constructor(
 
     private val _subdistrictListDestination = MutableLiveData<List<AddressEntity>>()
     val subDistrictListDestination: LiveData<List<AddressEntity>> = _subdistrictListDestination
-
-    private val _addressList = MutableLiveData<List<AddressEntity>>()
-    val addressList: LiveData<List<AddressEntity>> = _addressList
 
     private val _failedLoadData = MutableLiveData<String>()
     val failedLoadData: LiveData<String> = _failedLoadData
@@ -99,22 +96,21 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getSubDistricts(cityId: String, isOrigin: Boolean){
-        if (isOrigin){
+    fun getSubDistricts(cityId: String, isOrigin: Boolean) {
+        if (isOrigin) {
             _isLoadingSubdistricts.postValue(LOADING_ORIGIN)
-        }else{
+        } else {
             _isLoadingSubdistricts.postValue(LOADING_DESTINATION)
         }
 
         viewModelScope.launch {
             val result = ongkirRepository.getSubdistrict(cityId)
 
-            when(result){
+            when (result) {
                 is DataResult.Success -> {
-                    Log.d("viewModel", "get subdistrict: ${result.data}")
-                    if (isOrigin){
+                    if (isOrigin) {
                         _subdistrictListOrigin.postValue(result.data)
-                    }else{
+                    } else {
                         _subdistrictListDestination.postValue(result.data)
                     }
                     _isLoadingSubdistricts.postValue(FINISHED)

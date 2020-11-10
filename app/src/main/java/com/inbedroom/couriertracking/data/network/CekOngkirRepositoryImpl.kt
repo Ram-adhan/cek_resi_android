@@ -8,7 +8,6 @@ import com.inbedroom.couriertracking.data.room.AddressRepository
 import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.utils.handleApiError
 import com.inbedroom.couriertracking.utils.handleApiSuccess
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -87,9 +86,9 @@ class CekOngkirRepositoryImpl @Inject constructor(
     ): DataResult<List<AddressEntity>> {
         return try {
             val fromDB = addressRepository.getDistrictFromCity(cityId)
-            if (fromDB.isNullOrEmpty()){
+            if (fromDB.isNullOrEmpty()) {
                 getSubdistrictFromNetwork(cityId)
-            }else{
+            } else {
                 handleApiSuccess(fromDB)
             }
         } catch (e: Exception) {
@@ -105,7 +104,8 @@ class CekOngkirRepositoryImpl @Inject constructor(
                 if (response.body()!!.rajaongkir.results.isNullOrEmpty()) {
                     DataResult.Empty
                 } else {
-                    val temp: MutableList<SubDistrict> = response.body()!!.rajaongkir.results as MutableList<SubDistrict>
+                    val temp: MutableList<SubDistrict> =
+                        response.body()!!.rajaongkir.results as MutableList<SubDistrict>
                     temp.forEach {
                         addressRepository.addData(it.toAddressEntity())
                     }
