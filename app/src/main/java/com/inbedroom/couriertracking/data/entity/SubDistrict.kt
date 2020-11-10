@@ -21,7 +21,7 @@ data class SubDistrict (
     fun toAddressEntity() =
         AddressEntity(
             name = name,
-            type = type,
+            type = "subdistrict",
             isCity = false,
             addressId = id,
             cityId = cityId

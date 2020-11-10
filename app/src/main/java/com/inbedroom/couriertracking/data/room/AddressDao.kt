@@ -14,8 +14,12 @@ interface AddressDao {
     @Query("SELECT * FROM address WHERE isCity = 1")
     suspend fun getAllCity(): List<AddressEntity>
 
+    @Query("SELECT * FROM address WHERE isCity = 0 AND cityId = :cityId")
+    suspend fun getDistrictFromCity(cityId: String): List<AddressEntity>
+
     @Query("DELETE FROM address WHERE isCity = 1")
     suspend fun removeAllCity()
+
 
     @Query("DELETE FROM address")
     suspend fun delete()

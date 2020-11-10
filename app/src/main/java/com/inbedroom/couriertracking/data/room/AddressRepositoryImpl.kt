@@ -39,4 +39,8 @@ class AddressRepositoryImpl @Inject constructor(
         return addressDao.getAllCity()
     }
 
+    override suspend fun getDistrictFromCity(cityId: String): List<AddressEntity> {
+        return addressDao.getDistrictFromCity(cityId)
+    }
+
 }

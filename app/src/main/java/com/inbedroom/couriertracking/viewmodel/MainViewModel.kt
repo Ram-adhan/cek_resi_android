@@ -1,6 +1,7 @@
 package com.inbedroom.couriertracking.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,7 +25,8 @@ class MainViewModel @Inject constructor(
     companion object{
         const val LOADING = 0
         const val FINISHED = 1
-        const val ERROR = 2
+        const val EMPTY = 2
+        const val ERROR = 3
     }
 
     val historiesData: LiveData<List<HistoryEntity>> = historyRepository.getHistories()
@@ -43,8 +45,11 @@ class MainViewModel @Inject constructor(
     private val _cityList = MutableLiveData<List<AddressEntity>>()
     val cityList: LiveData<List<AddressEntity>> = _cityList
 
-    private val _addressList = MutableLiveData<List<Address>>()
-    val addressList: LiveData<List<Address>> = _addressList
+    private val _subdistrictList = MutableLiveData<List<AddressEntity>>()
+    val subDistrictList: LiveData<List<AddressEntity>> = _cityList
+
+    private val _addressList = MutableLiveData<List<AddressEntity>>()
+    val addressList: LiveData<List<AddressEntity>> = _addressList
 
     private val _failedLoadData = MutableLiveData<String>()
     val failedLoadData: LiveData<String> = _failedLoadData
@@ -52,8 +57,8 @@ class MainViewModel @Inject constructor(
     private val _noNetwork = MutableLiveData<Boolean>()
     val noNetwork: LiveData<Boolean> = _noNetwork
 
-    private val tempCityList = mutableListOf<CityEntity>()
-    private val tempSubDistrictList = mutableListOf<SubDistrict>()
+    private val tempCityList = mutableListOf<AddressEntity>()
+    private val tempSubDistrictList = mutableListOf<AddressEntity>()
 
     init {
 
@@ -80,7 +85,8 @@ class MainViewModel @Inject constructor(
             when (result) {
                 is DataResult.Success -> {
                     _cityList.postValue(result.data)
-//                    getSubDistricts(forceUpdate)
+                    tempCityList.clear()
+                    tempCityList.addAll(result.data!!.asIterable())
                 }
                 is DataResult.Error -> {
                     _failedLoadData.postValue(result.errorMessage)
@@ -90,28 +96,30 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getSubDistricts(forceUpdate: Boolean){
+    private fun getSubDistricts(cityId: String){
         viewModelScope.launch {
-            if (tempCityList.isNullOrEmpty()){
+            val values = tempCityList
+            if (values.isNullOrEmpty()){
+                Log.d("viewModel", "get subdistrict failed")
                 _isLoadingSubdistricts.postValue(ERROR)
             }else{
+                Log.d("viewModel", "get subdistrict")
                 _isLoadingSubdistricts.postValue(LOADING)
-                tempCityList.forEachIndexed { index, value ->
-                    if (index == 0){
-                        tempSubDistrictList.clear()
+                val result = ongkirRepository.getSubdistrict(cityId)
+                when(result){
+                    is DataResult.Success -> {
+                        _subdistrictList.postValue(result.data)
                     }
-                    val result = ongkirRepository.getSubdistrict(value.cityId, forceUpdate)
-                    when(result){
-                        is DataResult.Success -> {
-                            tempSubDistrictList.addAll(result.data!!)
-                        }
-                        is DataResult.Error -> {
-                            if (_isLoadingSubdistricts.value != ERROR) {
-                                _isLoadingSubdistricts.postValue(ERROR)
-                            }
+                    is DataResult.Error -> {
+                        if (_isLoadingSubdistricts.value != ERROR) {
+                            _isLoadingSubdistricts.postValue(ERROR)
                         }
                     }
-
+                    is DataResult.Empty -> {
+                        if (_isLoadingSubdistricts.value != EMPTY) {
+                            _isLoadingSubdistricts.postValue(EMPTY)
+                        }
+                    }
                 }
             }
 

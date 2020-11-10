@@ -11,4 +11,5 @@ interface AddressRepository {
     suspend fun removeAllCity()
     fun saveCityList(list: List<CityEntity>)
     suspend fun getCityList(): List<AddressEntity>
+    suspend fun getDistrictFromCity(cityId: String): List<AddressEntity>
 }

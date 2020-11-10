@@ -10,6 +10,7 @@ import com.inbedroom.couriertracking.utils.handleApiError
 import com.inbedroom.couriertracking.utils.handleApiSuccess
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class CekOngkirRepositoryImpl @Inject constructor(
     private val ongkirApi: OngkirApi,
@@ -19,6 +20,7 @@ class CekOngkirRepositoryImpl @Inject constructor(
 
     private val baseUrl = ServiceData.ONGKIR_URL
     private val cityList: MutableList<AddressEntity> = ArrayList()
+    private val subDistrictList: MutableList<AddressEntity> = ArrayList()
 
     override suspend fun getCityList(forceUpdate: Boolean): DataResult<List<AddressEntity>> {
         val url = StringBuilder().append(baseUrl).append("/city")
@@ -44,37 +46,19 @@ class CekOngkirRepositoryImpl @Inject constructor(
 
     private suspend fun getFromNetwork(url: String): DataResult<List<AddressEntity>> {
         val response = ongkirApi.getCityList(url)
+        addressRepository.removeAllData()
         return if (response.isSuccessful) {
             val tempData = response.body()?.rajaongkir?.results
-            if (tempData != null){
+            if (tempData != null) {
                 cityList.clear()
-                addressRepository.removeAllCity()
                 tempData.forEach {
                     cityList.add(it.toAddressEntity())
                     addressRepository.addData(it.toAddressEntity())
                 }
                 handleApiSuccess(cityList)
-            }else{
+            } else {
                 DataResult.Empty
             }
-
-//            cityList.clear()
-//            cityList.addAll(response.body()!!.rajaongkir.results)
-//            addressRepository.removeAllData()
-//            cityList.forEach {
-//                addressRepository.addData(
-//                    AddressEntity(
-//                        name = it.cityName,
-//                        addressId = it.cityId,
-//                        cityId = it.cityId,
-//                        type = it.type,
-//                        isCity = true,
-//                        postalCode = it.postalCode
-//                    )
-//                )
-//            }
-//            preferencesManager.saveCityList(cityList)
-//            handleApiSuccess(response.body()!!.rajaongkir)
         } else {
             handleApiError(response)
         }
@@ -100,14 +84,40 @@ class CekOngkirRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSubdistrict(
-        cityId: String,
-        forceUpdate: Boolean
-    ): DataResult<List<SubDistrict>> {
-        val url = java.lang.StringBuilder().append(baseUrl).append("/subdistrict")
+        cityId: String
+    ): DataResult<List<AddressEntity>> {
+        return try {
+            if (subDistrictList.isNullOrEmpty()) {
+                val fromDB = addressRepository.getDistrictFromCity(cityId)
+                if (fromDB.isNullOrEmpty()){
+                    getSubdistrictFromNetwork(cityId)
+                }else{
+                    handleApiSuccess(addressRepository.getDistrictFromCity(cityId))
+                }
+            }else{
+                handleApiSuccess(subDistrictList)
+            }
+        } catch (e: Exception) {
+            DataResult.Error(Exception("Internal Error"))
+        }
+    }
+
+    private suspend fun getSubdistrictFromNetwork(cityId: String): DataResult<List<AddressEntity>> {
+        val url = StringBuilder().append(baseUrl).append("/subdistrict")
         return try {
             val response = ongkirApi.getSubDistrictList(url.toString(), cityId)
             if (response.isSuccessful) {
-                handleApiSuccess(response.body()!!.rajaongkir)
+                if (response.body()!!.rajaongkir.results.isNullOrEmpty()) {
+                    DataResult.Empty
+                } else {
+                    val temp: MutableList<SubDistrict> = response.body()!!.rajaongkir.results as MutableList<SubDistrict>
+                    subDistrictList.clear()
+                    temp.forEach {
+                        subDistrictList.add(it.toAddressEntity())
+                        addressRepository.addData(it.toAddressEntity())
+                    }
+                    handleApiSuccess(subDistrictList)
+                }
             } else {
                 handleApiError(response)
             }

@@ -10,8 +10,8 @@ interface CekOngkirRepository {
     suspend fun getTariffList(request: CostRequest):
             DataResult<List<OngkirResult>>
 
-    suspend fun getSubdistrict(cityId: String, forceUpdate: Boolean = false):
-            DataResult<List<SubDistrict>>
+    suspend fun getSubdistrict(cityId: String):
+            DataResult<List<AddressEntity>>
 
     suspend fun getAddressList(): DataResult<List<AddressEntity>>
 }
