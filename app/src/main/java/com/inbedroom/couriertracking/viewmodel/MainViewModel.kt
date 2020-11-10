@@ -23,10 +23,11 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object{
-        const val LOADING = 0
-        const val FINISHED = 1
-        const val EMPTY = 2
-        const val ERROR = 3
+        const val LOADING_ORIGIN = 0
+        const val LOADING_DESTINATION = 1
+        const val FINISHED = 2
+        const val EMPTY = 3
+        const val ERROR = 4
     }
 
     val historiesData: LiveData<List<HistoryEntity>> = historyRepository.getHistories()
@@ -45,8 +46,11 @@ class MainViewModel @Inject constructor(
     private val _cityList = MutableLiveData<List<AddressEntity>>()
     val cityList: LiveData<List<AddressEntity>> = _cityList
 
-    private val _subdistrictList = MutableLiveData<List<AddressEntity>>()
-    val subDistrictList: LiveData<List<AddressEntity>> = _cityList
+    private val _subdistrictListOrigin = MutableLiveData<List<AddressEntity>>()
+    val subDistrictListOrigin: LiveData<List<AddressEntity>> = _subdistrictListOrigin
+
+    private val _subdistrictListDestination = MutableLiveData<List<AddressEntity>>()
+    val subDistrictListDestination: LiveData<List<AddressEntity>> = _subdistrictListDestination
 
     private val _addressList = MutableLiveData<List<AddressEntity>>()
     val addressList: LiveData<List<AddressEntity>> = _addressList
@@ -58,7 +62,6 @@ class MainViewModel @Inject constructor(
     val noNetwork: LiveData<Boolean> = _noNetwork
 
     private val tempCityList = mutableListOf<AddressEntity>()
-    private val tempSubDistrictList = mutableListOf<AddressEntity>()
 
     init {
 
@@ -96,30 +99,34 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getSubDistricts(cityId: String){
+    fun getSubDistricts(cityId: String, isOrigin: Boolean){
+        if (isOrigin){
+            _isLoadingSubdistricts.postValue(LOADING_ORIGIN)
+        }else{
+            _isLoadingSubdistricts.postValue(LOADING_DESTINATION)
+        }
+
         viewModelScope.launch {
-            val values = tempCityList
-            if (values.isNullOrEmpty()){
-                Log.d("viewModel", "get subdistrict failed")
-                _isLoadingSubdistricts.postValue(ERROR)
-            }else{
-                Log.d("viewModel", "get subdistrict")
-                _isLoadingSubdistricts.postValue(LOADING)
-                val result = ongkirRepository.getSubdistrict(cityId)
-                when(result){
-                    is DataResult.Success -> {
-                        _subdistrictList.postValue(result.data)
-                        _isLoadingSubdistricts.postValue(FINISHED)
+            val result = ongkirRepository.getSubdistrict(cityId)
+
+            when(result){
+                is DataResult.Success -> {
+                    Log.d("viewModel", "get subdistrict: ${result.data}")
+                    if (isOrigin){
+                        _subdistrictListOrigin.postValue(result.data)
+                    }else{
+                        _subdistrictListDestination.postValue(result.data)
                     }
-                    is DataResult.Error -> {
-                        if (_isLoadingSubdistricts.value != ERROR) {
-                            _isLoadingSubdistricts.postValue(ERROR)
-                        }
+                    _isLoadingSubdistricts.postValue(FINISHED)
+                }
+                is DataResult.Error -> {
+                    if (_isLoadingSubdistricts.value != ERROR) {
+                        _isLoadingSubdistricts.postValue(ERROR)
                     }
-                    is DataResult.Empty -> {
-                        if (_isLoadingSubdistricts.value != EMPTY) {
-                            _isLoadingSubdistricts.postValue(EMPTY)
-                        }
+                }
+                is DataResult.Empty -> {
+                    if (_isLoadingSubdistricts.value != EMPTY) {
+                        _isLoadingSubdistricts.postValue(EMPTY)
                     }
                 }
             }

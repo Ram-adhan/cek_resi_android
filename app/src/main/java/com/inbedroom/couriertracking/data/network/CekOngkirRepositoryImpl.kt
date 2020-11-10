@@ -20,7 +20,6 @@ class CekOngkirRepositoryImpl @Inject constructor(
 
     private val baseUrl = ServiceData.ONGKIR_URL
     private val cityList: MutableList<AddressEntity> = ArrayList()
-    private val subDistrictList: MutableList<AddressEntity> = ArrayList()
 
     override suspend fun getCityList(forceUpdate: Boolean): DataResult<List<AddressEntity>> {
         val url = StringBuilder().append(baseUrl).append("/city")
@@ -87,15 +86,11 @@ class CekOngkirRepositoryImpl @Inject constructor(
         cityId: String
     ): DataResult<List<AddressEntity>> {
         return try {
-            if (subDistrictList.isNullOrEmpty()) {
-                val fromDB = addressRepository.getDistrictFromCity(cityId)
-                if (fromDB.isNullOrEmpty()){
-                    getSubdistrictFromNetwork(cityId)
-                }else{
-                    handleApiSuccess(addressRepository.getDistrictFromCity(cityId))
-                }
+            val fromDB = addressRepository.getDistrictFromCity(cityId)
+            if (fromDB.isNullOrEmpty()){
+                getSubdistrictFromNetwork(cityId)
             }else{
-                handleApiSuccess(subDistrictList)
+                handleApiSuccess(fromDB)
             }
         } catch (e: Exception) {
             DataResult.Error(Exception("Internal Error"))
@@ -111,12 +106,10 @@ class CekOngkirRepositoryImpl @Inject constructor(
                     DataResult.Empty
                 } else {
                     val temp: MutableList<SubDistrict> = response.body()!!.rajaongkir.results as MutableList<SubDistrict>
-                    subDistrictList.clear()
                     temp.forEach {
-                        subDistrictList.add(it.toAddressEntity())
                         addressRepository.addData(it.toAddressEntity())
                     }
-                    handleApiSuccess(subDistrictList)
+                    handleApiSuccess(addressRepository.getDistrictFromCity(cityId))
                 }
             } else {
                 handleApiError(response)
