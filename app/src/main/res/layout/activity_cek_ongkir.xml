@@ -12,6 +12,11 @@
         android:layout_height="match_parent" />
 
     <include
+        android:id="@+id/cekOngkirNoInternet"
+        layout="@layout/not_connected_layout"
+        android:visibility="gone"/>
+
+    <include
         android:id="@+id/cekOngkirLoading"
         layout="@layout/loading_layout"
         android:visibility="gone" />

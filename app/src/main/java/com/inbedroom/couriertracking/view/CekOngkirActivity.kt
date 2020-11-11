@@ -10,6 +10,7 @@ import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
+import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.core.platform.BaseActivity
@@ -65,9 +66,13 @@ class CekOngkirActivity : BaseActivity() {
             viewModelFactory
         ).get(OngkirViewModel::class.java)
 
-        viewModel.checkTariff(request)
+        if (this.connectNetwork()){
+            viewModel.checkTariff(request)
+            viewModel.onRequest.observe(this, loadingRequest)
 
-        viewModel.onRequest.observe(this, loadingRequest)
+        }else{
+            displayNotConnected()
+        }
 
         MobileAds.initialize(this)
         interstitialAd = InterstitialAd(this)
@@ -79,6 +84,10 @@ class CekOngkirActivity : BaseActivity() {
                 finish()
             }
         }
+    }
+
+    private fun displayNotConnected() {
+        cekOngkirNoInternet.visible()
     }
 
     override fun initView() {
