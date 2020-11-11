@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.inbedroom.couriertracking.R
+import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.platform.AdapterItem
 import com.inbedroom.couriertracking.data.entity.Ongkir
 import kotlinx.android.synthetic.main.item_header.view.*
@@ -24,11 +25,18 @@ class OngkirDetailAdapter :
 
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItem(item: Ongkir) {
-            val etd = itemView.context.getString(R.string.etd, item.etd)
-            itemView.serviceDetail.text =
-                itemView.context.getString(R.string.service_detail, item.service, etd)
-            itemView.serviceCourier.text = item.courier
-            itemView.serviceCost.text = itemView.context.getString(R.string.price, item.cost)
+
+            if (!item.service.isNullOrEmpty()){
+                val etd = itemView.context.getString(R.string.etd, item.etd)
+                itemView.serviceDetail.text =
+                    itemView.context.getString(R.string.service_detail, item.service, etd)
+                itemView.serviceCourier.text = item.courier
+                itemView.serviceCost.text = itemView.context.getString(R.string.price, item.cost)
+            }else{
+                itemView.serviceDetail.text = itemView.context.getString(R.string.no_service)
+                itemView.serviceCourier.invisible()
+                itemView.serviceCost.invisible()
+            }
         }
     }
 
@@ -92,7 +100,6 @@ class OngkirDetailAdapter :
                 prevTitle = currentTitle
             }
             data.add(AdapterItem.Item(value))
-            Log.d("adapter", "data: $value")
         }
     }
 

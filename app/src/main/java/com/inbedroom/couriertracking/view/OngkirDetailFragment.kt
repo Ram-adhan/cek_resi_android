@@ -1,6 +1,7 @@
 package com.inbedroom.couriertracking.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -80,24 +81,29 @@ class OngkirDetailFragment : Fragment() {
     @ExperimentalStdlibApi
     private val onLoad = Observer<List<OngkirResult>> { result ->
 
-        result.forEach {courData ->
-            val courier = courData.name
-
-            courData.costs.forEach { costs ->
+        result.forEach { courData ->
+            Log.d("act", "data: $courData")
+            if (courData.costs.isNullOrEmpty()) {
                 val data = Ongkir()
-                data.courier = courier
-                data.service = costs.service
-                with(costs.cost[0]) {
-                    data.cost = value
-                    data.etd = if (etd.contains("hari", true)) {
-                        etd.replace(
-                            "hari",
-                            "",
-                            true
-                        )
-                    } else etd
-                }
+                data.courier = courData.name
                 listOngkir.add(data)
+            } else {
+                courData.costs.forEach { costs ->
+                    val data = Ongkir()
+                    data.courier = courData.name
+                    data.service = costs.service
+                    with(costs.cost[0]) {
+                        data.cost = value
+                        data.etd = if (etd.contains("hari", true)) {
+                            etd.replace(
+                                "hari",
+                                "",
+                                true
+                            )
+                        } else etd
+                    }
+                    listOngkir.add(data)
+                }
             }
         }
 
@@ -109,7 +115,7 @@ class OngkirDetailFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun initAds(){
+    private fun initAds() {
         adView = AdView(requireContext())
         adView.adSize = AdSize.SMART_BANNER
         adView.adUnitId = ServiceData.BANNER_AD_ID
