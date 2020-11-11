@@ -9,7 +9,6 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.inbedroom.couriertracking.R
@@ -35,11 +34,9 @@ class OngkirSetupFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         viewModel.isLoadingData.observe(this, loadingData)
         viewModel.cityList.observe(this, cityList)
         viewModel.failedLoadData.observe(this, failed)
-        viewModel.noNetwork.observe(this, noNetwork)
         viewModel.isLoadingSubDistrict.observe(this, subdistrictStatus)
         viewModel.subDistrictListOrigin.observe(this, subdistrictListOrigin)
         viewModel.subDistrictListDestination.observe(this, subdistrictListDestination)
@@ -81,10 +78,14 @@ class OngkirSetupFragment : Fragment() {
 
     private fun onActionListener() {
 
+        var origin = ""
+        var destination = ""
+
         cekOngkirEtOrigin.addTextChangedListener {
             val value = it.toString()
             if (citiesName.containsKey(value)) {
-                viewModel.getSubDistricts(citiesName[value]?.id.toString(), true)
+                origin = citiesName[value]?.id.toString()
+                viewModel.getSubDistricts(origin, true)
             } else {
                 cekOngkirEtOriginSub.text.clear()
             }
@@ -93,16 +94,29 @@ class OngkirSetupFragment : Fragment() {
         cekOngkirEtDestination.addTextChangedListener {
             val value = it.toString()
             if (citiesName.containsKey(value)) {
-                viewModel.getSubDistricts(citiesName[value]?.id.toString(), false)
+                destination = citiesName[value]?.id.toString()
+                viewModel.getSubDistricts(origin, false)
             } else {
                 cekOngkirEtDestinationSub.text.clear()
             }
         }
 
+        cekOngkirEtOriginSub.addTextChangedListener {
+            val value = it.toString()
+            if (value.isNotEmpty()){
+                origin = subDistrictOrigin[value]?.id ?: origin
+            }
+        }
+
+        cekOngkirEtDestinationSub.addTextChangedListener {
+            val value = it.toString()
+            if (value.isNotEmpty()){
+                destination = subDistrictOrigin[value]?.id ?: origin
+            }
+        }
+
         cekOngkirButtonCalculate.setOnClickListener {
             var canContinue = true
-            var origin = cekOngkirEtOrigin.text.toString()
-            var destination = cekOngkirEtDestination.text.toString()
             val weight = try {
                 cekOngkirEtWeight.text.toString().toInt()
             } catch (e: NumberFormatException) {

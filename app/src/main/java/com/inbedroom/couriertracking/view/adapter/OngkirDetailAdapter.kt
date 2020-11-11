@@ -30,11 +30,9 @@ class OngkirDetailAdapter :
                 val etd = itemView.context.getString(R.string.etd, item.etd)
                 itemView.serviceDetail.text =
                     itemView.context.getString(R.string.service_detail, item.service, etd)
-                itemView.serviceCourier.text = item.courier
                 itemView.serviceCost.text = itemView.context.getString(R.string.price, item.cost)
             }else{
                 itemView.serviceDetail.text = itemView.context.getString(R.string.no_service)
-                itemView.serviceCourier.invisible()
                 itemView.serviceCost.invisible()
             }
         }
