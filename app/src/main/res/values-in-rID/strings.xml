@@ -37,4 +37,5 @@
     <string name="city_district">Kota/Kabupaten</string>
     <string name="subdistrict">Kecamatan</string>
     <string name="no_service">Service not available</string>
+    <string name="unknown_subdistrict">Kecamatan tidak diketahui, pilih dari yang telah disarankan</string>
 </resources>

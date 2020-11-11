@@ -1,31 +1,34 @@
 package com.inbedroom.couriertracking.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inbedroom.couriertracking.data.PreferencesManager
+import com.inbedroom.couriertracking.data.entity.Address
 import com.inbedroom.couriertracking.data.entity.AddressEntity
 import com.inbedroom.couriertracking.data.entity.Courier
 import com.inbedroom.couriertracking.data.entity.HistoryEntity
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
 import com.inbedroom.couriertracking.data.network.response.DataResult
 import com.inbedroom.couriertracking.data.room.HistoryRepository
+import com.inbedroom.couriertracking.utils.AddressItem
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class MainViewModel (
+class MainViewModel(
     private val historyRepository: HistoryRepository,
     private val ongkirRepository: CekOngkirRepository,
     local: PreferencesManager
 ) : ViewModel() {
 
     companion object {
-        const val LOADING_ORIGIN = 0
-        const val LOADING_DESTINATION = 1
-        const val FINISHED = 2
-        const val EMPTY = 3
-        const val ERROR = 4
+        const val LOADING_SUB_ORIGIN = 5
+        const val LOADING_SUB_DESTINATION = 6
+        const val LOADING_CITY = 0
+        const val FINISHED = 10
+        const val EMPTY = 11
+        const val ERROR = 20
     }
 
 
@@ -37,11 +40,11 @@ class MainViewModel (
     private val _courierList = MutableLiveData<List<Courier>>()
     val courierList: LiveData<List<Courier>> = _courierList
 
-    private val _isLoadingData = MutableLiveData<Boolean>()
-    val isLoadingData: LiveData<Boolean> = _isLoadingData
+    private val _loadingStatus = MutableLiveData<Int>()
+    val loadingStatus: LiveData<Int> = _loadingStatus
 
-    private val _isLoadingSubdistricts = MutableLiveData<Int>()
-    val isLoadingSubDistrict: LiveData<Int> = _isLoadingSubdistricts
+    private val _addressList = MutableLiveData<List<AddressItem<AddressEntity>>>()
+    val addressList: LiveData<List<AddressItem<AddressEntity>>> = _addressList
 
     private val _cityList = MutableLiveData<List<AddressEntity>>()
     val cityList: LiveData<List<AddressEntity>> = _cityList
@@ -55,10 +58,8 @@ class MainViewModel (
     private val _failedLoadData = MutableLiveData<String>()
     val failedLoadData: LiveData<String> = _failedLoadData
 
-    private val _noNetwork = MutableLiveData<Boolean>()
-    val noNetwork: LiveData<Boolean> = _noNetwork
-
     private val tempCityList = mutableListOf<AddressEntity>()
+    private val addresses = mutableListOf<AddressItem<Address>>()
 
     init {
 
@@ -69,12 +70,11 @@ class MainViewModel (
     }
 
     fun getCityList() {
-        _isLoadingData.postValue(true)
-        _noNetwork.postValue(false)
         getCities()
     }
 
     private fun getCities(forceUpdate: Boolean = true) {
+        _loadingStatus.postValue(LOADING_CITY)
         viewModelScope.launch {
             val result = ongkirRepository.getCityList(forceUpdate)
 
@@ -83,20 +83,23 @@ class MainViewModel (
                     _cityList.postValue(result.data)
                     tempCityList.clear()
                     tempCityList.addAll(result.data!!.asIterable())
+
+                    toAddressCity(result.data)
                 }
                 is DataResult.Error -> {
                     _failedLoadData.postValue(result.errorMessage)
                 }
+                else -> _failedLoadData.postValue("Unknown Error")
             }
-            _isLoadingData.postValue(false)
+            _loadingStatus.postValue(FINISHED)
         }
     }
 
     fun getSubDistricts(cityId: String, isOrigin: Boolean) {
         if (isOrigin) {
-            _isLoadingSubdistricts.postValue(LOADING_ORIGIN)
+            _loadingStatus.postValue(LOADING_SUB_ORIGIN)
         } else {
-            _isLoadingSubdistricts.postValue(LOADING_DESTINATION)
+            _loadingStatus.postValue(LOADING_SUB_DESTINATION)
         }
 
         viewModelScope.launch {
@@ -106,24 +109,80 @@ class MainViewModel (
                 is DataResult.Success -> {
                     if (isOrigin) {
                         _subdistrictListOrigin.postValue(result.data)
+                        result.data?.let { toAddressSubOrigin(it) }
                     } else {
                         _subdistrictListDestination.postValue(result.data)
+                        result.data?.let { toAddressSubDestination(it) }
                     }
-                    _isLoadingSubdistricts.postValue(FINISHED)
+                    _loadingStatus.postValue(FINISHED)
                 }
                 is DataResult.Error -> {
-                    if (_isLoadingSubdistricts.value != ERROR) {
-                        _isLoadingSubdistricts.postValue(ERROR)
+                    if (_loadingStatus.value != ERROR) {
+                        _loadingStatus.postValue(ERROR)
                     }
                 }
                 is DataResult.Empty -> {
-                    if (_isLoadingSubdistricts.value != EMPTY) {
-                        _isLoadingSubdistricts.postValue(EMPTY)
+                    if (_loadingStatus.value != EMPTY) {
+                        _loadingStatus.postValue(EMPTY)
                     }
                 }
             }
 
         }
+    }
+
+    private fun toAddressCity(data: List<AddressEntity>) {
+        val newData = data.map { e ->
+            val name = if (e.type.equals("kabupaten", true)) "Kab. ${e.name}" else e.name
+            val value = Address(
+                name, e.addressId, e.type
+            )
+            AddressItem.City(value)
+        }
+
+        val tempAddressList = addresses.dropWhile { e ->
+            when (e) {
+                is AddressItem.City -> true
+                else -> false
+            }
+        }
+
+        addresses.clear()
+        addresses.addAll(tempAddressList)
+        addresses
+            .addAll(newData)
+    }
+
+    private fun toAddressSubOrigin(data: List<AddressEntity>) {
+        val newData = data.map { e -> AddressItem.SubOrigin(e.toAddress()) }
+
+        val tempAddressList = addresses.dropWhile { e ->
+            when (e) {
+                is AddressItem.SubOrigin -> true
+                else -> false
+            }
+        }
+
+        addresses.clear()
+        addresses.addAll(tempAddressList)
+        addresses
+            .addAll(newData)
+    }
+
+    private fun toAddressSubDestination(data: List<AddressEntity>) {
+        val newData = data.map { e -> AddressItem.SubDestination(e.toAddress()) }
+
+        val tempAddressList = addresses.dropWhile { e ->
+            when (e) {
+                is AddressItem.SubDestination -> true
+                else -> false
+            }
+        }
+
+        addresses.clear()
+        addresses.addAll(tempAddressList)
+        addresses
+            .addAll(newData)
     }
 
     fun deleteHistory(awb: String) {

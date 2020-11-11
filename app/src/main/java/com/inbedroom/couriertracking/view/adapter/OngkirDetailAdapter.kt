@@ -1,13 +1,12 @@
 package com.inbedroom.couriertracking.view.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.extension.invisible
-import com.inbedroom.couriertracking.core.platform.AdapterItem
+import com.inbedroom.couriertracking.utils.AdapterItem
 import com.inbedroom.couriertracking.data.entity.Ongkir
 import kotlinx.android.synthetic.main.item_header.view.*
 import kotlinx.android.synthetic.main.item_ongkir_detail.view.*

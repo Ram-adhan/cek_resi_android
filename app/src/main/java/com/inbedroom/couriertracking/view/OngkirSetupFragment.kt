@@ -25,6 +25,11 @@ import java.util.*
 
 class OngkirSetupFragment : Fragment() {
 
+    companion object {
+        const val CITY = "city"
+        const val SUBDISTRICT = "subdistrict"
+    }
+
     private val couriers = listOf("JNE", "Pos", "TIKI", "Wahana", "SiCepat", "JNT", "Ninja", "JET")
     private val citiesName: MutableMap<String, Address> = mutableMapOf()
     private val subDistrictOrigin: MutableMap<String, Address> = mutableMapOf()
@@ -34,10 +39,9 @@ class OngkirSetupFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.isLoadingData.observe(this, loadingData)
+        viewModel.loadingStatus.observe(this, loadingStatus)
         viewModel.cityList.observe(this, cityList)
         viewModel.failedLoadData.observe(this, failed)
-        viewModel.isLoadingSubDistrict.observe(this, subdistrictStatus)
         viewModel.subDistrictListOrigin.observe(this, subdistrictListOrigin)
         viewModel.subDistrictListDestination.observe(this, subdistrictListDestination)
         setHasOptionsMenu(true)
@@ -78,14 +82,14 @@ class OngkirSetupFragment : Fragment() {
 
     private fun onActionListener() {
 
-        var origin = ""
-        var destination = ""
+        var origin: Address? = null
+        var destination: Address? = null
 
         cekOngkirEtOrigin.addTextChangedListener {
             val value = it.toString()
             if (citiesName.containsKey(value)) {
-                origin = citiesName[value]?.id.toString()
-                viewModel.getSubDistricts(origin, true)
+                origin = citiesName[value]
+                origin?.id?.let { it1 -> viewModel.getSubDistricts(it1, true) }
             } else {
                 cekOngkirEtOriginSub.text.clear()
             }
@@ -94,8 +98,8 @@ class OngkirSetupFragment : Fragment() {
         cekOngkirEtDestination.addTextChangedListener {
             val value = it.toString()
             if (citiesName.containsKey(value)) {
-                destination = citiesName[value]?.id.toString()
-                viewModel.getSubDistricts(origin, false)
+                destination = citiesName[value]
+                destination?.id?.let { it1 -> viewModel.getSubDistricts(it1, false) }
             } else {
                 cekOngkirEtDestinationSub.text.clear()
             }
@@ -103,15 +107,15 @@ class OngkirSetupFragment : Fragment() {
 
         cekOngkirEtOriginSub.addTextChangedListener {
             val value = it.toString()
-            if (value.isNotEmpty()){
-                origin = subDistrictOrigin[value]?.id ?: origin
+            if (value.isNotEmpty()) {
+                origin = subDistrictOrigin[value] ?: origin
             }
         }
 
         cekOngkirEtDestinationSub.addTextChangedListener {
             val value = it.toString()
-            if (value.isNotEmpty()){
-                destination = subDistrictOrigin[value]?.id ?: origin
+            if (value.isNotEmpty()) {
+                destination = subDistrictDestination[value] ?: destination
             }
         }
 
@@ -123,19 +127,26 @@ class OngkirSetupFragment : Fragment() {
                 0
             }
 
-            if (origin.isEmpty()) {
+            if (origin == null) {
                 cekOngkirEtOrigin.error = getString(R.string.empty_origin)
                 canContinue = false
-            } else if (!citiesName.containsKey(origin)) {
+            } else if (cekOngkirEtOrigin.text.isNotEmpty() && origin == null) {
                 cekOngkirEtOrigin.error = getString(R.string.unknown_city)
+                canContinue = false
+            } else if (cekOngkirEtOriginSub.text.isNotEmpty() && origin!!.type == CITY) {
+                cekOngkirEtOriginSub.error = getString(R.string.unknown_subdistrict)
                 canContinue = false
             }
 
-            if (destination.isEmpty()) {
+
+            if (destination == null) {
                 cekOngkirEtDestination.error = getString(R.string.empty_destination)
                 canContinue = false
-            } else if (!citiesName.containsKey(destination)) {
-                cekOngkirEtOrigin.error = getString(R.string.unknown_city)
+            } else if (cekOngkirEtDestination.text.isNotEmpty() && destination == null) {
+                cekOngkirEtDestination.error = getString(R.string.unknown_city)
+                canContinue = false
+            } else if (cekOngkirEtDestinationSub.text.isNotEmpty() && destination!!.type == CITY) {
+                cekOngkirEtDestinationSub.error = getString(R.string.unknown_subdistrict)
                 canContinue = false
             }
 
@@ -159,47 +170,19 @@ class OngkirSetupFragment : Fragment() {
                         val id = chipId - chipIds[0]
                         courierToCheck += couriers[id].toLowerCase(Locale.ROOT)
                     }
-                    val originIdVal: String
-                    val originTypeVal: String
-                    val destIdVal: String
-                    val destTypeVal: String
-
-                    if (cekOngkirEtOriginSub.text.isNotEmpty()) {
-                        origin = cekOngkirEtOriginSub.text.toString()
-                        originIdVal =
-                            subDistrictOrigin[origin]?.id ?: "-1"
-                        originTypeVal =
-                            subDistrictOrigin[origin]?.type ?: "-1"
-                    } else {
-                        originIdVal = citiesName[origin]?.id ?: "-1"
-                        originTypeVal = citiesName[origin]?.type ?: "-1"
-                    }
-
-                    if (cekOngkirEtDestinationSub.text.isNotEmpty()) {
-                        destination = cekOngkirEtDestinationSub.text.toString()
-                        destIdVal =
-                            subDistrictDestination[destination]?.id
-                                ?: "-1"
-                        destTypeVal =
-                            subDistrictDestination[destination]?.type
-                                ?: "-1"
-                    } else {
-                        destIdVal = citiesName[destination]?.id ?: "-1"
-                        destTypeVal = citiesName[destination]?.type ?: "-1"
-                    }
 
                     val request = CostRequest(
-                        origin = originIdVal,
-                        originType = originTypeVal,
-                        destination = destIdVal,
-                        destinationType = destTypeVal,
+                        origin = origin!!.id,
+                        originType = origin!!.type,
+                        destination = destination!!.id,
+                        destinationType = destination!!.type,
                         weight = weight,
                         courier = courierToCheck
                     )
 
                     startActivity(
                         CekOngkirActivity.callIntent(
-                            requireContext(), origin, destination, request
+                            requireContext(), origin!!.name, destination!!.name, request
                         )
                     )
                 } else {
@@ -213,7 +196,7 @@ class OngkirSetupFragment : Fragment() {
         data.forEach {
             val prefix = if (it.type.equals("kabupaten", true)) "Kab. " else ""
             citiesName[prefix + it.name] =
-                Address(it.name, it.addressId, if (it.isCity) "city" else "subdistrict")
+                Address(it.name, it.addressId, if (it.isCity) CITY else "subdistrict")
         }
 
         val adapter: ArrayAdapter<String> = ArrayAdapter(
@@ -255,38 +238,24 @@ class OngkirSetupFragment : Fragment() {
         cekOngkirEtDestinationSub.setAdapter(adapter)
     }
 
-    private val loadingData = Observer<Boolean> {
-        if (it) {
-            loadingOrigin.visible()
-            loadingDestination.visible()
-        } else {
-            loadingOrigin.invisible()
-            loadingDestination.invisible()
-        }
-    }
-
-    private val failed = Observer<String> {
-        Message.toast(requireContext(), it)
-    }
-
-    private val noNetwork = Observer<Boolean> {
-        if (it) {
-            Message.alert(requireContext(), getString(R.string.no_internet), null)
-        }
-    }
-
-    private val subdistrictStatus = Observer<Int> {
+    private val loadingStatus = Observer<Int> {
         when (it) {
-            MainViewModel.LOADING_ORIGIN -> loadingOriginSub.visible()
-            MainViewModel.LOADING_DESTINATION -> loadingDestinationSub.visible()
+            MainViewModel.LOADING_CITY -> {
+                loadingOrigin.visible()
+                loadingDestination.visible()
+            }
+            MainViewModel.FINISHED -> {
+                loadingOrigin.invisible()
+                loadingDestination.invisible()
+                loadingOriginSub.invisible()
+                loadingDestinationSub.invisible()
+            }
+            MainViewModel.LOADING_SUB_ORIGIN -> loadingOriginSub.visible()
+            MainViewModel.LOADING_SUB_DESTINATION -> loadingDestinationSub.visible()
             MainViewModel.ERROR -> {
                 loadingOriginSub.invisible()
                 loadingDestinationSub.invisible()
                 Message.toast(requireContext(), "Error Getting Subdistrict")
-            }
-            MainViewModel.FINISHED -> {
-                loadingOriginSub.invisible()
-                loadingDestinationSub.invisible()
             }
             MainViewModel.EMPTY -> {
                 loadingOriginSub.invisible()
@@ -294,6 +263,10 @@ class OngkirSetupFragment : Fragment() {
                 Message.toast(requireContext(), "No available subdistrict")
             }
         }
+    }
+
+    private val failed = Observer<String> {
+        Message.toast(requireContext(), it)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -307,9 +280,9 @@ class OngkirSetupFragment : Fragment() {
                 cekOngkirEtDestination.error = null
                 cekOngkirEtOrigin.error = null
                 cekOngkirEtWeight.error = null
-                if (requireContext().connectNetwork()){
+                if (requireContext().connectNetwork()) {
                     viewModel.getCityList()
-                }else{
+                } else {
                     Message.alert(requireContext(), getString(R.string.no_internet), null)
                 }
                 true
