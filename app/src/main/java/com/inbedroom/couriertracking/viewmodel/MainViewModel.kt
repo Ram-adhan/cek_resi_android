@@ -48,17 +48,10 @@ class MainViewModel(
     private val _cityList = MutableLiveData<List<Address>>()
     val cityList: LiveData<List<Address>> = _cityList
 
-    private val _subdistrictListOrigin = MutableLiveData<List<AddressEntity>>()
-    val subDistrictListOrigin: LiveData<List<AddressEntity>> = _subdistrictListOrigin
-
-    private val _subdistrictListDestination = MutableLiveData<List<AddressEntity>>()
-    val subDistrictListDestination: LiveData<List<AddressEntity>> = _subdistrictListDestination
-
     private val _failedLoadData = MutableLiveData<String>()
     val failedLoadData: LiveData<String> = _failedLoadData
 
     private val tempCityList = mutableListOf<AddressEntity>()
-    private val addresses = mutableListOf<AddressItem<Address>>()
 
     init {
 
@@ -114,10 +107,8 @@ class MainViewModel(
                 is DataResult.Success -> {
                     val data = result.data?.map { e -> e.toAddress() }
                     if (isOrigin) {
-                        _subdistrictListOrigin.postValue(result.data)
                         toAddressSubOrigin(data)
                     } else {
-                        _subdistrictListDestination.postValue(result.data)
                         toAddressSubDestination(data)
                     }
                 }
@@ -136,29 +127,19 @@ class MainViewModel(
         }
     }
 
-    private fun toAddressCity(data: List<AddressEntity>) {
-        val newData = data.map { e ->
-            val name = if (e.type.equals("kabupaten", true)) "Kab. ${e.name}" else e.name
-            val value = Address(
-                name, e.addressId, e.type
-            )
-            AddressItem.City(value)
-        }
-    }
-
     private fun toAddressSubOrigin(data: List<Address>?) {
-        val newData = if (!data.isNullOrEmpty()){
+        val newData = if (!data.isNullOrEmpty()) {
             AddressItem.SubOrigin(data.toList())
-        }else{
+        } else {
             AddressItem.Empty()
         }
         _addressList.postValue(newData)
     }
 
     private fun toAddressSubDestination(data: List<Address>?) {
-        val newData = if (!data.isNullOrEmpty()){
+        val newData = if (!data.isNullOrEmpty()) {
             AddressItem.SubDestination(data.toList())
-        }else{
+        } else {
             AddressItem.Empty()
         }
         _addressList.postValue(newData)
