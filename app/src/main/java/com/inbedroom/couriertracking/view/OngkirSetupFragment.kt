@@ -43,8 +43,6 @@ class OngkirSetupFragment : Fragment() {
         viewModel.addressList.observe(this, subdistrictList)
         viewModel.cityList.observe(this, cityList)
         viewModel.failedLoadData.observe(this, failed)
-//        viewModel.subDistrictListOrigin.observe(this, subdistrictList)
-//        viewModel.subDistrictListDestination.observe(this, subdistrictListDestination)
         setHasOptionsMenu(true)
     }
 
@@ -162,33 +160,29 @@ class OngkirSetupFragment : Fragment() {
             }
 
             if (canContinue) {
-                if (requireContext().connectNetwork()) {
-                    var courierToCheck = ""
-                    chipIds.forEachIndexed { i, chipId ->
-                        if (i != 0) {
-                            courierToCheck += ":"
-                        }
-                        val id = chipId - chipIds[0]
-                        courierToCheck += couriers[id].toLowerCase(Locale.ROOT)
+                var courierToCheck = ""
+                chipIds.forEachIndexed { i, chipId ->
+                    if (i != 0) {
+                        courierToCheck += ":"
                     }
-
-                    val request = CostRequest(
-                        origin = origin!!.id,
-                        originType = origin!!.type,
-                        destination = destination!!.id,
-                        destinationType = destination!!.type,
-                        weight = weight,
-                        courier = courierToCheck
-                    )
-
-                    startActivity(
-                        CekOngkirActivity.callIntent(
-                            requireContext(), origin!!.name, destination!!.name, request
-                        )
-                    )
-                } else {
-                    Message.alert(requireContext(), getString(R.string.no_internet), null)
+                    val id = chipId - chipIds[0]
+                    courierToCheck += couriers[id].toLowerCase(Locale.ROOT)
                 }
+
+                val request = CostRequest(
+                    origin = origin!!.id,
+                    originType = origin!!.type,
+                    destination = destination!!.id,
+                    destinationType = destination!!.type,
+                    weight = weight,
+                    courier = courierToCheck
+                )
+
+                startActivity(
+                    CekOngkirActivity.callIntent(
+                        requireContext(), origin!!.name, destination!!.name, request
+                    )
+                )
             }
         }
     }
