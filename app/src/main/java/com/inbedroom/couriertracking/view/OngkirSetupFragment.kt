@@ -16,8 +16,8 @@ import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.data.entity.Address
-import com.inbedroom.couriertracking.data.entity.AddressEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
+import com.inbedroom.couriertracking.utils.AddressItem
 import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.fragment_ongkir_setup.*
@@ -40,10 +40,11 @@ class OngkirSetupFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.loadingStatus.observe(this, loadingStatus)
+        viewModel.addressList.observe(this, subdistrictList)
         viewModel.cityList.observe(this, cityList)
         viewModel.failedLoadData.observe(this, failed)
-        viewModel.subDistrictListOrigin.observe(this, subdistrictListOrigin)
-        viewModel.subDistrictListDestination.observe(this, subdistrictListDestination)
+//        viewModel.subDistrictListOrigin.observe(this, subdistrictList)
+//        viewModel.subDistrictListDestination.observe(this, subdistrictListDestination)
         setHasOptionsMenu(true)
     }
 
@@ -192,11 +193,10 @@ class OngkirSetupFragment : Fragment() {
         }
     }
 
-    private val cityList = Observer<List<AddressEntity>> { data ->
+    private val cityList = Observer<List<Address>> { data ->
+        citiesName.clear()
         data.forEach {
-            val prefix = if (it.type.equals("kabupaten", true)) "Kab. " else ""
-            citiesName[prefix + it.name] =
-                Address(it.name, it.addressId, if (it.isCity) CITY else "subdistrict")
+            citiesName[it.name] = it
         }
 
         val adapter: ArrayAdapter<String> = ArrayAdapter(
@@ -208,34 +208,34 @@ class OngkirSetupFragment : Fragment() {
         cekOngkirEtDestination.setAdapter(adapter)
     }
 
-    private val subdistrictListOrigin = Observer<List<AddressEntity>> { data ->
-        subDistrictOrigin.clear()
-        data.forEach {
-            subDistrictOrigin[it.name] = it.toAddress()
+    private val subdistrictList = Observer<AddressItem<List<Address>>> { data ->
+        when(data){
+            is AddressItem.SubOrigin -> {
+                subDistrictOrigin.clear()
+                data.value.forEach {
+                    subDistrictOrigin[it.name] = it
+                }
+                val adapter: ArrayAdapter<String> = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_list_item_1,
+                    subDistrictOrigin.keys.toTypedArray()
+                )
+                cekOngkirEtOriginSub.setAdapter(adapter)
+            }
+            is AddressItem.SubDestination -> {
+                subDistrictDestination.clear()
+                data.value.forEach {
+                    subDistrictDestination[it.name] = it
+                }
+                val adapter: ArrayAdapter<String> = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_list_item_1,
+                    subDistrictDestination.keys.toTypedArray()
+                )
+                cekOngkirEtDestinationSub.setAdapter(adapter)
+            }
+            else -> {}
         }
-
-        val adapter: ArrayAdapter<String> = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_list_item_1,
-            subDistrictOrigin.keys.toTypedArray()
-        )
-
-        cekOngkirEtOriginSub.setAdapter(adapter)
-    }
-
-    private val subdistrictListDestination = Observer<List<AddressEntity>> { data ->
-        subDistrictDestination.clear()
-        data.forEach {
-            subDistrictDestination[it.name] = it.toAddress()
-        }
-
-        val adapter: ArrayAdapter<String> = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_list_item_1,
-            subDistrictDestination.keys.toTypedArray()
-        )
-
-        cekOngkirEtDestinationSub.setAdapter(adapter)
     }
 
     private val loadingStatus = Observer<Int> {

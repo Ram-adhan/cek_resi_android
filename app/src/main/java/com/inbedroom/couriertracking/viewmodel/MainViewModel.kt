@@ -1,6 +1,5 @@
 package com.inbedroom.couriertracking.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -43,11 +42,11 @@ class MainViewModel(
     private val _loadingStatus = MutableLiveData<Int>()
     val loadingStatus: LiveData<Int> = _loadingStatus
 
-    private val _addressList = MutableLiveData<List<AddressItem<AddressEntity>>>()
-    val addressList: LiveData<List<AddressItem<AddressEntity>>> = _addressList
+    private val _addressList = MutableLiveData<AddressItem<List<Address>>>()
+    val addressList: LiveData<AddressItem<List<Address>>> = _addressList
 
-    private val _cityList = MutableLiveData<List<AddressEntity>>()
-    val cityList: LiveData<List<AddressEntity>> = _cityList
+    private val _cityList = MutableLiveData<List<Address>>()
+    val cityList: LiveData<List<Address>> = _cityList
 
     private val _subdistrictListOrigin = MutableLiveData<List<AddressEntity>>()
     val subDistrictListOrigin: LiveData<List<AddressEntity>> = _subdistrictListOrigin
@@ -80,11 +79,17 @@ class MainViewModel(
 
             when (result) {
                 is DataResult.Success -> {
-                    _cityList.postValue(result.data)
+                    _cityList.postValue(result.data?.map {
+                        val name =
+                            if (it.type.equals("kabupaten", true)) "Kab. ${it.name}" else it.name
+                        Address(
+                            name, it.addressId, "city"
+                        )
+                    })
                     tempCityList.clear()
-                    tempCityList.addAll(result.data!!.asIterable())
-
-                    toAddressCity(result.data)
+                    tempCityList.addAll(
+                        result.data!!.asIterable()
+                    )
                 }
                 is DataResult.Error -> {
                     _failedLoadData.postValue(result.errorMessage)
@@ -107,14 +112,14 @@ class MainViewModel(
 
             when (result) {
                 is DataResult.Success -> {
+                    val data = result.data?.map { e -> e.toAddress() }
                     if (isOrigin) {
                         _subdistrictListOrigin.postValue(result.data)
-                        result.data?.let { toAddressSubOrigin(it) }
+                        toAddressSubOrigin(data)
                     } else {
                         _subdistrictListDestination.postValue(result.data)
-                        result.data?.let { toAddressSubDestination(it) }
+                        toAddressSubDestination(data)
                     }
-                    _loadingStatus.postValue(FINISHED)
                 }
                 is DataResult.Error -> {
                     if (_loadingStatus.value != ERROR) {
@@ -127,7 +132,7 @@ class MainViewModel(
                     }
                 }
             }
-
+            _loadingStatus.postValue(FINISHED)
         }
     }
 
@@ -139,50 +144,24 @@ class MainViewModel(
             )
             AddressItem.City(value)
         }
-
-        val tempAddressList = addresses.dropWhile { e ->
-            when (e) {
-                is AddressItem.City -> true
-                else -> false
-            }
-        }
-
-        addresses.clear()
-        addresses.addAll(tempAddressList)
-        addresses
-            .addAll(newData)
     }
 
-    private fun toAddressSubOrigin(data: List<AddressEntity>) {
-        val newData = data.map { e -> AddressItem.SubOrigin(e.toAddress()) }
-
-        val tempAddressList = addresses.dropWhile { e ->
-            when (e) {
-                is AddressItem.SubOrigin -> true
-                else -> false
-            }
+    private fun toAddressSubOrigin(data: List<Address>?) {
+        val newData = if (!data.isNullOrEmpty()){
+            AddressItem.SubOrigin(data.toList())
+        }else{
+            AddressItem.Empty()
         }
-
-        addresses.clear()
-        addresses.addAll(tempAddressList)
-        addresses
-            .addAll(newData)
+        _addressList.postValue(newData)
     }
 
-    private fun toAddressSubDestination(data: List<AddressEntity>) {
-        val newData = data.map { e -> AddressItem.SubDestination(e.toAddress()) }
-
-        val tempAddressList = addresses.dropWhile { e ->
-            when (e) {
-                is AddressItem.SubDestination -> true
-                else -> false
-            }
+    private fun toAddressSubDestination(data: List<Address>?) {
+        val newData = if (!data.isNullOrEmpty()){
+            AddressItem.SubDestination(data.toList())
+        }else{
+            AddressItem.Empty()
         }
-
-        addresses.clear()
-        addresses.addAll(tempAddressList)
-        addresses
-            .addAll(newData)
+        _addressList.postValue(newData)
     }
 
     fun deleteHistory(awb: String) {
