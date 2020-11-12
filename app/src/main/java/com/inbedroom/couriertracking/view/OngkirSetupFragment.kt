@@ -84,10 +84,13 @@ class OngkirSetupFragment : Fragment() {
 
         var origin: Address? = null
         var destination: Address? = null
+        var originCity= ""
+        var destinationCity = ""
 
         cekOngkirEtOrigin.addTextChangedListener {
             val value = it.toString()
             if (citiesName.containsKey(value)) {
+                originCity = value
                 origin = citiesName[value]
                 origin?.id?.let { it1 -> viewModel.getSubDistricts(it1, true) }
             } else {
@@ -99,6 +102,7 @@ class OngkirSetupFragment : Fragment() {
         cekOngkirEtDestination.addTextChangedListener {
             val value = it.toString()
             if (citiesName.containsKey(value)) {
+                destinationCity = value
                 destination = citiesName[value]
                 destination?.id?.let { it1 -> viewModel.getSubDistricts(it1, false) }
             } else {
@@ -109,15 +113,20 @@ class OngkirSetupFragment : Fragment() {
 
         cekOngkirEtOriginSub.addTextChangedListener {
             val value = it.toString()
-            if (value.isNotEmpty()) {
-                origin = subDistrictOrigin[value] ?: origin
+            Log.d("act", "value: $value")
+            origin = if (subDistrictOrigin.containsKey(value)) {
+                subDistrictOrigin[value] ?: origin
+            }else{
+                citiesName[originCity]
             }
         }
 
         cekOngkirEtDestinationSub.addTextChangedListener {
             val value = it.toString()
-            if (value.isNotEmpty()) {
-                destination = subDistrictDestination[value] ?: destination
+            destination = if (subDistrictDestination.containsKey(value)) {
+                subDistrictDestination[value] ?: destination
+            }else{
+                citiesName[destinationCity]
             }
         }
 
