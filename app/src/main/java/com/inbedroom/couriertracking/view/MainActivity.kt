@@ -1,6 +1,5 @@
 package com.inbedroom.couriertracking.view
 
-import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inbedroom.couriertracking.CourierTrackingApplication

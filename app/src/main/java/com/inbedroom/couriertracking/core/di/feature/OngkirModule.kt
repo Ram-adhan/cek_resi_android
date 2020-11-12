@@ -15,7 +15,7 @@ class OngkirModule {
 
     @Provides
     @Singleton
-    fun provideOngkirApi(retrofit: Retrofit) = retrofit.create(OngkirApi::class.java)
+    fun provideOngkirApi(retrofit: Retrofit): OngkirApi = retrofit.create(OngkirApi::class.java)
 
     @Provides
     @Singleton

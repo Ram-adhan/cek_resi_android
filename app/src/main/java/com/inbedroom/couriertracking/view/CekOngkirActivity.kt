@@ -66,11 +66,11 @@ class CekOngkirActivity : BaseActivity() {
             viewModelFactory
         ).get(OngkirViewModel::class.java)
 
-        if (this.connectNetwork()){
+        if (this.connectNetwork()) {
             viewModel.checkTariff(request)
-            viewModel.onRequest.observe(this, loadingRequest)
+            viewModel.onRequestStatus.observe(this, loadingRequest)
 
-        }else{
+        } else {
             displayNotConnected()
         }
 
@@ -98,8 +98,8 @@ class CekOngkirActivity : BaseActivity() {
     override fun onAction() {
     }
 
-    private val loadingRequest = Observer<Boolean> {
-        if (it) {
+    private val loadingRequest = Observer<Int> {
+        if (it == 0) {
             cekOngkirLoading.visible()
         } else {
             cekOngkirLoading.invisible()

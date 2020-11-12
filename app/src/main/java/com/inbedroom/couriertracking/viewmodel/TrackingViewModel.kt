@@ -45,6 +45,7 @@ class TrackingViewModel @Inject constructor(
                 is DataResult.Error -> {
                     _onMessageError.postValue(result.errorMessage)
                 }
+                else -> _onMessageError.postValue("Internal Error")
             }
             _isViewLoading.postValue(false)
         }

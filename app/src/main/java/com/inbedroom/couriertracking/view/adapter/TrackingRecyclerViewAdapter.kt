@@ -32,16 +32,6 @@ class TrackingRecyclerViewAdapter(
         return trackingList.size
     }
 
-    fun addItem(tracking: Tracking){
-        trackingList.add(tracking)
-        notifyDataSetChanged()
-    }
-
-    fun addItems(tracking: List<Tracking>){
-        trackingList.addAll(tracking)
-        notifyDataSetChanged()
-    }
-
     fun updateItem(tracking: List<Tracking>){
         trackingList.clear()
         trackingList.addAll(tracking)

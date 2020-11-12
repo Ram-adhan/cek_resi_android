@@ -1,7 +1,6 @@
 package com.inbedroom.couriertracking.data
 
 import android.content.Context
-import android.util.Log
 import com.google.gson.Gson
 import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.Courier
@@ -25,14 +24,6 @@ class PreferencesManager @Inject constructor(
         editor.apply()
         editor.putString(CITY_LIST, string)
         editor.apply()
-    }
-
-    fun getSavedCityList(): List<CityEntity>{
-        val json = sharedPreferences.getString(CITY_LIST, "")
-        if (!json.isNullOrEmpty()){
-            return Gson().fromJson(json, Array<CityEntity>::class.java).toList()
-        }
-        return mutableListOf()
     }
 
     fun readCourierAsset(): List<Courier> {

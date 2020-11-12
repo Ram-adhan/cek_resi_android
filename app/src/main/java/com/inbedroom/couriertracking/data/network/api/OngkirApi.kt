@@ -4,7 +4,6 @@ import com.inbedroom.couriertracking.data.entity.CityEntity
 import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.data.entity.SubDistrict
-import com.inbedroom.couriertracking.data.network.response.RajaOngkirBaseResponse
 import com.inbedroom.couriertracking.data.network.response.RajaOngkirResponse
 import retrofit2.Response
 import retrofit2.http.*
