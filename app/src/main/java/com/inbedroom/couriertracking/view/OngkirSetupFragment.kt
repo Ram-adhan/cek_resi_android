@@ -2,6 +2,7 @@ package com.inbedroom.couriertracking.view
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.appcompat.content.res.AppCompatResources
@@ -90,6 +91,7 @@ class OngkirSetupFragment : Fragment() {
                 origin = citiesName[value]
                 origin?.id?.let { it1 -> viewModel.getSubDistricts(it1, true) }
             } else {
+                origin = null
                 cekOngkirEtOriginSub.text.clear()
             }
         }
@@ -100,6 +102,7 @@ class OngkirSetupFragment : Fragment() {
                 destination = citiesName[value]
                 destination?.id?.let { it1 -> viewModel.getSubDistricts(it1, false) }
             } else {
+                destination = null
                 cekOngkirEtDestinationSub.text.clear()
             }
         }
@@ -126,7 +129,7 @@ class OngkirSetupFragment : Fragment() {
                 0
             }
 
-            if (origin == null) {
+            if (cekOngkirEtOrigin.text.isEmpty() && origin == null) {
                 cekOngkirEtOrigin.error = getString(R.string.empty_origin)
                 canContinue = false
             } else if (cekOngkirEtOrigin.text.isNotEmpty() && origin == null) {
@@ -138,7 +141,7 @@ class OngkirSetupFragment : Fragment() {
             }
 
 
-            if (destination == null) {
+            if (cekOngkirEtDestination.text.isEmpty() && destination == null) {
                 cekOngkirEtDestination.error = getString(R.string.empty_destination)
                 canContinue = false
             } else if (cekOngkirEtDestination.text.isNotEmpty() && destination == null) {
@@ -153,6 +156,7 @@ class OngkirSetupFragment : Fragment() {
                 cekOngkirEtWeight.error = getString(R.string.empty_weight)
                 canContinue = false
             }
+            
             val chipIds = chipGroupCourier.checkedChipIds
             if (chipIds.size == 0) {
                 canContinue = false
