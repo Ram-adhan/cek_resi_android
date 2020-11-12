@@ -1,15 +1,10 @@
 package com.inbedroom.couriertracking.view
 
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.platform.BaseActivity
-import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.view.adapter.MainPagerAdapter
 import com.inbedroom.couriertracking.viewmodel.MainViewModel
 import com.inbedroom.couriertracking.viewmodel.ViewModelFactory
@@ -63,8 +58,4 @@ class MainActivity : BaseActivity() {
 
     override fun onAction() {}
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-    }
 }

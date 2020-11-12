@@ -1,6 +1,7 @@
 package com.inbedroom.couriertracking.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -45,7 +46,7 @@ class OngkirDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         viewModel = ViewModelProvider(requireActivity()).get(OngkirViewModel::class.java)
-        viewModel.ongkirData.observe(this, onLoad)
+        viewModel.ongkirListData.observe(this, onLoad)
         MobileAds.initialize(requireContext()) {}
     }
 
@@ -67,7 +68,7 @@ class OngkirDetailFragment : Fragment() {
         detailTextWeight.text = getString(R.string.weight_text, weight)
 
         val llManager = LinearLayoutManager(requireContext())
-        ongkirDetailAdapter = OngkirDetailAdapter(ArrayList())
+        ongkirDetailAdapter = OngkirDetailAdapter()
         detailOngkirRecycler.apply {
             layoutManager = llManager
             adapter = ongkirDetailAdapter
@@ -78,27 +79,34 @@ class OngkirDetailFragment : Fragment() {
     }
 
     @ExperimentalStdlibApi
-    private val onLoad = Observer<OngkirResult> { result ->
+    private val onLoad = Observer<List<OngkirResult>> { result ->
 
-        val courier = result.name
-
-        result.costs.forEach { costs ->
-            val data = Ongkir()
-            data.courier = courier
-            data.service = costs.service
-            with(costs.cost[0]) {
-                data.cost = value
-                data.etd = if (etd.contains("hari", true)) {
-                    etd.replace(
-                        "hari",
-                        "",
-                        true
-                    )
-                } else etd
+        result.forEach { courData ->
+            if (courData.costs.isNullOrEmpty()) {
+                val data = Ongkir()
+                data.courier = courData.name
+                listOngkir.add(data)
+            } else {
+                courData.costs.forEach { costs ->
+                    val data = Ongkir()
+                    data.courier = courData.name
+                    data.service = costs.service
+                    with(costs.cost[0]) {
+                        data.cost = value
+                        data.etd = if (etd.contains("hari", true)) {
+                            etd.replace(
+                                "hari",
+                                "",
+                                true
+                            )
+                        } else etd
+                    }
+                    listOngkir.add(data)
+                }
             }
-            listOngkir.add(data)
         }
-        ongkirDetailAdapter.replaceData(listOngkir)
+
+        ongkirDetailAdapter.setData(listOngkir)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -106,7 +114,7 @@ class OngkirDetailFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun initAds(){
+    private fun initAds() {
         adView = AdView(requireContext())
         adView.adSize = AdSize.SMART_BANNER
         adView.adUnitId = ServiceData.BANNER_AD_ID

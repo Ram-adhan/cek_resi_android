@@ -1,6 +1,7 @@
 package com.inbedroom.couriertracking.view
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -10,10 +11,12 @@ import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
+import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.core.platform.BaseActivity
 import com.inbedroom.couriertracking.data.entity.CostRequest
+import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
 import com.inbedroom.couriertracking.viewmodel.ViewModelFactory
@@ -26,20 +29,21 @@ class CekOngkirActivity : BaseActivity() {
         const val ORIGIN_STRING = "origin"
         const val DESTINATION_STRING = "destination"
         const val REQUEST = "request"
-        const val COURIER_LIST = "couriers"
+
+        const val STATUS_LOADING = 0
+        const val STATUS_FINISHED = 1
+        const val STATUS_ERROR = 2
 
         fun callIntent(
             context: Context,
             origin: String,
             destination: String,
-            request: CostRequest,
-            courierList: ArrayList<String>
+            request: CostRequest
         ): Intent {
             val intent = Intent(context, CekOngkirActivity::class.java)
             intent.putExtra(ORIGIN_STRING, origin)
             intent.putExtra(DESTINATION_STRING, destination)
             intent.putExtra(REQUEST, request)
-            intent.putStringArrayListExtra(COURIER_LIST, courierList)
             return intent
         }
     }
@@ -59,7 +63,6 @@ class CekOngkirActivity : BaseActivity() {
         origin = intent.getStringExtra(ORIGIN_STRING).toString()
         destination = intent.getStringExtra(DESTINATION_STRING).toString()
         val request = intent.getParcelableExtra(REQUEST) ?: CostRequest()
-        val courierList = intent.getStringArrayListExtra(COURIER_LIST)
         weight = request.weight
 
         (application as CourierTrackingApplication).appComponent.inject(this)
@@ -69,16 +72,13 @@ class CekOngkirActivity : BaseActivity() {
             viewModelFactory
         ).get(OngkirViewModel::class.java)
 
-        if (courierList != null) {
-            viewModel.checkTariff(
-                request.origin,
-                request.destination,
-                request.weight,
-                courierList.toList()
-            )
-        }
+        if (this.connectNetwork()) {
+            viewModel.checkTariff(request)
+            viewModel.onRequestStatus.observe(this, loadingRequest)
 
-        viewModel.onRequest.observe(this, loadingRequest)
+        } else {
+            displayNotConnected()
+        }
 
         MobileAds.initialize(this)
         interstitialAd = InterstitialAd(this)
@@ -92,6 +92,10 @@ class CekOngkirActivity : BaseActivity() {
         }
     }
 
+    private fun displayNotConnected() {
+        cekOngkirNoInternet.visible()
+    }
+
     override fun initView() {
         supportActionBar?.title = getString(R.string.tariff_check)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -100,23 +104,31 @@ class CekOngkirActivity : BaseActivity() {
     override fun onAction() {
     }
 
-    private val loadingRequest = Observer<Boolean> {
-        if (it) {
-            cekOngkirLoading.visible()
-        } else {
-            cekOngkirLoading.invisible()
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
-            val prev = supportFragmentManager.findFragmentByTag("ongkirList")
-            if (prev != null) {
-                fragmentTransaction.remove(prev)
+    private val loadingRequest = Observer<Int> {
+        when (it) {
+            STATUS_LOADING -> {
+                cekOngkirLoading.visible()
             }
-            fragmentTransaction
-                .add(
-                    R.id.cekOngkirMainFragmentRoot,
-                    OngkirDetailFragment.newInstance(origin, destination, weight),
-                    "ongkirList"
-                )
-                .commit()
+            STATUS_FINISHED -> {
+                cekOngkirLoading.invisible()
+                val fragmentTransaction = supportFragmentManager.beginTransaction()
+                val prev = supportFragmentManager.findFragmentByTag("ongkirList")
+                if (prev != null) {
+                    fragmentTransaction.remove(prev)
+                }
+                fragmentTransaction
+                    .add(
+                        R.id.cekOngkirMainFragmentRoot,
+                        OngkirDetailFragment.newInstance(origin, destination, weight),
+                        "ongkirList"
+                    )
+                    .commit()
+            }
+            STATUS_ERROR -> {
+                cekOngkirLoading.invisible()
+                Message.alert(this, "Something unexpected happen",
+                    DialogInterface.OnClickListener { _, _ -> finish() })
+            }
         }
     }
 

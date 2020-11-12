@@ -6,11 +6,12 @@ import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.inbedroom.couriertracking.R
+import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.core.extension.hideKeyboard
 import com.inbedroom.couriertracking.customview.DialogEditTitle
 import com.inbedroom.couriertracking.data.entity.Courier
@@ -25,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_courier_track.*
 
 class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by activityViewModels()
     private lateinit var courierAdapter: CourierSpinnerAdapter
     private lateinit var historyAdapter: HistoryAdapter
 
@@ -34,10 +35,8 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-        viewModel.historiesData.observe(this, historyObserver)
-        viewModel.isChanged.observe(this, onTitleChange)
-        viewModel.courierList.observe(this, populateCourier)
+//        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+
 
         setHasOptionsMenu(true)
     }
@@ -51,6 +50,12 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.historiesData.observe(viewLifecycleOwner, historyObserver)
+        viewModel.isChanged.observe(viewLifecycleOwner, onTitleChange)
+        viewModel.courierList.observe(viewLifecycleOwner, populateCourier)
+
+
         courierAdapter = CourierSpinnerAdapter(requireContext(), mutableListOf())
         mainCourierList.adapter = courierAdapter
 
@@ -72,15 +77,20 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
         mainButtonSearch.setOnClickListener {
             val awb = mainAWBInput.text.toString()
             if (awb.isNotEmpty()) {
-                courierData?.let { it1 ->
-                    startActivity(
-                        TrackingDetailActivity.callIntent(
-                            requireContext(),
-                            awb,
-                            it1
+                if (requireContext().connectNetwork()){
+                    courierData?.let { it1 ->
+                        startActivity(
+                            TrackingDetailActivity.callIntent(
+                                requireContext(),
+                                awb,
+                                it1
+                            )
                         )
-                    )
+                    }
+                }else{
+                    Message.alert(requireContext(), getString(R.string.no_internet), null)
                 }
+
             } else {
                 mainAWBInput.error = getString(R.string.empty_awb)
                 mainAWBInput.requestFocus()

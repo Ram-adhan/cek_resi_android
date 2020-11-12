@@ -16,7 +16,6 @@ import com.google.zxing.ResultPoint
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CaptureManager
-import com.inbedroom.couriertracking.BuildConfig
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.platform.BaseActivity
 import com.inbedroom.couriertracking.utils.ServiceData
@@ -26,8 +25,7 @@ class BarcodeScanActivity : BaseActivity() {
 
     companion object {
         fun callIntent(context: Context): Intent {
-            val intent = Intent(context, BarcodeScanActivity::class.java)
-            return intent
+            return Intent(context, BarcodeScanActivity::class.java)
         }
 
         private const val BARCODE_PATTERN = "^[a-zA-Z0-9]*\$"

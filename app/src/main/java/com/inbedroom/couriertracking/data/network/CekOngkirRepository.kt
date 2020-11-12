@@ -1,13 +1,17 @@
 package com.inbedroom.couriertracking.data.network
 
-import com.inbedroom.couriertracking.data.entity.CityEntity
-import com.inbedroom.couriertracking.data.entity.OngkirResult
+import com.inbedroom.couriertracking.data.entity.*
 import com.inbedroom.couriertracking.data.network.response.DataResult
 
 interface CekOngkirRepository {
     suspend fun getCityList(forceUpdate: Boolean = false):
-            DataResult<List<CityEntity>>
+            DataResult<List<AddressEntity>>
 
-    suspend fun getTariffList(origin: String, destination: String, weight: Int, courier: String):
+    suspend fun getTariffList(request: CostRequest):
             DataResult<List<OngkirResult>>
+
+    suspend fun getSubdistrict(cityId: String):
+            DataResult<List<AddressEntity>>
+
+    suspend fun getAddressList(): DataResult<List<AddressEntity>>
 }

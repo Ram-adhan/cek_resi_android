@@ -20,16 +20,10 @@ class PreferencesManager @Inject constructor(
 
     fun saveCityList(list: List<CityEntity>) {
         val string = Gson().toJson(list)
+        editor.remove(CITY_LIST)
+        editor.apply()
         editor.putString(CITY_LIST, string)
-        editor.commit()
-    }
-
-    fun getSavedCityList(): List<CityEntity>{
-        val json = sharedPreferences.getString(CITY_LIST, "")
-        if (!json.isNullOrEmpty()){
-            return Gson().fromJson(json, Array<CityEntity>::class.java).toList()
-        }
-        return mutableListOf()
+        editor.apply()
     }
 
     fun readCourierAsset(): List<Courier> {

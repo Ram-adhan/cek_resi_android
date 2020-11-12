@@ -11,14 +11,18 @@ android {
         applicationId 'com.inbedroom.couriertracking'
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 4
-        versionName "3.5"
+        versionCode 5
+        versionName "4.0"
 
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -35,6 +39,10 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 }
 
@@ -72,6 +80,6 @@ dependencies {
     implementation "androidx.room:room-ktx:2.2.5"
     kapt "androidx.room:room-compiler:2.2.5"
 
-    implementation 'com.google.android.gms:play-services-ads:19.4.0'
+    implementation 'com.google.android.gms:play-services-ads-lite:19.5.0'
 
 }

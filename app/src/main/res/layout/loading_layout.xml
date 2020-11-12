@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:alpha="0.6"
@@ -7,7 +8,8 @@
     android:background="@android:color/black"
     android:clickable="true"
     android:elevation="8dp"
-    android:focusable="true">
+    android:focusable="true"
+    tools:ignore="Overdraw">
 
     <ProgressBar
         android:layout_width="wrap_content"
