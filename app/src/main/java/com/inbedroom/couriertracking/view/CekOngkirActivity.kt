@@ -125,6 +125,7 @@ class CekOngkirActivity : BaseActivity() {
                     .commit()
             }
             STATUS_ERROR -> {
+                cekOngkirLoading.invisible()
                 Message.alert(this, "Something unexpected happen",
                     DialogInterface.OnClickListener { _, _ -> finish() })
             }
