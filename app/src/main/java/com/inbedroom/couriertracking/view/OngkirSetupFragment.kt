@@ -113,7 +113,6 @@ class OngkirSetupFragment : Fragment() {
 
         cekOngkirEtOriginSub.addTextChangedListener {
             val value = it.toString()
-            Log.d("act", "value: $value")
             origin = if (subDistrictOrigin.containsKey(value)) {
                 subDistrictOrigin[value] ?: origin
             }else{
