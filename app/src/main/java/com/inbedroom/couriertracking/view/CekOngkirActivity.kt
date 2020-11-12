@@ -1,6 +1,7 @@
 package com.inbedroom.couriertracking.view
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,6 +16,7 @@ import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.core.platform.BaseActivity
 import com.inbedroom.couriertracking.data.entity.CostRequest
+import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
 import com.inbedroom.couriertracking.viewmodel.ViewModelFactory
@@ -27,6 +29,10 @@ class CekOngkirActivity : BaseActivity() {
         const val ORIGIN_STRING = "origin"
         const val DESTINATION_STRING = "destination"
         const val REQUEST = "request"
+
+        const val STATUS_LOADING = 0
+        const val STATUS_FINISHED = 1
+        const val STATUS_ERROR = 2
 
         fun callIntent(
             context: Context,
@@ -99,22 +105,29 @@ class CekOngkirActivity : BaseActivity() {
     }
 
     private val loadingRequest = Observer<Int> {
-        if (it == 0) {
-            cekOngkirLoading.visible()
-        } else {
-            cekOngkirLoading.invisible()
-            val fragmentTransaction = supportFragmentManager.beginTransaction()
-            val prev = supportFragmentManager.findFragmentByTag("ongkirList")
-            if (prev != null) {
-                fragmentTransaction.remove(prev)
+        when (it) {
+            STATUS_LOADING -> {
+                cekOngkirLoading.visible()
             }
-            fragmentTransaction
-                .add(
-                    R.id.cekOngkirMainFragmentRoot,
-                    OngkirDetailFragment.newInstance(origin, destination, weight),
-                    "ongkirList"
-                )
-                .commit()
+            STATUS_FINISHED -> {
+                cekOngkirLoading.invisible()
+                val fragmentTransaction = supportFragmentManager.beginTransaction()
+                val prev = supportFragmentManager.findFragmentByTag("ongkirList")
+                if (prev != null) {
+                    fragmentTransaction.remove(prev)
+                }
+                fragmentTransaction
+                    .add(
+                        R.id.cekOngkirMainFragmentRoot,
+                        OngkirDetailFragment.newInstance(origin, destination, weight),
+                        "ongkirList"
+                    )
+                    .commit()
+            }
+            STATUS_ERROR -> {
+                Message.alert(this, "Something unexpected happen",
+                    DialogInterface.OnClickListener { _, _ -> finish() })
+            }
         }
     }
 

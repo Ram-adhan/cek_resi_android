@@ -82,7 +82,6 @@ class OngkirDetailFragment : Fragment() {
     private val onLoad = Observer<List<OngkirResult>> { result ->
 
         result.forEach { courData ->
-            Log.d("act", "data: $courData")
             if (courData.costs.isNullOrEmpty()) {
                 val data = Ongkir()
                 data.courier = courData.name
