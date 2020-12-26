@@ -35,9 +35,6 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-
-
         setHasOptionsMenu(true)
     }
 
