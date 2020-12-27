@@ -1,6 +1,5 @@
 package com.inbedroom.couriertracking.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -40,7 +39,8 @@ class TrackingViewModel @Inject constructor(
         viewModelScope.launch {
             if (courier.equals("sicepat", false) ||
                 courier.equals("pos", false) ||
-                courier.equals("ninja", false)) {
+                courier.equals("ninja", false)
+            ) {
                 val result: DataResult<RajaOngkirResponse<TrackResult>> =
                     remoteRepository.retrieveRajaOngkir(awb, courier)
                 when (result) {
