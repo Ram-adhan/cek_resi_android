@@ -38,7 +38,6 @@ class TrackingViewModel @Inject constructor(
         _isViewLoading.postValue(true)
         viewModelScope.launch {
             if (courier.equals("sicepat", false) ||
-                courier.equals("pos", false) ||
                 courier.equals("ninja", false)
             ) {
                 val result: DataResult<RajaOngkirResponse<TrackResult>> =
