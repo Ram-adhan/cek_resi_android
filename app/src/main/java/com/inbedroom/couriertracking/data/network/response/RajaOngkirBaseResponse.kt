@@ -7,5 +7,8 @@ data class RajaOngkirBaseResponse<T> (
     val status: RajaOngkirStatus,
 
     @SerializedName("results")
-    val results: T
+    val results: T,
+
+    @SerializedName("result")
+    val result: T
 )

@@ -17,7 +17,7 @@ class CekOngkirRepositoryImpl @Inject constructor(
     private val preferencesManager: PreferencesManager
 ) : CekOngkirRepository {
 
-    private val baseUrl = ServiceData.ONGKIR_URL
+    private val baseUrl = ServiceData.RAJAONGKIR_URL
     private val cityList: MutableList<AddressEntity> = ArrayList()
 
     override suspend fun getCityList(forceUpdate: Boolean): DataResult<List<AddressEntity>> {
