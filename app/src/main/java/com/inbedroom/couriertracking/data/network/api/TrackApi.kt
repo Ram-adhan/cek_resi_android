@@ -1,6 +1,6 @@
 package com.inbedroom.couriertracking.data.network.api
 
-import com.inbedroom.couriertracking.data.entity.TrackData
+import com.inbedroom.couriertracking.data.entity.TrackDataEntity
 import com.inbedroom.couriertracking.data.entity.rajaongkir.TrackResult
 import com.inbedroom.couriertracking.data.network.response.BaseResponse
 import com.inbedroom.couriertracking.data.network.response.RajaOngkirResponse
@@ -14,8 +14,9 @@ interface TrackApi {
         @Query("api_key") api_key: String,
         @Query("courier") courier: String,
         @Query("awb") awb: String
-    ): Response<BaseResponse<TrackData>>
+    ): Response<BaseResponse<TrackDataEntity>>
 
+    @FormUrlEncoded
     @POST
     @Headers("Rajaongkir: true")
     suspend fun getRajaongkirTrack(

@@ -16,7 +16,7 @@ import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.core.platform.BaseActivity
 import com.inbedroom.couriertracking.data.entity.Courier
-import com.inbedroom.couriertracking.data.entity.TrackData
+import com.inbedroom.couriertracking.data.entity.TrackDataEntity
 import com.inbedroom.couriertracking.data.entity.Tracking
 import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.utils.ServiceData
@@ -64,7 +64,7 @@ class TrackingDetailActivity : BaseActivity() {
             viewModel.getTrackingData(awbData!!, courierData!!.code)
         }
 
-        viewModel.trackingData.observe(this, trackingObserver)
+        viewModel.trackingDataEntity.observe(this, trackingObserver)
         viewModel.isViewLoading.observe(this, loadingObserver)
         viewModel.onMessageError.observe(this, onMessageErrorObserver)
 
@@ -90,7 +90,7 @@ class TrackingDetailActivity : BaseActivity() {
 
     }
 
-    private val trackingObserver = Observer<TrackData> { data ->
+    private val trackingObserver = Observer<TrackDataEntity> { data ->
         val trackingList: List<Tracking> = data.track.filter { it.desc.isNotEmpty() }
         trackingListAdapter.updateItem(trackingList.sortedByDescending { Utils.stringToTime(it.date) })
         trackingDetailAwb.setValueText(data.summary.awb)

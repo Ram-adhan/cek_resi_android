@@ -2,7 +2,7 @@ package com.inbedroom.couriertracking.data.entity
 
 import com.google.gson.annotations.SerializedName
 
-data class TrackData(
+data class TrackDataEntity(
     @SerializedName("summary")
     val summary: Summary,
     @SerializedName("detail")
