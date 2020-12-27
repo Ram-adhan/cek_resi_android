@@ -5,9 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inbedroom.couriertracking.data.entity.Courier
-import com.inbedroom.couriertracking.data.entity.HistoryEntity
-import com.inbedroom.couriertracking.data.entity.TrackDataEntity
+import com.inbedroom.couriertracking.data.entity.*
 import com.inbedroom.couriertracking.data.entity.rajaongkir.TrackResult
 import com.inbedroom.couriertracking.data.network.TrackingRemoteRepository
 import com.inbedroom.couriertracking.data.network.response.BaseResponse
@@ -40,19 +38,42 @@ class TrackingViewModel @Inject constructor(
     fun getTrackingData(awb: String, courier: String) {
         _isViewLoading.postValue(true)
         viewModelScope.launch {
-            if (courier.equals("sicepat", false)){
-                val result: DataResult<RajaOngkirResponse<TrackResult>> = remoteRepository.retrieveRajaOngkir(awb, courier)
+            if (courier.equals("sicepat", false) ||
+                courier.equals("pos", false) ||
+                courier.equals("ninja", false)) {
+                val result: DataResult<RajaOngkirResponse<TrackResult>> =
+                    remoteRepository.retrieveRajaOngkir(awb, courier)
                 when (result) {
                     is DataResult.Success -> {
-                        Log.d("viewmodel", "success")
+                        val data = result.data?.rajaongkir?.result
+                        val value = TrackDataEntity(
+                            Summary(
+                                data?.summary!!.waybill,
+                                data.summary.courierName,
+                                data.summary.service,
+                                data.summary.status,
+                                ""
+                            ),
+                            Information(
+                                data.summary.origin,
+                                data.summary.destination,
+                                data.summary.shipper,
+                                data.summary.receiver
+
+                            ),
+                            data.manifestData.map { e -> e.toTracking() }
+                        )
+
+                        _trackingData.postValue(value)
                     }
                     is DataResult.Error -> {
                         _onMessageError.postValue(result.errorMessage)
                     }
                     else -> _onMessageError.postValue("Internal Error")
                 }
-            }else{
-                val result: DataResult<BaseResponse<TrackDataEntity>> = remoteRepository.retrieveTrackingNew(awb, courier)
+            } else {
+                val result: DataResult<BaseResponse<TrackDataEntity>> =
+                    remoteRepository.retrieveTrackingNew(awb, courier)
                 when (result) {
                     is DataResult.Success -> {
                         _trackingData.value = result.data?.data
