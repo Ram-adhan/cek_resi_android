@@ -37,51 +37,16 @@ class TrackingViewModel @Inject constructor(
     fun getTrackingData(awb: String, courier: String) {
         _isViewLoading.postValue(true)
         viewModelScope.launch {
-            if (courier.equals("sicepat", false) ||
-                courier.equals("ninja", false)
-            ) {
-                val result: DataResult<RajaOngkirResponse<TrackResult>> =
-                    remoteRepository.retrieveRajaOngkir(awb, courier)
-                when (result) {
-                    is DataResult.Success -> {
-                        val data = result.data?.rajaongkir?.result
-                        val value = TrackDataEntity(
-                            Summary(
-                                data?.summary!!.waybill,
-                                data.summary.courierName,
-                                data.summary.service,
-                                data.summary.status,
-                                ""
-                            ),
-                            Information(
-                                data.summary.origin,
-                                data.summary.destination,
-                                data.summary.shipper,
-                                data.summary.receiver
-
-                            ),
-                            data.manifestData.map { e -> e.toTracking() }
-                        )
-
-                        _trackingData.postValue(value)
-                    }
-                    is DataResult.Error -> {
-                        _onMessageError.postValue(result.errorMessage)
-                    }
-                    else -> _onMessageError.postValue("Internal Error")
+            val result: DataResult<BaseResponse<TrackDataEntity>> =
+                remoteRepository.retrieveTrackingNew(awb, courier)
+            when (result) {
+                is DataResult.Success -> {
+                    _trackingData.value = result.data?.data
                 }
-            } else {
-                val result: DataResult<BaseResponse<TrackDataEntity>> =
-                    remoteRepository.retrieveTrackingNew(awb, courier)
-                when (result) {
-                    is DataResult.Success -> {
-                        _trackingData.value = result.data?.data
-                    }
-                    is DataResult.Error -> {
-                        _onMessageError.postValue(result.errorMessage)
-                    }
-                    else -> _onMessageError.postValue("Internal Error")
+                is DataResult.Error -> {
+                    _onMessageError.postValue(result.errorMessage)
                 }
+                else -> _onMessageError.postValue("Internal Error")
             }
 
             _isViewLoading.postValue(false)
