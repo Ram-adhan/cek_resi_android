@@ -40,6 +40,10 @@ class HistoryAdapter(private val histories: MutableList<HistoryEntity>) :
                         itemClickListener?.onEditMenuClick(position)
                         true
                     }
+                    R.id.copyAwb -> {
+                        itemClickListener?.onCopyAwbClick(position)
+                        true
+                    }
                     else -> false
                 }
             }
@@ -88,6 +92,7 @@ class HistoryAdapter(private val histories: MutableList<HistoryEntity>) :
         fun onItemClick(view: View?, position: Int)
         fun onDeleteMenuClick(position: Int)
         fun onEditMenuClick(position: Int)
+        fun onCopyAwbClick(position: Int)
     }
 
 }

@@ -52,4 +52,5 @@
     <string name="subdistrict">SubDistrict</string>
     <string name="no_service">Service not available</string>
     <string name="unknown_subdistrict">Unknown sub-district, please type as suggested</string>
+    <string name="copy_air_waybill">Copy Air Waybill</string>
 </resources>

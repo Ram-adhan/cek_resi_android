@@ -2,6 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/setHistoryTitle"
         android:title="@string/change_title"/>
+    <item android:id="@+id/copyAwb"
+        android:title="@string/copy_air_waybill"/>
     <item
         android:id="@+id/deleteHistory"
         android:title="@string/delete" />

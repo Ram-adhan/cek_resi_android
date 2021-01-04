@@ -1,6 +1,9 @@
 package com.inbedroom.couriertracking.view
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -125,6 +128,14 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
                             }
                         }
                     })
+            }
+
+            override fun onCopyAwbClick(position: Int) {
+                val item = historyAdapter.getData(position)
+                val clipboardManager = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip: ClipData = ClipData.newPlainText(requireContext().getString(R.string.awb_hint), item.awb)
+                clipboardManager.setPrimaryClip(clip)
+                Message.toast(requireContext(), "Copied ${item.awb}")
             }
         })
 

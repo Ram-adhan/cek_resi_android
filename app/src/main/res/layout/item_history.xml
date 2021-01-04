@@ -60,5 +60,5 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_more"
-        android:background="@drawable/rounded_selectable_background"/>
+        android:background="?selectableItemBackgroundBorderless"/>
 </LinearLayout>
