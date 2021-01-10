@@ -140,7 +140,7 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
         })
 
         mainButtonBarcodeScan.setOnClickListener {
-            startActivityForResult(BarcodeScanActivity.callIntent(requireContext()), MainActivity.REQUEST_CODE)
+            startActivityForResult(BarcodeActivity.callIntent(requireContext()), MainActivity.REQUEST_CODE)
         }
     }
 
