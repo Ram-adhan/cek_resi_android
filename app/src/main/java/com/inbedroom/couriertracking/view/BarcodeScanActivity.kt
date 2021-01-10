@@ -13,12 +13,12 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.google.zxing.ResultPoint
-import com.journeyapps.barcodescanner.BarcodeCallback
-import com.journeyapps.barcodescanner.BarcodeResult
-import com.journeyapps.barcodescanner.CaptureManager
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.platform.BaseActivity
 import com.inbedroom.couriertracking.utils.ServiceData
+import com.journeyapps.barcodescanner.BarcodeCallback
+import com.journeyapps.barcodescanner.BarcodeResult
+import com.journeyapps.barcodescanner.CaptureManager
 import kotlinx.android.synthetic.main.activity_barcode_scan.*
 
 class BarcodeScanActivity : BaseActivity() {
@@ -33,13 +33,19 @@ class BarcodeScanActivity : BaseActivity() {
 
     private lateinit var captureManager: CaptureManager
     private lateinit var interstitialAd: InterstitialAd
+    private val permission = arrayOf(
+        android.Manifest.permission.CAMERA,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
     override fun setupPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(permission[0]) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(permission[1]) != PackageManager.PERMISSION_GRANTED
+            ) {
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(android.Manifest.permission.CAMERA),
+                    permission,
                     101
                 )
             }
@@ -82,10 +88,11 @@ class BarcodeScanActivity : BaseActivity() {
         }
 
         btnGallery.setOnClickListener {
-            val pickImage = Intent(Intent.ACTION_PICK)
-            pickImage.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+            val pickImage = Intent()
+            pickImage.type = "image/**"
+            pickImage.action = Intent.ACTION_PICK
 
-            startActivityForResult(pickImage, 111)
+            startActivityForResult(Intent.createChooser(pickImage, "Select Image"), 111)
         }
     }
 
