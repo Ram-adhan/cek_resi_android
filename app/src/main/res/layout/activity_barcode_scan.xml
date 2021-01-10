@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6" />
+        app:layout_constraintGuide_percent="0.7" />
 
     <TextView
         android:id="@+id/barcodeScanTextResult"
@@ -28,10 +28,43 @@
         android:layout_marginTop="16dp"
         android:maxLines="2"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/barcodeScanButtonApply"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barcodeScanGuide"
+        app:layout_constraintVertical_bias="0.9"
         tools:text="Result" />
+
+    <TextView
+        android:id="@+id/btnGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/small_text"
+        android:text="@string/gallery"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackgroundBorderless"
+        app:layout_constraintTop_toBottomOf="@id/barcodeScanGuide"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:drawableTopCompat="@drawable/ic_image" />
+
+    <TextView
+        android:id="@+id/btnFlash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/small_text"
+        android:text="@string/flash"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?selectableItemBackgroundBorderless"
+        app:layout_constraintTop_toBottomOf="@id/barcodeScanGuide"
+        app:layout_constraintRight_toRightOf="parent"
+        app:drawableTopCompat="@drawable/ic_baseline_flash_on_24" />
 
     <Button
         android:id="@+id/barcodeScanButtonApply"

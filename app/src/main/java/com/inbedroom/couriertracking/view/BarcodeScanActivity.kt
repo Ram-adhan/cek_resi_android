@@ -80,6 +80,13 @@ class BarcodeScanActivity : BaseActivity() {
                 onFinishResult()
             }
         }
+
+        btnGallery.setOnClickListener {
+            val pickImage = Intent(Intent.ACTION_PICK)
+            pickImage.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+
+            startActivityForResult(pickImage, 111)
+        }
     }
 
     private fun onFinishResult() {
