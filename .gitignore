@@ -15,3 +15,4 @@
 .cxx
 /app/release/output-metadata.json
 /app/src/main/java/com/inbedroom/couriertracking/utils/ServiceData.kt
+/app/schemas/com.inbedroom.couriertracking.data.room.AppDatabase/
