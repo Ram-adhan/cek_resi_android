@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.core.extension.hideKeyboard
+import com.inbedroom.couriertracking.core.extension.invisible
+import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.customview.DialogEditTitle
 import com.inbedroom.couriertracking.data.entity.Courier
 import com.inbedroom.couriertracking.data.entity.HistoryEntity
@@ -25,6 +27,7 @@ import com.inbedroom.couriertracking.view.adapter.CourierSpinnerAdapter
 import com.inbedroom.couriertracking.view.adapter.HistoryAdapter
 import com.inbedroom.couriertracking.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_tracking_detail.*
 import kotlinx.android.synthetic.main.fragment_courier_track.*
 
 class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
@@ -54,6 +57,7 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
         viewModel.historiesData.observe(viewLifecycleOwner, historyObserver)
         viewModel.isChanged.observe(viewLifecycleOwner, onTitleChange)
         viewModel.courierList.observe(viewLifecycleOwner, populateCourier)
+        viewModel.updateCouriers.observe(viewLifecycleOwner, onUpdateCourier)
 
 
         courierAdapter = CourierSpinnerAdapter(requireContext(), mutableListOf())
@@ -156,6 +160,15 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
             )
         }
         courierAdapter.addData(couriers)
+    }
+
+    private val onUpdateCourier = Observer<Int> {
+        if(loadingLayout != null){
+            when(it){
+                1 -> loadingLayout.visible()
+                else -> loadingLayout.invisible()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

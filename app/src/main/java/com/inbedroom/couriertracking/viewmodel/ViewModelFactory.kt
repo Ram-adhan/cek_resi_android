@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.inbedroom.couriertracking.data.PreferencesManager
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
+import com.inbedroom.couriertracking.data.network.CourierRepository
 import com.inbedroom.couriertracking.data.network.TrackingRemoteRepository
 import com.inbedroom.couriertracking.data.room.HistoryRepository
 import javax.inject.Inject
@@ -13,6 +14,7 @@ class ViewModelFactory @Inject constructor(
     private val remoteRepository: TrackingRemoteRepository,
     private val historyRepository: HistoryRepository,
     private val ongkirRepository: CekOngkirRepository,
+    private val courierRepository: CourierRepository,
     private val preferencesManager: PreferencesManager
 ) : ViewModelProvider.Factory {
 
@@ -23,7 +25,7 @@ class ViewModelFactory @Inject constructor(
             ) as T
 
             modelClass.isAssignableFrom(MainViewModel::class.java) -> MainViewModel(
-                historyRepository, ongkirRepository, preferencesManager
+                historyRepository, ongkirRepository, courierRepository, preferencesManager
             ) as T
 
             modelClass.isAssignableFrom(OngkirViewModel::class.java) -> OngkirViewModel(

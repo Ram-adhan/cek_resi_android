@@ -3,6 +3,7 @@ package com.inbedroom.couriertracking.core.di
 import androidx.lifecycle.ViewModelProvider
 import com.inbedroom.couriertracking.data.PreferencesManager
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
+import com.inbedroom.couriertracking.data.network.CourierRepository
 import com.inbedroom.couriertracking.data.network.TrackingRemoteRepository
 import com.inbedroom.couriertracking.data.room.HistoryRepository
 import com.inbedroom.couriertracking.viewmodel.ViewModelFactory
@@ -19,6 +20,7 @@ class MVVMModule {
         trackingRemoteRepository: TrackingRemoteRepository,
         historyRepository: HistoryRepository,
         ongkirRepository: CekOngkirRepository,
+        courierRepository: CourierRepository,
         preferencesManager: PreferencesManager
-    ): ViewModelProvider.Factory = ViewModelFactory(trackingRemoteRepository, historyRepository, ongkirRepository, preferencesManager)
+    ): ViewModelProvider.Factory = ViewModelFactory(trackingRemoteRepository, historyRepository, ongkirRepository, courierRepository, preferencesManager)
 }

@@ -10,6 +10,7 @@ import com.inbedroom.couriertracking.data.entity.AddressEntity
 import com.inbedroom.couriertracking.data.entity.Courier
 import com.inbedroom.couriertracking.data.entity.HistoryEntity
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
+import com.inbedroom.couriertracking.data.network.CourierRepository
 import com.inbedroom.couriertracking.data.network.response.DataResult
 import com.inbedroom.couriertracking.data.room.HistoryRepository
 import com.inbedroom.couriertracking.utils.AddressItem
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val historyRepository: HistoryRepository,
     private val ongkirRepository: CekOngkirRepository,
+    private val courierRepository: CourierRepository,
     local: PreferencesManager
 ) : ViewModel() {
 
@@ -53,7 +55,25 @@ class MainViewModel(
 
     private val tempCityList = mutableListOf<AddressEntity>()
 
+    private val _updateCouriers = MutableLiveData<Int>()
+    val updateCouriers: LiveData<Int> = _updateCouriers
+
     init {
+        _updateCouriers.postValue(0)
+
+        viewModelScope.launch {
+            val couriers = courierRepository.getCouriers()
+            _updateCouriers.postValue(1)
+
+            when (couriers) {
+                is DataResult.Success -> {
+                    _courierList.postValue(couriers.data!!)
+                    _updateCouriers.postValue(0)
+                }
+                else -> _updateCouriers.postValue(0)
+            }
+
+        }
 
         val list = local.readCourierAsset()
         _courierList.postValue(list)
@@ -85,7 +105,7 @@ class MainViewModel(
                     )
                 }
                 is DataResult.Error -> {
-                    _failedLoadData.postValue(result.errorMessage)
+                    _failedLoadData.postValue(result.errorMessage!!)
                 }
                 else -> _failedLoadData.postValue("Unknown Error")
             }

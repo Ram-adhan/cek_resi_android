@@ -1,10 +1,7 @@
 package com.inbedroom.couriertracking.core.di
 
 import com.inbedroom.couriertracking.CourierTrackingApplication
-import com.inbedroom.couriertracking.core.di.feature.AddressModule
-import com.inbedroom.couriertracking.core.di.feature.HistoryModule
-import com.inbedroom.couriertracking.core.di.feature.OngkirModule
-import com.inbedroom.couriertracking.core.di.feature.TrackingModule
+import com.inbedroom.couriertracking.core.di.feature.*
 import com.inbedroom.couriertracking.view.CekOngkirActivity
 import com.inbedroom.couriertracking.view.MainActivity
 import com.inbedroom.couriertracking.view.TrackingDetailActivity
@@ -19,7 +16,8 @@ import javax.inject.Singleton
         HistoryModule::class,
         TrackingModule::class,
         OngkirModule::class,
-        AddressModule::class
+        AddressModule::class,
+        CourierModule::class
     ]
 )
 interface ApplicationComponent {
