@@ -8,10 +8,9 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.zxing.ResultPoint
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.platform.BaseActivity
@@ -32,7 +31,7 @@ class BarcodeScanActivity : BaseActivity() {
     }
 
     private lateinit var captureManager: CaptureManager
-    private lateinit var interstitialAd: InterstitialAd
+    private var interstitialAd: InterstitialAd? = null
     private val permission = arrayOf(
         android.Manifest.permission.CAMERA,
         android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -62,12 +61,21 @@ class BarcodeScanActivity : BaseActivity() {
 
     override fun setupLib() {
         MobileAds.initialize(this)
-        interstitialAd = InterstitialAd(this)
-        interstitialAd.adUnitId = ServiceData.INTERSTITIAL_AD_ID
-        interstitialAd.loadAd(AdRequest.Builder().build())
-        interstitialAd.adListener = object : AdListener() {
-            override fun onAdClosed() {
-                super.onAdClosed()
+
+        val adRequest = AdRequest.Builder().build()
+
+        InterstitialAd.load(this, ServiceData.INTERSTITIAL_AD_ID, adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdFailedToLoad(p0: LoadAdError) {
+                interstitialAd = null
+            }
+
+            override fun onAdLoaded(p0: InterstitialAd) {
+                interstitialAd = p0
+            }
+        })
+
+        interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback(){
+            override fun onAdDismissedFullScreenContent() {
                 onFinishResult()
             }
         }
@@ -80,8 +88,8 @@ class BarcodeScanActivity : BaseActivity() {
 
     override fun onAction() {
         barcodeScanButtonApply.setOnClickListener {
-            if (interstitialAd.isLoaded) {
-                interstitialAd.show()
+            if (interstitialAd != null) {
+                interstitialAd?.show(this)
             } else {
                 onFinishResult()
             }

@@ -8,7 +8,4 @@ import com.inbedroom.couriertracking.data.network.response.DataResult
 interface CourierRepository {
     suspend fun getCouriers():
             DataResult<List<Courier>>
-
-    suspend fun getVersion():
-            DataResult<CourierVersion>
 }
