@@ -5,10 +5,9 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.extension.connectNetwork
@@ -55,7 +54,7 @@ class CekOngkirActivity : BaseActivity() {
     private lateinit var origin: String
     private lateinit var destination: String
     private var weight: Int = 0
-    private lateinit var interstitialAd: InterstitialAd
+    private var interstitialAd: InterstitialAd? = null
 
     override fun layoutId(): Int = R.layout.activity_cek_ongkir
 
@@ -81,12 +80,21 @@ class CekOngkirActivity : BaseActivity() {
         }
 
         MobileAds.initialize(this)
-        interstitialAd = InterstitialAd(this)
-        interstitialAd.adUnitId = ServiceData.INTERSTITIAL_AD_ID
-        interstitialAd.loadAd(AdRequest.Builder().build())
-        interstitialAd.adListener = object : AdListener() {
-            override fun onAdClosed() {
-                super.onAdClosed()
+
+        val adRequest = AdRequest.Builder().build()
+
+        InterstitialAd.load(this, ServiceData.INTERSTITIAL_AD_ID, adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdFailedToLoad(p0: LoadAdError) {
+                interstitialAd = null
+            }
+
+            override fun onAdLoaded(p0: InterstitialAd) {
+                interstitialAd = p0
+            }
+        })
+
+        interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback(){
+            override fun onAdDismissedFullScreenContent() {
                 finish()
             }
         }
@@ -139,8 +147,8 @@ class CekOngkirActivity : BaseActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (interstitialAd.isLoaded) {
-            interstitialAd.show()
+        if (interstitialAd != null) {
+            interstitialAd?.show(this)
         } else {
             finish()
         }
