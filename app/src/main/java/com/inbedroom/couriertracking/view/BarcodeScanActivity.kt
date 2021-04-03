@@ -37,6 +37,8 @@ class BarcodeScanActivity : BaseActivity() {
         android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
+    private var torchState: Boolean = true
+
     override fun setupPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(permission[0]) != PackageManager.PERMISSION_GRANTED ||
@@ -60,6 +62,9 @@ class BarcodeScanActivity : BaseActivity() {
     override fun layoutId(): Int = R.layout.activity_barcode_scan
 
     override fun setupLib() {
+
+        torchState = false
+
         MobileAds.initialize(this)
 
         val adRequest = AdRequest.Builder().build()
@@ -92,6 +97,18 @@ class BarcodeScanActivity : BaseActivity() {
                 interstitialAd?.show(this)
             } else {
                 onFinishResult()
+            }
+        }
+
+        btnFlash.setOnClickListener {
+            if (torchState){
+                torchState = false
+                barcodeScanner.setTorchOff()
+                btnFlash.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_baseline_flash_on_24, 0, 0)
+            } else {
+                torchState = true
+                barcodeScanner.setTorchOn()
+                btnFlash.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_baseline_flash_off_24, 0, 0)
             }
         }
 
