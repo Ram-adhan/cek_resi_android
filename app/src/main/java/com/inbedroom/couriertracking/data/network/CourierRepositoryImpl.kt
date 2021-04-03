@@ -33,13 +33,12 @@ class CourierRepositoryImpl @Inject constructor(
         }
 
         return try {
-            val versionResponse = couriersApi.getVersion(versionUrl.toString())
-            if (versionResponse.isSuccessful) {
-                val lastVersion = versionResponse.body()?.data!!
-                if (lastVersion.version > currentVersion) {
-                    val couriers = couriersApi.getCouriers(url.toString())
-                    if (couriers.isSuccessful){
-                        preferencesManager.saveLatestVersion(lastVersion)
+            val couriers = couriersApi.getCouriers(url.toString())
+            if (couriers.isSuccessful){
+                val data = couriers.body()!!
+                if (data.version != null){
+                    if (data.version > currentVersion){
+                        preferencesManager.saveLatestVersion(CourierVersion(data.version, data.versionCode!!))
                         preferencesManager.saveCourierList(couriers.body()?.data!!)
                     }
                 }
