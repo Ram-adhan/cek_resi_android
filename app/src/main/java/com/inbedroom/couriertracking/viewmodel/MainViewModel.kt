@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inbedroom.couriertracking.data.PreferencesManager
-import com.inbedroom.couriertracking.data.entity.Address
-import com.inbedroom.couriertracking.data.entity.AddressEntity
-import com.inbedroom.couriertracking.data.entity.Courier
-import com.inbedroom.couriertracking.data.entity.HistoryEntity
+import com.inbedroom.couriertracking.data.entity.*
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
 import com.inbedroom.couriertracking.data.network.CourierRepository
 import com.inbedroom.couriertracking.data.network.response.DataResult
@@ -26,10 +23,13 @@ class MainViewModel(
     companion object {
         const val LOADING_SUB_ORIGIN = 5
         const val LOADING_SUB_DESTINATION = 6
-        const val LOADING_CITY = 0
-        const val FINISHED = 10
-        const val EMPTY = 11
-        const val ERROR = 20
+        const val LOADING_CITY_ORIGIN_START = 0
+        const val LOADING_CITY_DESTINATION_START = 1
+        const val LOADING_CITY_ORIGIN_FINISHED = 10
+        const val LOADING_CITY_DESTINATION_FINISHED = 11
+        const val FINISHED = 100
+        const val EMPTY = 110
+        const val ERROR = 200
     }
 
 
@@ -58,112 +58,78 @@ class MainViewModel(
     private val _updateCouriers = MutableLiveData<Int>()
     val updateCouriers: LiveData<Int> = _updateCouriers
 
+    private val _locationOriginData = MutableLiveData<List<SimpleLocation>>()
+    val locationOriginData: LiveData<List<SimpleLocation>> = _locationOriginData
+
+    private val _locationDestinationData = MutableLiveData<List<SimpleLocation>>()
+    val locationDestinationData: LiveData<List<SimpleLocation>> = _locationDestinationData
+
     init {
-        _updateCouriers.postValue(0)
 
+        val list = local.readCourierAsset()
+        _courierList.postValue(list)
+
+
+        _updateCouriers.postValue(1)
+
+        getCouriers()
+    }
+
+    fun getCouriers(){
         viewModelScope.launch {
-            val couriers = courierRepository.getCouriers()
-            _updateCouriers.postValue(1)
 
-            when (couriers) {
+            when (val couriers = courierRepository.getCouriers()) {
                 is DataResult.Success -> {
                     _courierList.postValue(couriers.data!!)
                     _updateCouriers.postValue(0)
                 }
                 else -> _updateCouriers.postValue(0)
             }
-
-        }
-
-        val list = local.readCourierAsset()
-        _courierList.postValue(list)
-
-        getCities(false)
-    }
-
-    fun getCityList() {
-        getCities()
-    }
-
-    private fun getCities(forceUpdate: Boolean = true) {
-        _loadingStatus.postValue(LOADING_CITY)
-        viewModelScope.launch {
-            val result = ongkirRepository.getCityList(forceUpdate)
-
-            when (result) {
-                is DataResult.Success -> {
-                    _cityList.postValue(result.data?.map {
-                        val name =
-                            if (it.type.equals("kabupaten", true)) "Kab. ${it.name}" else it.name
-                        Address(
-                            name, it.addressId, "city"
-                        )
-                    })
-                    tempCityList.clear()
-                    tempCityList.addAll(
-                        result.data!!.asIterable()
-                    )
-                }
-                is DataResult.Error -> {
-                    _failedLoadData.postValue(result.errorMessage!!)
-                }
-                else -> _failedLoadData.postValue("Unknown Error")
-            }
-            _loadingStatus.postValue(FINISHED)
         }
     }
 
-    fun getSubDistricts(cityId: String, isOrigin: Boolean) {
-        if (isOrigin) {
-            _loadingStatus.postValue(LOADING_SUB_ORIGIN)
-        } else {
-            _loadingStatus.postValue(LOADING_SUB_DESTINATION)
+    fun getLocations(param: String, isOrigin: Boolean) {
+
+        if (isOrigin){
+            _loadingStatus.postValue(LOADING_CITY_ORIGIN_START)
+        }else{
+            _loadingStatus.postValue(LOADING_CITY_DESTINATION_START)
         }
 
         viewModelScope.launch {
-            val result = ongkirRepository.getSubdistrict(cityId)
 
-            when (result) {
+            when (val result = ongkirRepository.getLocationList(param)) {
                 is DataResult.Success -> {
-                    val data = result.data?.map { e -> e.toAddress() }
-                    if (isOrigin) {
-                        toAddressSubOrigin(data)
-                    } else {
-                        toAddressSubDestination(data)
-                    }
+                    if (isOrigin)
+                        _locationOriginData.postValue(result.data!!)
+                    else
+                        _locationDestinationData.postValue(result.data!!)
                 }
-                is DataResult.Error -> {
-                    if (_loadingStatus.value != ERROR) {
-                        _loadingStatus.postValue(ERROR)
-                    }
-                }
+
                 is DataResult.Empty -> {
-                    if (_loadingStatus.value != EMPTY) {
-                        _loadingStatus.postValue(EMPTY)
-                    }
+                    _loadingStatus.postValue(EMPTY)
+                    if (isOrigin)
+                        _locationOriginData.postValue(listOf())
+                    else
+                        _locationDestinationData.postValue(listOf())
+                }
+
+                else -> {
+                    if (isOrigin)
+                        _locationOriginData.postValue(listOf())
+                    else
+                        _locationDestinationData.postValue(listOf())
                 }
             }
-            _loadingStatus.postValue(FINISHED)
+
+            if (isOrigin){
+                _loadingStatus.postValue(LOADING_CITY_ORIGIN_FINISHED)
+            }else{
+                _loadingStatus.postValue(LOADING_CITY_DESTINATION_FINISHED)
+            }
         }
     }
 
-    private fun toAddressSubOrigin(data: List<Address>?) {
-        val newData = if (!data.isNullOrEmpty()) {
-            AddressItem.SubOrigin(data.toList())
-        } else {
-            AddressItem.Empty()
-        }
-        _addressList.postValue(newData)
-    }
-
-    private fun toAddressSubDestination(data: List<Address>?) {
-        val newData = if (!data.isNullOrEmpty()) {
-            AddressItem.SubDestination(data.toList())
-        } else {
-            AddressItem.Empty()
-        }
-        _addressList.postValue(newData)
-    }
 
     fun deleteHistory(awb: String) {
         viewModelScope.launch {

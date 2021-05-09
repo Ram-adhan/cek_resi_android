@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inbedroom.couriertracking.data.entity.*
-import com.inbedroom.couriertracking.data.entity.rajaongkir.TrackResult
+import com.inbedroom.couriertracking.data.entity.Courier
+import com.inbedroom.couriertracking.data.entity.HistoryEntity
+import com.inbedroom.couriertracking.data.entity.TrackDataEntity
 import com.inbedroom.couriertracking.data.network.TrackingRemoteRepository
 import com.inbedroom.couriertracking.data.network.response.BaseResponse
 import com.inbedroom.couriertracking.data.network.response.DataResult
-import com.inbedroom.couriertracking.data.network.response.RajaOngkirResponse
 import com.inbedroom.couriertracking.data.room.HistoryRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,10 +41,10 @@ class TrackingViewModel @Inject constructor(
                 remoteRepository.retrieveTrackingNew(awb, courier)
             when (result) {
                 is DataResult.Success -> {
-                    _trackingData.value = result.data?.data
+                    _trackingData.value = result.data?.data!!
                 }
                 is DataResult.Error -> {
-                    _onMessageError.postValue(result.errorMessage)
+                    _onMessageError.postValue(result.errorMessage!!)
                 }
                 else -> _onMessageError.postValue("Internal Error")
             }

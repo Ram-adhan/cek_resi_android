@@ -18,6 +18,7 @@ class CekOngkirRepositoryImpl @Inject constructor(
 ) : CekOngkirRepository {
 
     private val baseUrl = ServiceData.RAJAONGKIR_URL
+    private val localUrl = ServiceData.LOCAL_URL
     private val cityList: MutableList<AddressEntity> = ArrayList()
 
     override suspend fun getCityList(forceUpdate: Boolean): DataResult<List<AddressEntity>> {
@@ -121,6 +122,25 @@ class CekOngkirRepositoryImpl @Inject constructor(
 
     override suspend fun getAddressList(): DataResult<List<AddressEntity>> {
         return handleApiSuccess(addressRepository.getAllData())
+    }
+
+    override suspend fun getLocationList(param: String): DataResult<List<SimpleLocation>> {
+        val url = StringBuilder().append(localUrl).append("/locations/")
+
+        return try {
+            val response = ongkirApi.getLocation(url.toString(), param)
+            if (response.isSuccessful){
+                if (response.body()!!.isEmpty()){
+                    DataResult.Empty
+                }else {
+                    DataResult.Success(response.body())
+                }
+            }else{
+                handleApiError(response)
+            }
+        } catch (e: java.lang.Exception) {
+            DataResult.Error(Exception("Data Error"))
+        }
     }
 
 }

@@ -6,10 +6,9 @@ import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.inbedroom.couriertracking.CourierTrackingApplication
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.extension.invisible
@@ -48,6 +47,8 @@ class TrackingDetailActivity : BaseActivity() {
     private lateinit var adView: AdView
     private var courierData: Courier? = null
     private var awbData: String? = null
+
+    private var interstitialAd: InterstitialAd? = null
 
     override fun layoutId(): Int = R.layout.activity_tracking_detail
 
@@ -91,6 +92,8 @@ class TrackingDetailActivity : BaseActivity() {
     }
 
     private val trackingObserver = Observer<TrackDataEntity> { data ->
+        initAds()
+
         val trackingList: List<Tracking> = data.track.filter { it.desc.isNotEmpty() }
         trackingListAdapter.updateItem(trackingList.sortedByDescending { Utils.stringToTime(it.date) })
         trackingDetailAwb.setValueText(data.summary.awb)
@@ -116,7 +119,6 @@ class TrackingDetailActivity : BaseActivity() {
             viewModel.saveAsHistory(awbData!!, courierData!!)
         }
 
-        initAds()
     }
 
     private val loadingObserver = Observer<Boolean> {
@@ -139,11 +141,31 @@ class TrackingDetailActivity : BaseActivity() {
         trackingDetailAdRoot.addView(adView)
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
+
+        InterstitialAd.load(this, ServiceData.TRACKING_INTERSTITIAL_AD_ID, adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdFailedToLoad(p0: LoadAdError) {
+                interstitialAd = null
+            }
+
+            override fun onAdLoaded(p0: InterstitialAd) {
+                interstitialAd = p0
+            }
+        })
+
+        interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback(){
+            override fun onAdDismissedFullScreenContent() {
+                finish()
+            }
+        }
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        finish()
+        if (interstitialAd != null) {
+            interstitialAd?.show(this)
+        } else {
+            finish()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

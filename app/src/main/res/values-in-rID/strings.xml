@@ -10,15 +10,15 @@
     <string name="clear_history">Hapus History</string>
     <string name="title_changed">Judul berhasil dirubah</string>
     <string name="tariff_check">Cek Ongkir</string>
-    <string name="origin">Kota Asal</string>
-    <string name="destination">Kota Tujuan</string>
+    <string name="origin">Asal</string>
+    <string name="destination">Tujuan</string>
     <string name="weight_gram">Berat (gram)</string>
     <string name="calculate">Hitung</string>
     <string name="courier">Kurir</string>
     <string name="awb_hint">No. Resi</string>
     <string name="refresh_city_list">Perbarui daftar kota</string>
-    <string name="empty_destination">Kota tujuan perlu diisi</string>
-    <string name="empty_origin">Asal kota perlu diisi</string>
+    <string name="unknown_destination">Tujuan tidak diketahui</string>
+    <string name="unknown_origin">Lokasi Asal tidak diketahui</string>
     <string name="unknown_city">Kota tidak diketahui, pilih dari yang telah disarankan</string>
     <string name="lacak">Lacak</string>
     <string name="generic_error">Terjadi kesalahan</string>
@@ -41,4 +41,6 @@
     <string name="copy_air_waybill">Copy resi</string>
     <string name="gallery">Gallery</string>
     <string name="flash">Flash</string>
+    <string name="help">Bantuan</string>
+    <string name="refresh_courier_list">Perbarui Daftar Kurir</string>
 </resources>

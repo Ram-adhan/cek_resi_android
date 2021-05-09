@@ -27,16 +27,16 @@
     <string name="clear_history">Clear History</string>
     <string name="title_changed">Title changed</string>
     <string name="use_text">Use Text</string>
-    <string name="origin">Origin City</string>
-    <string name="destination">Destination City</string>
+    <string name="origin">Origin</string>
+    <string name="destination">Destination</string>
     <string name="tariff_check">Tariff Check</string>
     <string name="weight_gram">Weight (gram)</string>
     <string name="courier">Courier</string>
     <string name="calculate">Calculate</string>
     <string name="refresh_city_list">Refresh City List</string>
-    <string name="empty_origin">Empty origin</string>
-    <string name="unknown_city">Unknown city, please type as suggested</string>
-    <string name="empty_destination">Empty destination</string>
+    <string name="unknown_origin">Unknown origin</string>
+    <string name="unknown_city">Unknown city, please choose as suggested</string>
+    <string name="unknown_destination">Unknown destination</string>
     <string name="empty_awb">Input Air waybill</string>
     <string name="empty_weight">Empty Weight</string>
     <string name="choose_courier">"Please choose available courier"</string>
@@ -55,4 +55,7 @@
     <string name="copy_air_waybill">Copy Air Waybill</string>
     <string name="gallery">Gallery</string>
     <string name="flash">Flash</string>
+    <string name="help">Help</string>
+    <string name="hint_help" translatable="false">hint_help</string>
+    <string name="refresh_courier_list">Refresh Courier List</string>
 </resources>

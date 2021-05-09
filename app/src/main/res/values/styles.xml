@@ -16,7 +16,7 @@
     </style>
 
     <style name="MaterialButton" parent="MaterialTheme">
-        <item name="backgroundTint">@color/nephritis</item>
+        <item name="backgroundTint">@color/material_button_color_state</item>
         <item name="textAllCaps">true</item>
     </style>
 

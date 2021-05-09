@@ -11,6 +11,17 @@ import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.customview.DialogEditTitle
 
 object Message {
+    fun customDialog(context: Context, msg: String, title: String, positiveAction: DialogInterface.OnClickListener?) {
+        val dialogBuilder = AlertDialog.Builder(context)
+
+        dialogBuilder.setTitle(title)
+        dialogBuilder.setMessage(msg)
+
+        dialogBuilder.setPositiveButton(context.getString(R.string.ok_button), positiveAction)
+
+        dialogBuilder.show()
+    }
+
     fun alert(context: Context, msg: String, positiveAction: DialogInterface.OnClickListener?) {
         val dialogBuilder = AlertDialog.Builder(context)
 
