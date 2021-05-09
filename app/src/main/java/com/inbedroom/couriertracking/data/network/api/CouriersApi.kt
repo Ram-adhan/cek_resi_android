@@ -11,9 +11,5 @@ interface CouriersApi {
 
     @GET
     suspend fun getCouriers(@Url url: String):
-            Response<DataListOnlyResponse<List<Courier>>>
-
-    @GET
-    suspend fun getVersion(@Url url: String):
-            Response<DataListOnlyResponse<CourierVersion>>
+            Response<List<Courier>>
 }

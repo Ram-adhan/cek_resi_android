@@ -17,31 +17,16 @@ class CourierRepositoryImpl @Inject constructor(
     private val preferencesManager: PreferencesManager
 ) : CourierRepository {
 
-    private val baseUrl = ServiceData.COURIERS_URL
-
-    private var currentVersion: Int = 0
-    private var currentVersionCode: String = ""
+    private val baseUrl = ServiceData.LOCAL_URL
 
     override suspend fun getCouriers(): DataResult<List<Courier>> {
         val url = StringBuilder().append(baseUrl).append("/couriers")
-        val versionUrl = StringBuilder().append(baseUrl).append("/version")
-
-        if (currentVersion == 0) {
-            val version = preferencesManager.getSavedVersion()
-            currentVersion = version.version
-            currentVersionCode = version.version_code
-        }
 
         return try {
             val couriers = couriersApi.getCouriers(url.toString())
             if (couriers.isSuccessful){
                 val data = couriers.body()!!
-                if (data.version != null){
-                    if (data.version > currentVersion){
-                        preferencesManager.saveLatestVersion(CourierVersion(data.version, data.versionCode!!))
-                        preferencesManager.saveCourierList(couriers.body()?.data!!)
-                    }
-                }
+                preferencesManager.saveCourierList(data)
             }
             val couriersAsset = preferencesManager.readCourierList()
             DataResult.Success(couriersAsset)

@@ -14,4 +14,7 @@ interface CekOngkirRepository {
             DataResult<List<AddressEntity>>
 
     suspend fun getAddressList(): DataResult<List<AddressEntity>>
+
+    suspend fun getLocationList(param: String):
+            DataResult<List<SimpleLocation>>
 }

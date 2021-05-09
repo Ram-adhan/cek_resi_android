@@ -23,19 +23,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:labelFor="@id/cekOngkirEtOrigin"
                 android:text="@string/origin"
                 android:textSize="@dimen/small_text"
+                app:layout_constraintBottom_toTopOf="@id/cekOngkirEtOrigin"
                 app:layout_constraintLeft_toLeftOf="@id/cekOngkirEtOrigin"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/hint_origin"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:contentDescription="@string/hint_help"
+                android:focusable="true"
+                android:src="@drawable/ic_help"
+                app:layout_constraintBottom_toBottomOf="@id/labelOrigin"
+                app:layout_constraintRight_toRightOf="@id/cekOngkirEtOrigin"
+                app:layout_constraintTop_toTopOf="@id/labelOrigin" />
 
             <AutoCompleteTextView
                 android:id="@+id/cekOngkirEtOrigin"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/edittext_state"
-                android:hint="@string/city_district"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:paddingStart="8dp"
@@ -47,26 +62,6 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/labelOrigin" />
 
-            <AutoCompleteTextView
-                android:id="@+id/cekOngkirEtOriginSub"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/edittext_state"
-                android:hint="@string/subdistrict"
-                android:importantForAutofill="no"
-                android:inputType="text"
-                android:paddingStart="8dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cekOngkirEtOrigin" />
-
             <ProgressBar
                 android:id="@+id/loadingOrigin"
                 android:layout_width="wrap_content"
@@ -77,34 +72,37 @@
                 app:layout_constraintRight_toRightOf="@id/cekOngkirEtOrigin"
                 app:layout_constraintTop_toTopOf="@id/cekOngkirEtOrigin" />
 
-            <ProgressBar
-                android:id="@+id/loadingOriginSub"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:padding="4dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/cekOngkirEtOriginSub"
-                app:layout_constraintRight_toRightOf="@id/cekOngkirEtOriginSub"
-                app:layout_constraintTop_toTopOf="@id/cekOngkirEtOriginSub" />
-
             <TextView
                 android:id="@+id/labelDestination"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:labelFor="@id/cekOngkirEtDestination"
                 android:text="@string/destination"
                 android:textSize="@dimen/small_text"
                 app:layout_constraintLeft_toLeftOf="@id/cekOngkirEtDestination"
-                app:layout_constraintTop_toBottomOf="@id/cekOngkirEtOriginSub" />
+                app:layout_constraintTop_toBottomOf="@id/cekOngkirEtOrigin" />
+
+            <ImageView
+                android:id="@+id/hint_destination"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:contentDescription="@string/hint_help"
+                android:focusable="true"
+                android:src="@drawable/ic_help"
+                app:layout_constraintBottom_toBottomOf="@id/labelDestination"
+                app:layout_constraintRight_toRightOf="@id/cekOngkirEtDestination"
+                app:layout_constraintTop_toTopOf="@id/labelDestination" />
 
             <AutoCompleteTextView
                 android:id="@+id/cekOngkirEtDestination"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/edittext_state"
-                android:hint="@string/city_district"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:paddingStart="8dp"
@@ -126,36 +124,6 @@
                 app:layout_constraintRight_toRightOf="@id/cekOngkirEtDestination"
                 app:layout_constraintTop_toTopOf="@id/cekOngkirEtDestination" />
 
-            <AutoCompleteTextView
-                android:id="@+id/cekOngkirEtDestinationSub"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/edittext_state"
-                android:hint="@string/subdistrict"
-                android:importantForAutofill="no"
-                android:inputType="text"
-                android:paddingStart="8dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cekOngkirEtDestination" />
-
-            <ProgressBar
-                android:id="@+id/loadingDestinationSub"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:padding="4dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/cekOngkirEtDestinationSub"
-                app:layout_constraintRight_toRightOf="@id/cekOngkirEtDestinationSub"
-                app:layout_constraintTop_toTopOf="@id/cekOngkirEtDestinationSub" />
-
             <TextView
                 android:id="@+id/labelWeight"
                 android:layout_width="wrap_content"
@@ -165,13 +133,14 @@
                 android:text="@string/weight_gram"
                 android:textSize="@dimen/small_text"
                 app:layout_constraintLeft_toLeftOf="@id/cekOngkirEtWeight"
-                app:layout_constraintTop_toBottomOf="@id/cekOngkirEtDestinationSub" />
+                app:layout_constraintTop_toBottomOf="@id/cekOngkirEtDestination" />
 
             <EditText
                 android:id="@+id/cekOngkirEtWeight"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/edittext_state"
                 android:importantForAutofill="no"
@@ -214,16 +183,18 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cekOngkirButtonCalculate"
-        style="@style/MaterialButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/material_button_color_state"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
         android:text="@string/check"
         android:textColor="@android:color/white"
+        app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

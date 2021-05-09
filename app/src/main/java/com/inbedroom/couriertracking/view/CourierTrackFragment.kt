@@ -160,6 +160,7 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
             )
         }
         courierAdapter.addData(couriers)
+        Message.toast(requireContext(), "Courier updated")
     }
 
     private val onUpdateCourier = Observer<Int> {
@@ -200,6 +201,10 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.refreshCourier -> {
+                viewModel.getCouriers()
+                true
+            }
             R.id.deleteAllHistory -> {
                 deleteAllHistory()
                 true

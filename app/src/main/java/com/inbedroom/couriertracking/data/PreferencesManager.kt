@@ -62,6 +62,7 @@ class PreferencesManager @Inject constructor(
         editor.putInt(COURIER_VERSION, version.version)
         editor.apply()
         editor.putString(COURIER_VERSION_CODE, version.version_code)
+        editor.apply()
     }
 
     fun saveCourierList(list: List<Courier>): Boolean{
