@@ -38,7 +38,12 @@ class CourierSpinnerAdapter(
 
         if (courier != null) {
             view.courierItemName.text = courier.name
-            Glide.with(parent.context).load(courier.imgId).into(view.courierItemIcon)
+            if (courier.imgUrl.contains("http",true)){
+                Glide.with(parent.context).load(courier.imgUrl).into(view.courierItemIcon)
+            }else{
+                Glide.with(parent.context).load(courier.imgId).into(view.courierItemIcon)
+            }
+
         }
 
         return view
