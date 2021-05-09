@@ -30,8 +30,6 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-7418623981206452~1566470213" />
 
-        <activity android:name=".view.BarcodeActivity"/>
-
         <activity
             android:name=".view.CekOngkirActivity"
             android:screenOrientation="portrait" />

@@ -20,7 +20,6 @@ import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.data.entity.CekOngkirSetupValidation
-import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.data.entity.SimpleLocation
 import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.viewmodel.MainViewModel
@@ -28,11 +27,6 @@ import kotlinx.android.synthetic.main.fragment_ongkir_setup.*
 import java.util.*
 
 class OngkirSetupFragment : Fragment() {
-
-    companion object {
-        const val CITY = "city"
-        const val SUBDISTRICT = "subdistrict"
-    }
 
     private val couriers =
         mapOf(
@@ -226,18 +220,10 @@ class OngkirSetupFragment : Fragment() {
         }
 
         cekOngkirButtonCalculate.setOnClickListener {
-            val request = CostRequest(
-                origin = status.origin!!.id,
-                originType = status.origin!!.type,
-                destination = status.destination!!.id,
-                destinationType = status.destination!!.type,
-                weight = status.weight,
-                courier = status.formattedCourier
-            )
 
             startActivity(
                 CekOngkirActivity.callIntent(
-                    requireContext(), status.origin!!.name, status.destination!!.name, request
+                    requireContext(), status
                 )
             )
         }

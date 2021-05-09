@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.inbedroom.couriertracking.data.entity.CekOngkirSetupValidation
 import com.inbedroom.couriertracking.data.entity.CostRequest
 import com.inbedroom.couriertracking.data.entity.OngkirResult
 import com.inbedroom.couriertracking.data.network.CekOngkirRepository
@@ -28,10 +29,19 @@ class OngkirViewModel @Inject constructor(
     val ongkirListData: LiveData<List<OngkirResult>> = _ongkirListData
 
     fun checkTariff(
-        request: CostRequest
+        data: CekOngkirSetupValidation
     ) {
         _onRequestStatus.postValue(STATUS_LOADING)
         val tempData = mutableListOf<OngkirResult>()
+
+        val request = CostRequest(
+            data.origin!!.id,
+            data.origin!!.type,
+            data.destination!!.id,
+            data.destination!!.type,
+            data.weight,
+            data.formattedCourier
+        )
         viewModelScope.launch {
 
             when (val result = ongkirRepository.getTariffList(request)) {

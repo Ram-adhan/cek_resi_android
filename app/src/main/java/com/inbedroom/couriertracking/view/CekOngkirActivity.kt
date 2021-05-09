@@ -5,7 +5,10 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.inbedroom.couriertracking.CourierTrackingApplication
@@ -14,7 +17,7 @@ import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.core.extension.invisible
 import com.inbedroom.couriertracking.core.extension.visible
 import com.inbedroom.couriertracking.core.platform.BaseActivity
-import com.inbedroom.couriertracking.data.entity.CostRequest
+import com.inbedroom.couriertracking.data.entity.CekOngkirSetupValidation
 import com.inbedroom.couriertracking.utils.Message
 import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.viewmodel.OngkirViewModel
@@ -25,9 +28,9 @@ import javax.inject.Inject
 class CekOngkirActivity : BaseActivity() {
 
     companion object {
+        private const val REQUEST_DATA = "data"
         const val ORIGIN_STRING = "origin"
         const val DESTINATION_STRING = "destination"
-        const val REQUEST = "request"
 
         const val STATUS_LOADING = 0
         const val STATUS_FINISHED = 1
@@ -35,14 +38,10 @@ class CekOngkirActivity : BaseActivity() {
 
         fun callIntent(
             context: Context,
-            origin: String,
-            destination: String,
-            request: CostRequest
+            data: CekOngkirSetupValidation
         ): Intent {
             val intent = Intent(context, CekOngkirActivity::class.java)
-            intent.putExtra(ORIGIN_STRING, origin)
-            intent.putExtra(DESTINATION_STRING, destination)
-            intent.putExtra(REQUEST, request)
+            intent.putExtra(REQUEST_DATA, data)
             return intent
         }
     }
@@ -51,18 +50,13 @@ class CekOngkirActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var viewModel: OngkirViewModel
-    private lateinit var origin: String
-    private lateinit var destination: String
-    private var weight: Int = 0
+    private lateinit var ongkirSetupData: CekOngkirSetupValidation
     private var interstitialAd: InterstitialAd? = null
 
     override fun layoutId(): Int = R.layout.activity_cek_ongkir
 
     override fun setupLib() {
-        origin = intent.getStringExtra(ORIGIN_STRING).toString()
-        destination = intent.getStringExtra(DESTINATION_STRING).toString()
-        val request = intent.getParcelableExtra(REQUEST) ?: CostRequest()
-        weight = request.weight
+        ongkirSetupData = intent.getParcelableExtra(REQUEST_DATA)!!
 
         (application as CourierTrackingApplication).appComponent.inject(this)
 
@@ -72,7 +66,9 @@ class CekOngkirActivity : BaseActivity() {
         ).get(OngkirViewModel::class.java)
 
         if (this.connectNetwork()) {
-            viewModel.checkTariff(request)
+            viewModel.checkTariff(
+                ongkirSetupData
+            )
             viewModel.onRequestStatus.observe(this, loadingRequest)
 
         } else {
@@ -83,17 +79,21 @@ class CekOngkirActivity : BaseActivity() {
 
         val adRequest = AdRequest.Builder().build()
 
-        InterstitialAd.load(this, ServiceData.CEK_ONGKIR_INTERSTITIAL_AD_ID, adRequest, object : InterstitialAdLoadCallback() {
-            override fun onAdFailedToLoad(p0: LoadAdError) {
-                interstitialAd = null
-            }
+        InterstitialAd.load(
+            this,
+            ServiceData.CEK_ONGKIR_INTERSTITIAL_AD_ID,
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(p0: LoadAdError) {
+                    interstitialAd = null
+                }
 
-            override fun onAdLoaded(p0: InterstitialAd) {
-                interstitialAd = p0
-            }
-        })
+                override fun onAdLoaded(p0: InterstitialAd) {
+                    interstitialAd = p0
+                }
+            })
 
-        interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback(){
+        interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
                 finish()
             }
@@ -127,7 +127,11 @@ class CekOngkirActivity : BaseActivity() {
                 fragmentTransaction
                     .add(
                         R.id.cekOngkirMainFragmentRoot,
-                        OngkirDetailFragment.newInstance(origin, destination, weight),
+                        OngkirDetailFragment.newInstance(
+                            ongkirSetupData.origin!!.name,
+                            ongkirSetupData.destination!!.name,
+                            ongkirSetupData.weight
+                        ),
                         "ongkirList"
                     )
                     .commit()
