@@ -15,7 +15,7 @@ class OngkirViewModel @Inject constructor(
     private val ongkirRepository: CekOngkirRepository
 ) : ViewModel() {
 
-    companion object{
+    companion object {
         const val STATUS_LOADING = 0
         const val STATUS_FINISHED = 1
         const val STATUS_ERROR = 2
@@ -36,11 +36,11 @@ class OngkirViewModel @Inject constructor(
 
             when (val result = ongkirRepository.getTariffList(request)) {
                 is DataResult.Success -> {
-                    tempData.add(result.data!![0])
+                    tempData.addAll(result.data!!)
                     if (_onRequestStatus.value != STATUS_FINISHED) {
                         _onRequestStatus.postValue(STATUS_FINISHED)
                     }
-                    _ongkirListData.postValue(result.data)
+                    _ongkirListData.postValue(tempData)
                 }
                 else -> {
                     if (_onRequestStatus.value != STATUS_ERROR) {
