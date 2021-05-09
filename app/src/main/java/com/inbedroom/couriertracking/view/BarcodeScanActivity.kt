@@ -33,16 +33,14 @@ class BarcodeScanActivity : BaseActivity() {
     private lateinit var captureManager: CaptureManager
     private var interstitialAd: InterstitialAd? = null
     private val permission = arrayOf(
-        android.Manifest.permission.CAMERA,
-        android.Manifest.permission.READ_EXTERNAL_STORAGE
+        android.Manifest.permission.CAMERA
     )
 
     private var torchState: Boolean = true
 
     override fun setupPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(permission[0]) != PackageManager.PERMISSION_GRANTED ||
-                checkSelfPermission(permission[1]) != PackageManager.PERMISSION_GRANTED
+            if (checkSelfPermission(permission[0]) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(
                     this,

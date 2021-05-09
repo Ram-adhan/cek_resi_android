@@ -28,13 +28,13 @@
         android:layout_marginTop="16dp"
         android:maxLines="2"
         android:textSize="20sp"
+        android:text="@string/scan_result_hint"
         app:layout_constraintBottom_toTopOf="@id/barcodeScanButtonApply"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barcodeScanGuide"
-        app:layout_constraintVertical_bias="0.9"
-        tools:text="Result" />
+        app:layout_constraintVertical_bias="0.9" />
 
     <TextView
         android:id="@+id/btnGallery"

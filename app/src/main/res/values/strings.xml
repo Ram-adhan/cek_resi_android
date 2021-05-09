@@ -58,4 +58,5 @@
     <string name="help">Help</string>
     <string name="hint_help" translatable="false">hint_help</string>
     <string name="refresh_courier_list">Refresh Courier List</string>
+    <string name="scan_result_hint" translatable="false">Hasil scan akan tertampil disini</string>
 </resources>

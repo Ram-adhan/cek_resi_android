@@ -83,7 +83,7 @@ class CekOngkirActivity : BaseActivity() {
 
         val adRequest = AdRequest.Builder().build()
 
-        InterstitialAd.load(this, ServiceData.INTERSTITIAL_AD_ID, adRequest, object : InterstitialAdLoadCallback() {
+        InterstitialAd.load(this, ServiceData.CEK_ONGKIR_INTERSTITIAL_AD_ID, adRequest, object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(p0: LoadAdError) {
                 interstitialAd = null
             }
