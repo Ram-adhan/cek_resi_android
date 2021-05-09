@@ -44,7 +44,11 @@ class OngkirSetupFragment : Fragment() {
             Pair("JNT", "jnt"),
             Pair("Ninja", "ninja"),
             Pair("JET", "jet"),
-            Pair("AnterAja", "anteraja")
+            Pair("AnterAja", "anteraja"),
+            Pair("First Logistics", "first"),
+            Pair("ID Express", "ide"),
+            Pair("Lion", "lion"),
+            Pair("Rex", "rex")
         )
     private val locationList: MutableList<SimpleLocation> = mutableListOf()
     private lateinit var autoCompleteAdapter: ArrayAdapter<String>
@@ -131,7 +135,12 @@ class OngkirSetupFragment : Fragment() {
                 status.origin = null
             }
 
-            if (value.isEmpty()) status.origin = null
+            if (value.isEmpty()) {
+                status.origin = null
+                deleteInputTextOrigin.invisible()
+            } else {
+                deleteInputTextOrigin.visible()
+            }
 
             statusLiveData.postValue(status)
         }
@@ -151,7 +160,12 @@ class OngkirSetupFragment : Fragment() {
                 status.destination = null
             }
 
-            if (value.isEmpty()) status.destination = null
+            if (value.isEmpty()) {
+                status.destination = null
+                deleteInputTextDestination.invisible()
+            } else {
+                deleteInputTextDestination.visible()
+            }
 
             statusLiveData.postValue(status)
         }
@@ -170,6 +184,13 @@ class OngkirSetupFragment : Fragment() {
             } catch (e: NumberFormatException) {
                 0
             }
+
+            if (it.toString().isEmpty()) {
+                deleteInputTextWeight.invisible()
+            } else {
+                deleteInputTextWeight.visible()
+            }
+
             statusLiveData.postValue(status)
         }
 
@@ -190,6 +211,18 @@ class OngkirSetupFragment : Fragment() {
                 "Bantuan",
                 null
             )
+        }
+
+        deleteInputTextOrigin.setOnClickListener {
+            cekOngkirEtOrigin.text.clear()
+        }
+
+        deleteInputTextDestination.setOnClickListener {
+            cekOngkirEtDestination.text.clear()
+        }
+
+        deleteInputTextWeight.setOnClickListener {
+            cekOngkirEtWeight.text.clear()
         }
 
         cekOngkirButtonCalculate.setOnClickListener {
