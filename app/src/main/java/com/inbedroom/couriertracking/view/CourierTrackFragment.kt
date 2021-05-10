@@ -228,20 +228,12 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private val onUpdateCourier = Observer<Int> {
         when (it) {
             1 -> {
-                if (loadingLayout != null) loadingLayout.visible()
+                if (mainLoadingLayout != null) mainLoadingLayout.visible()
             }
             0 -> Message.toast(requireContext(), "Courier Updated")
-            else -> loadingLayout.invisible()
+            else -> mainLoadingLayout.invisible()
         }
-        if (loadingLayout != null) loadingLayout.invisible()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if ((requestCode == MainActivity.REQUEST_CODE) && (resultCode == Activity.RESULT_OK)) {
-            val result = data?.getStringExtra(MainActivity.RESULT_LABEL)
-            mainAWBInput.setText(result ?: "")
-        }
+        if (mainLoadingLayout != null) mainLoadingLayout.invisible()
     }
 
     private val historyObserver = Observer<List<HistoryEntity>> {

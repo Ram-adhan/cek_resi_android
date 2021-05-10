@@ -8,6 +8,7 @@
     tools:context=".view.CourierTrackFragment">
 
     <include
+        android:id="@+id/mainLoadingLayout"
         layout="@layout/loading_layout"
         android:visibility="gone" />
 
