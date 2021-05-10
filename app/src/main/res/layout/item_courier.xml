@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:contentDescription="@string/courier_item_icon"
-        android:src="@drawable/sicepat" />
+        android:src="@drawable/barcode" />
 
     <TextView
         android:id="@+id/courierItemName"
