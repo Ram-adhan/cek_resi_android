@@ -64,7 +64,7 @@ class MainViewModel(
         getCouriers()
     }
 
-    fun getCouriers(){
+    fun getCouriers() {
         viewModelScope.launch {
 
             when (val couriers = courierRepository.getCouriers()) {
@@ -72,16 +72,16 @@ class MainViewModel(
                     _courierList.postValue(couriers.data!!)
                     _updateCouriers.postValue(0)
                 }
-                else -> _updateCouriers.postValue(0)
+                else -> _updateCouriers.postValue(2)
             }
         }
     }
 
     fun getLocations(param: String, isOrigin: Boolean) {
 
-        if (isOrigin){
+        if (isOrigin) {
             _loadingStatus.postValue(LOADING_CITY_ORIGIN_START)
-        }else{
+        } else {
             _loadingStatus.postValue(LOADING_CITY_DESTINATION_START)
         }
 
@@ -111,9 +111,9 @@ class MainViewModel(
                 }
             }
 
-            if (isOrigin){
+            if (isOrigin) {
                 _loadingStatus.postValue(LOADING_CITY_ORIGIN_FINISHED)
-            }else{
+            } else {
                 _loadingStatus.postValue(LOADING_CITY_DESTINATION_FINISHED)
             }
         }

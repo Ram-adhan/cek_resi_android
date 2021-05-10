@@ -8,11 +8,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.extension.connectNetwork
 import com.inbedroom.couriertracking.core.extension.hideKeyboard
@@ -23,6 +31,7 @@ import com.inbedroom.couriertracking.data.entity.Courier
 import com.inbedroom.couriertracking.data.entity.HistoryEntity
 import com.inbedroom.couriertracking.data.entity.SpinnerCourier
 import com.inbedroom.couriertracking.utils.Message
+import com.inbedroom.couriertracking.utils.ServiceData
 import com.inbedroom.couriertracking.view.adapter.CourierSpinnerAdapter
 import com.inbedroom.couriertracking.view.adapter.HistoryAdapter
 import com.inbedroom.couriertracking.viewmodel.MainViewModel
@@ -35,9 +44,12 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private val viewModel: MainViewModel by activityViewModels()
     private lateinit var courierAdapter: CourierSpinnerAdapter
     private lateinit var historyAdapter: HistoryAdapter
+    private lateinit var getBarcodeContent: ActivityResultLauncher<Intent>
 
     private var courierData: Courier? = null
     private var courierList = mutableListOf<Courier>()
+
+    private var interstitialAd: InterstitialAd? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +71,9 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
         viewModel.courierList.observe(viewLifecycleOwner, populateCourier)
         viewModel.updateCouriers.observe(viewLifecycleOwner, onUpdateCourier)
 
+        MobileAds.initialize(requireContext())
+
+        loadAd()
 
         courierAdapter = CourierSpinnerAdapter(requireContext(), mutableListOf())
         mainCourierList.adapter = courierAdapter
@@ -72,16 +87,56 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
             .addItemDecoration(DividerItemDecoration(requireContext(), llManager.orientation))
 
+        getBarcodeContent =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK) {
+                    val result = it.data?.getStringExtra(MainActivity.RESULT_LABEL)
+                    mainAWBInput.setText(result ?: "")
+                }
+            }
+
         onAction()
     }
 
-    private fun onAction(){
+    private fun loadAd() {
+        val adRequest = AdRequest.Builder().build()
+
+        InterstitialAd.load(
+            requireContext(),
+            ServiceData.INTERSTITIAL_AD_ID,
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(p0: LoadAdError) {
+                    interstitialAd = null
+                }
+
+                override fun onAdLoaded(p0: InterstitialAd) {
+                    interstitialAd = p0
+                }
+            })
+    }
+
+    private fun showInterstitial() {
+        interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdDismissedFullScreenContent() {
+                interstitialAd = null
+                loadAd()
+                getBarcodeContent.launch(BarcodeScanActivity.callIntent(requireContext()))
+            }
+
+            override fun onAdShowedFullScreenContent() {
+            }
+        }
+        interstitialAd?.show(requireActivity())
+    }
+
+    private fun onAction() {
         mainCourierList.onItemSelectedListener = this
 
         mainButtonSearch.setOnClickListener {
             val awb = mainAWBInput.text.toString()
             if (awb.isNotEmpty()) {
-                if (requireContext().connectNetwork()){
+                if (requireContext().connectNetwork()) {
                     courierData?.let { it1 ->
                         startActivity(
                             TrackingDetailActivity.callIntent(
@@ -91,7 +146,7 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
                             )
                         )
                     }
-                }else{
+                } else {
                     Message.alert(requireContext(), getString(R.string.no_internet), null)
                 }
 
@@ -136,15 +191,23 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
             override fun onCopyAwbClick(position: Int) {
                 val item = historyAdapter.getData(position)
-                val clipboardManager = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip: ClipData = ClipData.newPlainText(requireContext().getString(R.string.awb_hint), item.awb)
+                val clipboardManager =
+                    requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip: ClipData =
+                    ClipData.newPlainText(requireContext().getString(R.string.awb_hint), item.awb)
                 clipboardManager.setPrimaryClip(clip)
                 Message.toast(requireContext(), "Copied ${item.awb}")
             }
         })
 
+
+
         mainButtonBarcodeScan.setOnClickListener {
-            startActivityForResult(BarcodeScanActivity.callIntent(requireContext()), MainActivity.REQUEST_CODE)
+            if (interstitialAd != null) {
+                showInterstitial()
+            } else {
+                getBarcodeContent.launch(BarcodeScanActivity.callIntent(requireContext()))
+            }
         }
     }
 
@@ -160,16 +223,17 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
             )
         }
         courierAdapter.addData(couriers)
-        Message.toast(requireContext(), "Courier updated")
     }
 
     private val onUpdateCourier = Observer<Int> {
-        if(loadingLayout != null){
-            when(it){
-                1 -> loadingLayout.visible()
-                else -> loadingLayout.invisible()
+        when (it) {
+            1 -> {
+                if (loadingLayout != null) loadingLayout.visible()
             }
+            0 -> Message.toast(requireContext(), "Courier Updated")
+            else -> loadingLayout.invisible()
         }
+        if (loadingLayout != null) loadingLayout.invisible()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -186,7 +250,10 @@ class CourierTrackFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private val onTitleChange = Observer<Boolean> {
         if (it) {
-            Message.notify(requireActivity().mainCoordinatorLayout, getString(R.string.title_changed))
+            Message.notify(
+                requireActivity().mainCoordinatorLayout,
+                getString(R.string.title_changed)
+            )
         }
     }
 

@@ -8,13 +8,9 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.ads.*
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.zxing.ResultPoint
 import com.inbedroom.couriertracking.R
 import com.inbedroom.couriertracking.core.platform.BaseActivity
-import com.inbedroom.couriertracking.utils.ServiceData
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CaptureManager
@@ -31,7 +27,6 @@ class BarcodeScanActivity : BaseActivity() {
     }
 
     private lateinit var captureManager: CaptureManager
-    private var interstitialAd: InterstitialAd? = null
     private val permission = arrayOf(
         android.Manifest.permission.CAMERA
     )
@@ -63,25 +58,6 @@ class BarcodeScanActivity : BaseActivity() {
 
         torchState = false
 
-        MobileAds.initialize(this)
-
-        val adRequest = AdRequest.Builder().build()
-
-        InterstitialAd.load(this, ServiceData.INTERSTITIAL_AD_ID, adRequest, object : InterstitialAdLoadCallback() {
-            override fun onAdFailedToLoad(p0: LoadAdError) {
-                interstitialAd = null
-            }
-
-            override fun onAdLoaded(p0: InterstitialAd) {
-                interstitialAd = p0
-            }
-        })
-
-        interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback(){
-            override fun onAdDismissedFullScreenContent() {
-                onFinishResult()
-            }
-        }
     }
 
     override fun initView() {
@@ -91,31 +67,32 @@ class BarcodeScanActivity : BaseActivity() {
 
     override fun onAction() {
         barcodeScanButtonApply.setOnClickListener {
-            if (interstitialAd != null) {
-                interstitialAd?.show(this)
-            } else {
-                onFinishResult()
-            }
+            onFinishResult()
         }
 
         btnFlash.setOnClickListener {
-            if (torchState){
+            if (torchState) {
                 torchState = false
                 barcodeScanner.setTorchOff()
-                btnFlash.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_baseline_flash_on_24, 0, 0)
+                btnFlash.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    R.drawable.ic_baseline_flash_on_24,
+                    0,
+                    0
+                )
             } else {
                 torchState = true
                 barcodeScanner.setTorchOn()
-                btnFlash.setCompoundDrawablesWithIntrinsicBounds(0,R.drawable.ic_baseline_flash_off_24, 0, 0)
+                btnFlash.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    R.drawable.ic_baseline_flash_off_24,
+                    0,
+                    0
+                )
             }
         }
 
         btnGallery.setOnClickListener {
-            val pickImage = Intent()
-            pickImage.type = "image/**"
-            pickImage.action = Intent.ACTION_PICK
-
-            startActivityForResult(Intent.createChooser(pickImage, "Select Image"), 111)
         }
     }
 
