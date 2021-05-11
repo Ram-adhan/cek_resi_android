@@ -134,7 +134,7 @@ class TrackingDetailActivity : BaseActivity() {
             DialogInterface.OnClickListener { _, _ -> onBackPressed() })
     }
 
-    private fun initAds(){
+    private fun initAds() {
         adView = AdView(this)
         adView.adSize = AdSize.SMART_BANNER
         adView.adUnitId = ServiceData.BANNER_AD_ID
@@ -142,17 +142,21 @@ class TrackingDetailActivity : BaseActivity() {
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
-        InterstitialAd.load(this, ServiceData.TRACKING_INTERSTITIAL_AD_ID, adRequest, object : InterstitialAdLoadCallback() {
-            override fun onAdFailedToLoad(p0: LoadAdError) {
-                interstitialAd = null
-            }
+        InterstitialAd.load(
+            this,
+            ServiceData.TRACKING_INTERSTITIAL_AD_ID,
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(p0: LoadAdError) {
+                    interstitialAd = null
+                }
 
-            override fun onAdLoaded(p0: InterstitialAd) {
-                interstitialAd = p0
-            }
-        })
+                override fun onAdLoaded(p0: InterstitialAd) {
+                    interstitialAd = p0
+                }
+            })
 
-        interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback(){
+        interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
                 finish()
             }
