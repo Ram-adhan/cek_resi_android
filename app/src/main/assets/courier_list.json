@@ -2,91 +2,91 @@
   {
     "name": "JNE",
     "codename": "jne",
-    "img_url": "jne",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669694-62467d00-b1d1-11eb-96ba-15727abc8e95.png",
     "available": true
   },
   {
     "name": "POS INDONESIA",
     "codename": "pos",
-    "img_url": "pos_indonesia",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669761-74282000-b1d1-11eb-9a45-a48d98ed300e.png",
     "available": true
   },
   {
     "name": "TIKI",
     "codename": "tiki",
-    "img_url": "tiki",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669789-7be7c480-b1d1-11eb-842c-d737d5822b86.png",
     "available": true
   },
   {
     "name": "SICEPAT EKSPRESS",
     "codename": "sicepat",
-    "img_url": "sicepat",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669880-93bf4880-b1d1-11eb-9ef1-a7cdb43826f7.png",
     "available": true
   },
   {
     "name": "WAHANA",
     "codename": "wahana",
-    "img_url": "wahana",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669799-7e4a1e80-b1d1-11eb-9ecb-3febb396024e.png",
     "available": true
   },
   {
     "name": "ANTERAJA",
     "codename": "anteraja",
-    "img_url": "anteraja",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669585-404cfa80-b1d1-11eb-926c-abbe963eb32d.png",
     "available": true
   },
   {
-    "name": "J&T Express",
+    "name": "J&T EXPRESS",
     "codename": "jnt",
-    "img_url": "jnt",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669711-670b3100-b1d1-11eb-95a4-8adeee1498c1.png",
     "available": true
   },
   {
-    "name": "Ninja Xpress",
+    "name": "NINJA XPRESS",
     "codename": "ninja",
-    "img_url": "ninja",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669740-6ecad580-b1d1-11eb-83b6-0b9b36263de4.png",
     "available": true
   },
   {
-    "name": "Lion Parcel",
+    "name": "LION PARCEL",
     "codename": "lion",
-    "img_url": "lion",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669730-6bcfe500-b1d1-11eb-83f8-1d120e33caf7.png",
     "available": true
   },
   {
-    "name": "PCP Express",
+    "name": "PCP EXPRESS",
     "codename": "pcp",
-    "img_url": "pcp",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117573423-ecbfab80-b101-11eb-984a-cf37fa4efe99.png",
     "available": true
   },
   {
-    "name": "JET Express",
+    "name": "JET EXPRESS",
     "codename": "jet",
-    "img_url": "jet",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669679-5f4b8c80-b1d1-11eb-8db8-f4c4cf95ada6.png",
     "available": true
   },
   {
-    "name": "REX Express",
+    "name": "REX EXPRESS",
     "codename": "rex",
-    "img_url": "rex",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669776-77bba700-b1d1-11eb-9c6a-c096e04e2ed6.png",
     "available": true
   },
   {
-    "name": "First Logistics",
+    "name": "FIRST LOGISTICS",
     "codename": "first",
-    "img_url": "first_logistics",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669595-44791800-b1d1-11eb-8d98-4ad787520d7b.png",
     "available": true
   },
   {
-    "name": "ID Express",
+    "name": "ID EXPRESS",
     "codename": "ide",
-    "img_url": "id_express",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117669635-5064da00-b1d1-11eb-9dba-68f946b3d3f8.png",
     "available": true
   },
   {
-    "name": "Shopee Xpress",
+    "name": "SHOPEE XPRESS",
     "codename": "spx",
-    "img_url": "shopee_xpress",
+    "img_url": "https://user-images.githubusercontent.com/52147185/117573425-efba9c00-b101-11eb-9141-9f222acf2a5f.png",
     "available": true
   }
 ]
