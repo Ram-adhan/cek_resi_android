@@ -49,6 +49,7 @@ class TrackingDetailActivity : BaseActivity() {
     private var awbData: String? = null
 
     private var interstitialAd: InterstitialAd? = null
+    private lateinit var adRequest: AdRequest
 
     override fun layoutId(): Int = R.layout.activity_tracking_detail
 
@@ -69,7 +70,7 @@ class TrackingDetailActivity : BaseActivity() {
         viewModel.isViewLoading.observe(this, loadingObserver)
         viewModel.onMessageError.observe(this, onMessageErrorObserver)
 
-        MobileAds.initialize(this)
+        initAds()
     }
 
     override fun initView() {
@@ -92,8 +93,6 @@ class TrackingDetailActivity : BaseActivity() {
     }
 
     private val trackingObserver = Observer<TrackDataEntity> { data ->
-        initAds()
-
         val trackingList: List<Tracking> = data.track.filter { it.desc.isNotEmpty() }
         trackingListAdapter.updateItem(trackingList.sortedByDescending { Utils.stringToTime(it.date) })
         trackingDetailAwb.setValueText(data.summary.awb)
@@ -118,7 +117,7 @@ class TrackingDetailActivity : BaseActivity() {
         if (awbData != null && courierData != null) {
             viewModel.saveAsHistory(awbData!!, courierData!!)
         }
-
+        trackingDetailAdRoot.visible()
     }
 
     private val loadingObserver = Observer<Boolean> {
@@ -135,11 +134,13 @@ class TrackingDetailActivity : BaseActivity() {
     }
 
     private fun initAds() {
+        MobileAds.initialize(this)
         adView = AdView(this)
         adView.adSize = AdSize.SMART_BANNER
         adView.adUnitId = ServiceData.BANNER_AD_ID
+        trackingDetailAdRoot.invisible()
         trackingDetailAdRoot.addView(adView)
-        val adRequest = AdRequest.Builder().build()
+        adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
         InterstitialAd.load(

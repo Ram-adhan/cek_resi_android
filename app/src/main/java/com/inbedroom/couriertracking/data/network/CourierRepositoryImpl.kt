@@ -20,7 +20,7 @@ class CourierRepositoryImpl @Inject constructor(
     private val baseUrl = ServiceData.LOCAL_URL
 
     override suspend fun getCouriers(): DataResult<List<Courier>> {
-        val url = StringBuilder().append(baseUrl).append("/couriers")
+        val url = StringBuilder().append(baseUrl).append("/couriers/")
 
         return try {
             val couriers = couriersApi.getCouriers(url.toString())

@@ -5,22 +5,23 @@ import retrofit2.Response
 import java.io.IOException
 
 class ApiErrorHandler {
-    fun parseError(response: Response<*>): ApiError{
+    fun parseError(response: Response<*>): ApiError {
         val gson = GsonBuilder().create()
-        val error: ApiError
 
-        try {
-            error = gson.fromJson(response.errorBody()?.string(), ApiError::class.java)
-        } catch (e: IOException){
+        return try {
+            gson.fromJson(
+                response.errorBody()?.string(),
+                ApiError::class.java
+            ) ?: ApiError(response.code(), "Something went wrong")
+        } catch (e: IOException) {
             return ApiError()
         }
-        return error
     }
 }
 
 data class ApiError(
     val status: Int,
-    val message: String
-){
-    constructor(): this(0, "")
+    var message: String
+) {
+    constructor() : this(0, "")
 }

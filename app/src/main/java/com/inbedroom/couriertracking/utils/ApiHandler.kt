@@ -5,6 +5,9 @@ import retrofit2.Response
 
 fun <T: Any> handleApiError(response: Response<T>): DataResult.Error{
     val error = ApiErrorHandler().parseError(response)
+    if (error.message.contains("account", false)){
+        error.message = "Tracking Server Maintenance"
+    }
     return DataResult.Error(Exception(error.message), error.status)
 }
 

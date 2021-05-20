@@ -24,7 +24,7 @@ class TrackingRemoteRepositoryImpl @Inject constructor(
             if (response.isSuccessful){
                 handleApiSuccess(response.body()!!)
             }else{
-                DataResult.Error(Exception("Tracking Server Maintenance"))
+                handleApiError(response)
             }
         }catch (e: Exception){
             DataResult.Error(e)
@@ -41,7 +41,7 @@ class TrackingRemoteRepositoryImpl @Inject constructor(
             if (response.isSuccessful){
                 handleApiSuccess(response.body()!!)
             }else{
-                DataResult.Error(exception = Exception("Tracking Server Maintenance"))
+                handleApiError(response)
             }
         }catch (e: Exception){
             DataResult.Error(e)

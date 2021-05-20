@@ -48,23 +48,6 @@ class PreferencesManager @Inject constructor(
         }
     }
 
-    fun getSavedVersion(): CourierVersion{
-        val verInt = sharedPreferences.getInt(COURIER_VERSION, 0)
-        val verString = sharedPreferences.getString(COURIER_VERSION_CODE, "")
-        return CourierVersion(verInt, verString?: "0")
-    }
-
-    fun saveLatestVersion(version: CourierVersion){
-        editor.remove(COURIER_VERSION)
-        editor.apply()
-        editor.remove(COURIER_VERSION_CODE)
-        editor.apply()
-        editor.putInt(COURIER_VERSION, version.version)
-        editor.apply()
-        editor.putString(COURIER_VERSION_CODE, version.version_code)
-        editor.apply()
-    }
-
     fun saveCourierList(list: List<Courier>): Boolean{
         return try {
             val gson = Gson()
